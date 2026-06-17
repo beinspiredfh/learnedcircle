@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LearnedCircle | Admin moderation</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="admin-page">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="LearnedCircle home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <circle cx="24" cy="24" r="21" />
+            <text x="24" y="29" text-anchor="middle">LC</text>
+          </svg>
+        </span>
+        <span>
+          <strong>LearnedCircle</strong>
+          <small>admin moderation</small>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="Admin navigation">
+        <a href="index.html">Public site</a>
+        <a href="operations.html">Operating playbook</a>
+        <button class="nav-action nav-action-strong" type="button" data-refresh>Refresh queue</button>
+        <button class="nav-action" type="button" data-export>Export records</button>
+        <button class="nav-action" type="button" data-lock>Lock</button>
+      </nav>
+    </header>
+
+    <main class="admin-shell">
+      <section class="admin-hero">
+        <p class="eyebrow">Moderation desk</p>
+        <h1>Review website submissions before they go public.</h1>
+        <p>
+          Drafts from profile creation, job posting, articles, adverts and messages arrive here with a pending review
+          status. Approve, reject or archive each submission.
+        </p>
+      </section>
+
+      <section class="admin-login" data-login-panel>
+        <h2>Admin access</h2>
+        <form data-admin-login>
+          <label>
+            Access code
+            <input name="adminCode" type="password" autocomplete="current-password" placeholder="Enter admin access code" required />
+          </label>
+          <button class="primary-action" type="submit">Open moderation queue</button>
+          <p class="form-status" data-login-status hidden></p>
+        </form>
+      </section>
+
+      <section class="admin-board" data-admin-board hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Pending and reviewed drafts</p>
+            <h2>Moderation queue</h2>
+          </div>
+          <p data-admin-count>Loading drafts...</p>
+        </div>
+        <div class="admin-controls" aria-label="Moderation filters">
+          <button class="active" type="button" data-admin-filter="all">All</button>
+          <button type="button" data-admin-filter="Lawyer profile submission">Lawyer verification</button>
+          <button type="button" data-admin-filter="Premium account request">Premium</button>
+          <button type="button" data-admin-filter="Job post submission">Jobs</button>
+          <button type="button" data-admin-filter="Article submission">Articles</button>
+          <button type="button" data-admin-filter="Advert request">Adverts</button>
+        </div>
+        <div class="admin-summary" data-admin-summary></div>
+        <article class="admin-card verification-standard">
+          <div>
+            <p class="eyebrow">Lawyer verification standard</p>
+            <h3>Approve only profiles that are complete and professionally credible.</h3>
+            <p>
+              Confirm the SCN, year of call where supplied, Nigerian location, practice areas, public/private call detail
+              choice, profile summary and any profile picture before approving a lawyer as verified.
+            </p>
+          </div>
+          <div class="standard-grid">
+            <span>SCN must be supplied</span>
+            <span>Reject vague or promotional summaries</span>
+            <span>Keep private call details out of public notes</span>
+            <span>Use reviewer notes for rejection reasons</span>
+          </div>
+        </article>
+        <article class="admin-card admin-publish-panel" id="guest-publishing">
+          <div>
+            <p class="eyebrow">Admin publishing</p>
+            <h3>Publish a guest blog article.</h3>
+            <p>Only admin can publish guest blog articles. Add the writer picture, contributor name and approved byline before publication.</p>
+          </div>
+          <form class="account-form lawyer-profile-form" data-guest-publish-form>
+            <label>
+              Article title
+              <input name="title" type="text" placeholder="Guest article title" required />
+            </label>
+            <label>
+              Writer name
+              <input name="contributorName" type="text" placeholder="e.g. Chief Kemi Rhodes, SAN" required />
+            </label>
+            <label>
+              Writer title or designation
+              <input name="contributorTitle" type="text" placeholder="e.g. Senior Advocate of Nigeria" />
+            </label>
+            <label>
+              Approved byline
+              <input name="approvedByline" type="text" placeholder="e.g. By Chief Kemi Rhodes, SAN" required />
+            </label>
+            <label class="full-span">
+              Writer picture URL
+              <input name="writerPictureUrl" type="url" placeholder="https://..." />
+            </label>
+            <label class="full-span">
+              Summary
+              <textarea name="summary" placeholder="Short public summary for the guest blog card." required></textarea>
+            </label>
+            <label class="full-span">
+              Article body
+              <textarea name="body" placeholder="Paste the full guest article text here." required></textarea>
+            </label>
+            <button class="primary-action full-span" type="submit">Publish guest article</button>
+            <p class="form-status full-span" data-guest-publish-status hidden></p>
+          </form>
+        </article>
+        <div class="admin-list" data-admin-list></div>
+      </section>
+    </main>
+
+    <script src="admin.js"></script>
+  </body>
+</html>

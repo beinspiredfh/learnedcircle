@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LearnedCircle | Account</title>
+    <meta
+      name="description"
+      content="Create and manage a LearnedCircle account for legal help, lawyer profiles, jobs, articles and premium access."
+    />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="account-page">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="LearnedCircle home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <circle cx="24" cy="24" r="21" />
+            <text x="24" y="29" text-anchor="middle">LC</text>
+          </svg>
+        </span>
+        <span>
+          <strong>LearnedCircle</strong>
+          <small>account access</small>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="Account navigation">
+        <a href="index.html#lawyers">Find lawyers</a>
+        <a href="index.html#classifieds">Jobs</a>
+        <a href="index.html#membership">Premium</a>
+        <a href="legal.html">Legal</a>
+      </nav>
+    </header>
+
+    <main class="account-shell">
+      <section class="account-hero">
+        <p class="eyebrow">Account</p>
+        <h1>Sign in, create your profile, and manage legal opportunities.</h1>
+        <p>
+          Clients, lawyers, firms, employers and advertisers can use one LearnedCircle account. Premium requests are
+          reviewed before activation.
+        </p>
+      </section>
+
+      <section class="account-auth" data-auth-panel>
+        <div class="segmented account-tabs" role="tablist" aria-label="Account access">
+          <button class="active" type="button" data-auth-tab="login">Login</button>
+          <button type="button" data-auth-tab="signup">Signup</button>
+        </div>
+
+        <form class="account-form" data-login-form>
+          <h2>Login</h2>
+          <label>
+            Email
+            <input name="email" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            Password
+            <input name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <button class="primary-action" type="submit">Login</button>
+          <p class="form-status" data-login-status hidden></p>
+        </form>
+
+        <form class="account-form" data-signup-form hidden>
+          <h2>Create account</h2>
+          <label>
+            Full name
+            <input name="fullName" type="text" autocomplete="name" required />
+          </label>
+          <label>
+            Account type
+            <select name="role" required>
+              <option value="client">Client</option>
+              <option value="lawyer">Lawyer</option>
+              <option value="law_firm">Law firm</option>
+              <option value="employer">Employer</option>
+              <option value="advertiser">Advertiser</option>
+            </select>
+          </label>
+          <label>
+            Email
+            <input name="email" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            Password
+            <input name="password" type="password" autocomplete="new-password" minlength="8" required />
+          </label>
+          <label class="terms-check">
+            <input name="termsAccepted" type="checkbox" required />
+            <span>
+              I agree to the LearnedCircle
+              <a href="legal.html#terms" target="_blank" rel="noopener">Terms of Use</a>,
+              <a href="legal.html#privacy" target="_blank" rel="noopener">Privacy Notice</a>,
+              <a href="legal.html#disclaimer" target="_blank" rel="noopener">Legal Disclaimer</a>
+              and moderation rules.
+            </span>
+          </label>
+          <button class="primary-action" type="submit">Create account</button>
+          <p class="form-status" data-signup-status hidden></p>
+        </form>
+      </section>
+
+      <section class="legal-consent-summary" aria-label="Registration legal summary">
+        <p class="eyebrow">Before registration</p>
+        <h2>Every account must accept the platform terms.</h2>
+        <p>
+          LearnedCircle is a directory, classifieds, publishing and professional networking platform. Users remain
+          responsible for their own posts, professional obligations, advice, advertising compliance and engagements.
+        </p>
+        <a class="secondary-action" href="legal.html">Read legal terms</a>
+      </section>
+
+      <section class="account-dashboard" data-dashboard hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Dashboard</p>
+            <h2 data-dashboard-title>Your account</h2>
+          </div>
+          <button class="secondary-action" type="button" data-logout>Logout</button>
+        </div>
+
+        <div class="dashboard-summary" data-dashboard-summary>
+          <article class="summary-card">
+            <span class="status">Verification</span>
+            <strong>Not loaded</strong>
+            <p>Lawyer profile review status.</p>
+          </article>
+          <article class="summary-card">
+            <span class="status">Messages</span>
+            <strong>0</strong>
+            <p>Unread and recent enquiries.</p>
+          </article>
+          <article class="summary-card">
+            <span class="status">Publishing</span>
+            <strong>0</strong>
+            <p>Articles and drafts linked to your account.</p>
+          </article>
+          <article class="summary-card">
+            <span class="status">Networking</span>
+            <strong>0</strong>
+            <p>Lawyer follows, mentees and profile activity.</p>
+          </article>
+        </div>
+
+        <div class="account-grid">
+          <article class="account-card">
+            <h3>Account status</h3>
+            <dl class="account-facts" data-account-facts></dl>
+            <button class="primary-action" type="button" data-premium-request>Request premium review</button>
+            <p class="form-status" data-premium-status hidden></p>
+          </article>
+
+          <article class="account-card">
+            <h3>Profile details</h3>
+            <form class="account-form compact" data-profile-form>
+              <label>
+                Full name
+                <input name="fullName" type="text" required />
+              </label>
+              <label>
+                Account type
+                <select name="role" required>
+                  <option value="client">Client</option>
+                  <option value="lawyer">Lawyer</option>
+                  <option value="law_firm">Law firm</option>
+                  <option value="employer">Employer</option>
+                  <option value="advertiser">Advertiser</option>
+                </select>
+              </label>
+              <button class="secondary-action" type="submit">Save profile</button>
+              <p class="form-status" data-profile-status hidden></p>
+            </form>
+          </article>
+
+          <article class="account-card">
+            <h3>Next actions</h3>
+            <div class="account-actions">
+              <a class="secondary-action" href="index.html#lawyers">Find lawyers</a>
+              <a class="secondary-action" href="#lawyer-profile-form">Create lawyer profile</a>
+              <a class="secondary-action" href="#job-post-form">Post an opportunity</a>
+              <a class="secondary-action" href="#article-submit-form">Submit article</a>
+              <a class="secondary-action" href="#message-center">Messages</a>
+              <a class="secondary-action" href="index.html#advertise">Advertise</a>
+            </div>
+          </article>
+        </div>
+
+        <article class="account-card account-wide" id="lawyer-profile-form">
+          <div>
+            <p class="eyebrow">Lawyer profile</p>
+            <h3>Submit a structured lawyer profile for verification.</h3>
+          </div>
+          <form class="account-form lawyer-profile-form" data-lawyer-profile-form>
+            <label>
+              Display name
+              <input name="displayName" type="text" placeholder="e.g. Adaeze Okonkwo" required />
+            </label>
+            <label>
+              Profile picture URL
+              <input name="profilePictureUrl" type="url" placeholder="https://..." />
+            </label>
+            <label>
+              Credentials
+              <input name="credentials" type="text" placeholder="e.g. LLB, BL, LLM" />
+            </label>
+            <label>
+              Year of call
+              <input name="yearOfCall" type="number" min="1900" max="2099" placeholder="e.g. 2014" />
+            </label>
+            <label>
+              Supreme Court number / SCN
+              <input name="supremeCourtNumber" type="text" placeholder="Required for lawyer verification" required />
+            </label>
+            <label>
+              Location
+              <select name="location" data-nigeria-location-select required>
+                <option value="">Select state or FCT</option>
+              </select>
+            </label>
+            <label>
+              Firm or practice desk
+              <input name="firm" type="text" placeholder="e.g. Independent counsel, firm name" />
+            </label>
+            <label>
+              Practice areas
+              <input name="practiceAreas" type="text" placeholder="Separate with commas" required />
+            </label>
+            <label>
+              Languages
+              <input name="languages" type="text" placeholder="e.g. English, Yoruba" />
+            </label>
+            <label>
+              Fees
+              <input name="fees" type="text" placeholder="e.g. Fixed-fee consultation, retainers" />
+            </label>
+            <label>
+              Availability
+              <input name="availability" type="text" placeholder="e.g. Weekdays, urgent briefs, remote" />
+            </label>
+            <label class="option-choice full-span">
+              <input name="proBonoOpen" type="checkbox" value="yes" />
+              <span>
+                <strong>Open to pro bono matters</strong>
+                Select this if you are willing to receive reviewed pro bono or public-interest requests.
+              </span>
+            </label>
+            <label class="full-span">
+              Professional summary
+              <textarea name="summary" placeholder="Briefly describe your practice, clients, and matters handled." required></textarea>
+            </label>
+            <label class="full-span">
+              Verification note
+              <textarea name="verificationNote" placeholder="Call-to-bar details, professional body, branch, or verification information."></textarea>
+            </label>
+            <label class="option-choice full-span">
+              <input name="showCallDetailsPublic" type="checkbox" value="yes" />
+              <span>
+                <strong>Show call details publicly</strong>
+                Display year of call and Supreme Court number on the public profile. Leave unchecked to keep them for admin verification only.
+              </span>
+            </label>
+            <button class="primary-action full-span" type="submit">Submit lawyer profile for review</button>
+            <p class="form-status full-span" data-lawyer-profile-status hidden></p>
+          </form>
+        </article>
+
+        <article class="account-card account-wide" id="job-post-form">
+          <div>
+            <p class="eyebrow">Jobs and opportunities</p>
+            <h3>Submit a legal role, retainer, referral brief or opportunity.</h3>
+          </div>
+          <form class="account-form lawyer-profile-form" data-job-post-form>
+            <label>
+              Opportunity title
+              <input name="title" type="text" placeholder="e.g. Remote Contract Review Counsel" required />
+            </label>
+            <label>
+              Organization
+              <input name="organization" type="text" placeholder="Company, firm, chambers or client" required />
+            </label>
+            <label>
+              Location
+              <input name="location" type="text" placeholder="e.g. Lagos, Abuja, Remote" />
+            </label>
+            <label>
+              Engagement type
+              <input name="engagementType" type="text" placeholder="Full time, contract, retainer, referral" required />
+            </label>
+            <label>
+              Practice areas
+              <input name="practiceAreas" type="text" placeholder="Separate with commas" required />
+            </label>
+            <label>
+              Budget or fee range
+              <input name="budget" type="text" placeholder="Optional but recommended" />
+            </label>
+            <label class="full-span">
+              Description
+              <textarea name="description" placeholder="Describe the role, work scope, requirements, timing and application instructions." required></textarea>
+            </label>
+            <button class="primary-action full-span" type="submit">Submit opportunity for review</button>
+            <p class="form-status full-span" data-job-post-status hidden></p>
+          </form>
+        </article>
+
+        <article class="account-card account-wide" id="article-submit-form">
+          <div>
+            <p class="eyebrow">Articles</p>
+            <h3>Publish legal commentary, client guidance or practice insight.</h3>
+            <p>
+              Verified lawyers publish directly with their byline. Unverified accounts submit articles for editorial review.
+            </p>
+          </div>
+          <form class="account-form lawyer-profile-form" data-article-form>
+            <label>
+              Article title
+              <input name="title" type="text" placeholder="e.g. Preparing a clean first brief" required />
+            </label>
+            <label>
+              Practice area
+              <input name="practiceArea" type="text" placeholder="e.g. Corporate Law, Family Law" required />
+            </label>
+            <label class="full-span">
+              Byline
+              <input name="byline" type="text" placeholder="e.g. By Adaeze Okonkwo, Esq." required />
+            </label>
+            <label class="full-span">
+              Summary
+              <textarea name="summary" placeholder="Short summary for the article card." required></textarea>
+            </label>
+            <label class="full-span">
+              Article body
+              <textarea name="body" placeholder="Paste or draft the article text here." required></textarea>
+            </label>
+            <button class="primary-action full-span" type="submit">Publish or submit article</button>
+            <p class="form-status full-span" data-article-status hidden></p>
+          </form>
+        </article>
+
+        <article class="account-card account-wide" id="lawyer-network">
+          <div>
+            <p class="eyebrow">Lawyer network</p>
+            <h3>Follow, chat, invite and grow professional visibility.</h3>
+          </div>
+          <div class="network-grid">
+            <section>
+              <h4>Lawyers online</h4>
+              <p>Verified lawyers who were recently active appear here for direct lawyer chat.</p>
+              <div class="peer-suggestions" data-peer-suggestions>
+                <p>Sign in to load lawyer suggestions.</p>
+              </div>
+            </section>
+            <section>
+              <h4>Lawyer chat</h4>
+              <p>Verified lawyers can chat with available verified lawyers without combining this area with client enquiries.</p>
+              <a class="secondary-action" href="#message-center">Open messages</a>
+            </section>
+            <section>
+              <h4>Invite colleagues</h4>
+              <p>Invite lawyers, firms, SANs, retired judges and contributors to join LearnedCircle.</p>
+              <a class="secondary-action" href="mailto:?subject=Join%20LearnedCircle&body=I%20am%20inviting%20you%20to%20join%20LearnedCircle%20at%20https%3A%2F%2Flearnedcircle.com">Send invite</a>
+            </section>
+            <section>
+              <h4>Mentorship</h4>
+              <p>Senior lawyers and respected practitioners can support younger lawyers through reviewed mentorship circles.</p>
+              <a class="secondary-action" href="index.html#mentorship">View mentorship</a>
+            </section>
+            <section>
+              <h4>Activity notifications</h4>
+              <p>New messages, article activity, profile interest and contact requests appear in your account activity area.</p>
+            </section>
+            <section>
+              <h4>Premium visibility</h4>
+              <p>Premium members receive stronger profile placement, more profile views and priority matching in client briefs.</p>
+              <button class="secondary-action" type="button" data-premium-request>Request premium review</button>
+            </section>
+          </div>
+        </article>
+
+        <article class="account-card account-wide" id="message-center">
+          <div>
+            <p class="eyebrow">Lawyer chat</p>
+            <h3>Chat with lawyers who are online.</h3>
+            <p>
+              This area is for lawyer-to-lawyer conversations. Clients can search the directory and contact lawyers directly from the public lawyer profile flow.
+            </p>
+          </div>
+          <form class="account-form lawyer-profile-form" data-message-form>
+            <label class="full-span">
+              Recipient
+              <select name="lawyerProfileId" data-message-recipient required>
+                <option value="">Loading verified lawyers...</option>
+              </select>
+            </label>
+            <label class="full-span">
+              Subject
+              <input name="subject" type="text" placeholder="Brief subject" required />
+            </label>
+            <label class="full-span">
+              Message
+              <textarea name="body" placeholder="Write a concise message. Do not include sensitive documents yet." required></textarea>
+            </label>
+            <button class="primary-action full-span" type="submit">Send message</button>
+            <p class="form-status full-span" data-message-status hidden></p>
+          </form>
+          <div class="message-list" data-message-list>
+            <article class="admin-empty">
+              <h3>No messages loaded.</h3>
+              <p>Messages will appear here after you sign in.</p>
+            </article>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer compact-footer">
+      <div>
+        <strong>LearnedCircle</strong>
+        <p>Legal help, lawyer networking, professional visibility and opportunity exchange.</p>
+      </div>
+      <div class="footer-links">
+        <a href="legal.html#terms">Terms</a>
+        <a href="legal.html#privacy">Privacy</a>
+        <a href="legal.html#disclaimer">Disclaimer</a>
+        <a href="legal.html#acceptable-use">Acceptable use</a>
+      </div>
+      <div class="footer-credit" aria-label="Ownership credit">
+        <span>Powered by Advocati LP</span>
+      </div>
+    </footer>
+
+    <script src="account.js"></script>
+  </body>
+</html>

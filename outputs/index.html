@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LearnedCircle | Legal help, lawyers, jobs and insight</title>
+    <meta
+      name="description"
+      content="LearnedCircle is a legal classified-style platform for clients, lawyers, law firms, pro bono matters, legal jobs, tax support and publishing."
+    />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="LearnedCircle home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <circle cx="24" cy="24" r="21" />
+            <text x="24" y="29" text-anchor="middle">LC</text>
+          </svg>
+        </span>
+        <span>
+          <strong>LearnedCircle</strong>
+          <small>learnedcircle.com</small>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#lawyers">Find lawyers</a>
+        <details class="nav-group">
+          <summary class="nav-parent">Forum</summary>
+          <div class="submenu" aria-label="Forum submenu">
+            <a href="#forum">Forum home</a>
+            <a href="#articles">Articles</a>
+            <a href="#guest-blog">Guest blog</a>
+            <a href="#mentorship">Mentorship</a>
+            <a href="#debate">Debate</a>
+            <a href="#legal-news">Legal news</a>
+            <button type="button" data-open-modal="article">Submit article</button>
+          </div>
+        </details>
+        <a href="#classifieds">Jobs</a>
+        <details class="nav-group">
+          <summary class="nav-parent">Account</summary>
+          <div class="submenu" aria-label="Account submenu">
+            <a href="#membership">Premium</a>
+            <a href="account.html?mode=login">Login</a>
+            <a href="account.html?mode=signup">Signup</a>
+          </div>
+        </details>
+        <button class="nav-action nav-action-strong" type="button" data-open-modal="advertise">Advertise</button>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="workspace">
+        <div class="intro-panel">
+          <div class="intro-copy">
+            <h1>Find lawyers, brief matters, and connect with legal peers.</h1>
+            <p>
+              LearnedCircle connects clients with verified lawyers, including corporate law specialists, tax experts,
+              and general practice lawyers, as well as law firms, employers, and legal professionals worldwide through
+              one trusted global network.
+            </p>
+          </div>
+          <div class="trust-strip" aria-label="Platform highlights">
+            <button type="button" data-open-modal="signup">Verified legal profiles</button>
+            <button type="button" data-jump-tab="online">Chat with Verified Lawyers Online</button>
+            <button type="button" data-scroll-target="classifieds">Jobs and Opportunities</button>
+            <button type="button" data-jump-tab="probono">Pro bono Access</button>
+          </div>
+        </div>
+
+        <section class="finder" id="lawyers" aria-labelledby="finder-title">
+          <div class="finder-head">
+            <div>
+              <p class="eyebrow">Find a lawyer</p>
+              <h2 id="finder-title">Search by matter, location and availability</h2>
+            </div>
+            <button class="primary-action" type="button" data-open-modal="brief">Submit a case brief</button>
+          </div>
+
+          <form class="search-grid" data-search-form>
+            <label>
+              Area of law
+              <select name="area" data-area-filter>
+                <option value="All">All practice areas</option>
+              </select>
+            </label>
+            <label>
+              Location
+              <select name="location" data-location-filter>
+                <option value="All">All locations</option>
+              </select>
+            </label>
+            <label>
+              Search
+              <input name="query" type="search" placeholder="Name, keyword or service" data-query-filter />
+            </label>
+            <label>
+              Budget
+              <select name="budget" data-budget-filter>
+                <option value="All">Any budget</option>
+                <option value="Starter">Starter</option>
+                <option value="Standard">Standard</option>
+                <option value="Premium">Premium</option>
+                <option value="Pro bono">Pro bono</option>
+              </select>
+            </label>
+          </form>
+
+          <div class="result-toolbar">
+            <div class="segmented" role="tablist" aria-label="Directory view">
+              <button class="active" type="button" data-tab="lawyers">Lawyers</button>
+              <button type="button" data-tab="online">Verified Lawyers Online</button>
+              <button type="button" data-tab="probono">Pro bono</button>
+            </div>
+            <p data-result-count>Showing verified lawyers</p>
+          </div>
+
+          <div class="lawyer-grid" data-lawyer-grid></div>
+        </section>
+      </section>
+
+      <section class="launch-trust" id="how-it-works">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">How LearnedCircle works</p>
+            <h2>Clear routes for clients, lawyers, employers and advertisers.</h2>
+          </div>
+          <a class="secondary-action" href="trust.html">Read trust policies</a>
+        </div>
+        <div class="trust-card-grid">
+          <article class="trust-card">
+            <span class="rule-number">01</span>
+            <h3>Clients submit a brief or contact a lawyer directly</h3>
+            <p>Clients can search public profiles without registration, message premium lawyers directly, or submit a case brief for matching.</p>
+          </article>
+          <article class="trust-card">
+            <span class="rule-number">02</span>
+            <h3>Lawyers register, verify and publish</h3>
+            <p>Lawyers submit SCN, call details, location, practice areas and consent to platform terms before profiles are reviewed.</p>
+          </article>
+          <article class="trust-card">
+            <span class="rule-number">03</span>
+            <h3>Admin moderates sensitive public content</h3>
+            <p>Free posts, adverts, guest blogs, reports and profile issues go to review before they affect the public directory.</p>
+          </article>
+          <article class="trust-card">
+            <span class="rule-number">04</span>
+            <h3>Premium accounts receive stronger visibility</h3>
+            <p>Premium lawyers get direct client contact, direct publishing, online chat visibility, featured placement and priority matching.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-band" id="classifieds">
+        <div class="section-heading">
+          <p class="eyebrow">Legal classifieds</p>
+          <h2>Jobs, retainers and legal opportunities</h2>
+          <button class="secondary-action" type="button" data-open-modal="job">Post an opportunity</button>
+        </div>
+        <div class="posting-rules" aria-label="Opportunity posting rules">
+          <article>
+            <span class="rule-number">01</span>
+            <div>
+              <h3>Account required</h3>
+              <p>Clients, employers, law firms and lawyers can draft a listing after signup.</p>
+            </div>
+          </article>
+          <article>
+            <span class="rule-number">02</span>
+            <div>
+              <h3>Reviewed before public listing</h3>
+              <p>Free posts are checked for identity, relevance, fee clarity and prohibited claims.</p>
+            </div>
+          </article>
+          <article>
+            <span class="rule-number">03</span>
+            <div>
+              <h3>Premium gets faster publishing</h3>
+              <p>Verified premium accounts can publish directly, boost listings and receive replies by message.</p>
+            </div>
+          </article>
+        </div>
+        <div class="classified-grid" data-job-grid></div>
+      </section>
+
+      <section class="community-hub" id="forum">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Community</p>
+            <h2>Forum, debate and legal news</h2>
+          </div>
+          <button class="secondary-action" type="button" data-open-modal="forum">Start a discussion</button>
+        </div>
+        <div class="community-grid">
+          <article class="community-card">
+            <p class="eyebrow">Forum</p>
+            <h3>Ask questions and follow practice-area discussions.</h3>
+            <p>Clients can raise general legal questions while lawyers exchange practical insight and referral leads.</p>
+            <button class="secondary-action" type="button" data-open-modal="forum">Open forum</button>
+          </article>
+          <article class="community-card" id="debate">
+            <p class="eyebrow">Debate</p>
+            <h3>Structured legal debates on policy and practice.</h3>
+            <p>Host moderated arguments, polls and professional commentary around timely legal issues.</p>
+            <button class="secondary-action" type="button" data-open-modal="debate">Join debate</button>
+          </article>
+          <article class="community-card" id="legal-news">
+            <p class="eyebrow">Legal news</p>
+            <h3>News briefs that lawyers and clients can act on.</h3>
+            <p>Track court updates, regulatory notices, jobs, tax deadlines and public-interest announcements.</p>
+            <button class="secondary-action" type="button" data-open-modal="news">Read updates</button>
+          </article>
+        </div>
+        <div class="feed-board">
+          <section class="feed-column" aria-labelledby="forum-feed-title">
+            <div class="mini-heading">
+              <p class="eyebrow">Forum feed</p>
+              <h3 id="forum-feed-title">Recent public questions</h3>
+            </div>
+            <article class="feed-item forum-item" data-forum-id="interim-custody-terms" data-forum-title="Can interim custody terms be agreed before filing?">
+              <span class="status">Family Law</span>
+              <h4>Can interim custody terms be agreed before filing?</h4>
+              <p>3 lawyer replies | 18 following</p>
+              <details class="forum-drop">
+                <summary>Reply and read comments</summary>
+                <form class="forum-reply-form" data-forum-reply-form>
+                  <label>
+                    Your reply
+                    <textarea name="reply" placeholder="Write a helpful public reply" required></textarea>
+                  </label>
+                  <button class="secondary-action" type="submit">Post reply</button>
+                </form>
+                <div class="reply-list" data-reply-list>
+                  <article>
+                    <strong>Public reply</strong>
+                    <p>Parties can agree interim terms, but it is best to document them clearly and seek proper filing advice.</p>
+                  </article>
+                </div>
+              </details>
+            </article>
+            <article class="feed-item forum-item" data-forum-id="property-buyer-documents" data-forum-title="What documents should a buyer verify before paying a deposit?">
+              <span class="status">Property Law</span>
+              <h4>What documents should a buyer verify before paying a deposit?</h4>
+              <p>7 lawyer replies | 42 following</p>
+              <details class="forum-drop">
+                <summary>Reply and read comments</summary>
+                <form class="forum-reply-form" data-forum-reply-form>
+                  <label>
+                    Your reply
+                    <textarea name="reply" placeholder="Write a helpful public reply" required></textarea>
+                  </label>
+                  <button class="secondary-action" type="submit">Post reply</button>
+                </form>
+                <div class="reply-list" data-reply-list>
+                  <article>
+                    <strong>Public reply</strong>
+                    <p>Start with title documents, survey plan, seller authority, encumbrance checks and physical inspection.</p>
+                  </article>
+                </div>
+              </details>
+            </article>
+            <article class="feed-item forum-item" data-forum-id="remote-retainer-compliance" data-forum-title="Can a remote retainer include monthly compliance review?">
+              <span class="status">Employment Law</span>
+              <h4>Can a remote retainer include monthly compliance review?</h4>
+              <p>2 lawyer replies | 11 following</p>
+              <details class="forum-drop">
+                <summary>Reply and read comments</summary>
+                <form class="forum-reply-form" data-forum-reply-form>
+                  <label>
+                    Your reply
+                    <textarea name="reply" placeholder="Write a helpful public reply" required></textarea>
+                  </label>
+                  <button class="secondary-action" type="submit">Post reply</button>
+                </form>
+                <div class="reply-list" data-reply-list>
+                  <article>
+                    <strong>Public reply</strong>
+                    <p>Yes, if the scope, deliverables, response time and excluded work are clearly stated in the retainer.</p>
+                  </article>
+                </div>
+              </details>
+            </article>
+          </section>
+          <section class="feed-column" aria-labelledby="debate-feed-title">
+            <div class="mini-heading">
+              <p class="eyebrow">Debate room</p>
+              <h3 id="debate-feed-title">Moderated legal debates</h3>
+            </div>
+            <article class="feed-item debate-item">
+              <span class="status">Open debate</span>
+              <h4>Should virtual court appearances remain standard for commercial motions?</h4>
+              <div class="meter" aria-label="Debate response split">
+                <span style="width: 58%">Support</span>
+                <span style="width: 42%">Oppose</span>
+              </div>
+              <details class="debate-drop" data-debate-id="virtual-court-commercial-motions" data-debate-title="Should virtual court appearances remain standard for commercial motions?">
+                <summary>Add your opinion and read reasons</summary>
+                <form class="debate-reason-form" data-debate-reason-form>
+                  <label>
+                    Position
+                    <select name="position" required>
+                      <option value="Support">Support</option>
+                      <option value="Oppose">Oppose</option>
+                    </select>
+                  </label>
+                  <label>
+                    Reason
+                    <textarea name="reason" placeholder="Write the reason for your position" required></textarea>
+                  </label>
+                  <button class="secondary-action" type="submit">Submit reason</button>
+                </form>
+                <div class="opinion-list" data-opinion-list>
+                  <article>
+                    <strong>Support</strong>
+                    <p>Virtual appearances reduce travel cost and help counsel handle short commercial motions efficiently.</p>
+                  </article>
+                  <article>
+                    <strong>Oppose</strong>
+                    <p>Some applications still benefit from physical courtroom control, clearer advocacy and immediate judicial engagement.</p>
+                  </article>
+                </div>
+              </details>
+            </article>
+            <article class="feed-item debate-item">
+              <span class="status">Policy watch</span>
+              <h4>Data privacy enforcement: education first or immediate sanctions?</h4>
+              <div class="meter" aria-label="Debate response split">
+                <span style="width: 46%">Education</span>
+                <span style="width: 54%">Sanctions</span>
+              </div>
+              <details class="debate-drop" data-debate-id="data-privacy-enforcement" data-debate-title="Data privacy enforcement: education first or immediate sanctions?">
+                <summary>Add your opinion and read reasons</summary>
+                <form class="debate-reason-form" data-debate-reason-form>
+                  <label>
+                    Position
+                    <select name="position" required>
+                      <option value="Education">Education</option>
+                      <option value="Sanctions">Sanctions</option>
+                    </select>
+                  </label>
+                  <label>
+                    Reason
+                    <textarea name="reason" placeholder="Write the reason for your position" required></textarea>
+                  </label>
+                  <button class="secondary-action" type="submit">Submit reason</button>
+                </form>
+                <div class="opinion-list" data-opinion-list>
+                  <article>
+                    <strong>Education</strong>
+                    <p>Many small businesses need plain compliance guidance before punishment becomes fair.</p>
+                  </article>
+                  <article>
+                    <strong>Sanctions</strong>
+                    <p>Clear enforcement is necessary where data handlers ignore repeated privacy obligations.</p>
+                  </article>
+                </div>
+              </details>
+            </article>
+          </section>
+          <aside class="news-column" aria-labelledby="news-feed-title">
+            <div class="mini-heading">
+              <p class="eyebrow">Legal news</p>
+              <h3 id="news-feed-title">Editor picks</h3>
+            </div>
+            <a class="news-link" href="#legal-news">
+              <span>Regulatory</span>
+              <strong>New compliance filing reminders for businesses</strong>
+            </a>
+            <a class="news-link" href="#legal-news">
+              <span>Courts</span>
+              <strong>Weekly cause-list highlights and practice notices</strong>
+            </a>
+            <a class="news-link" href="#legal-news">
+              <span>Tax</span>
+              <strong>Upcoming tax documentation checklist for SMEs</strong>
+            </a>
+          </aside>
+        </div>
+      </section>
+
+      <section class="split-section" id="articles">
+        <div class="publish-panel">
+          <p class="eyebrow">Write and publish</p>
+          <h2>Legal insight from the professionals doing the work.</h2>
+          <p>
+            Premium lawyers can publish directly after verification. Free accounts can draft articles for admin review,
+            keeping the platform credible while making legal knowledge easier to find.
+          </p>
+          <button class="primary-action" type="button" data-open-modal="article">Start an article</button>
+        </div>
+        <div class="article-list" data-article-grid></div>
+      </section>
+
+      <section class="guest-section" id="guest-blog">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Guest blog</p>
+            <h2>Senior voices from the bar and bench.</h2>
+          </div>
+        </div>
+        <div class="guest-editorial-note">
+          <strong>Editorial publishing model</strong>
+          <p>
+            Guest articles from SANs, retired judges and senior lawyers are submitted or commissioned privately,
+            then published by the LearnedCircle editor with the contributor's approved byline under each article.
+          </p>
+        </div>
+        <div class="guest-grid" data-guest-grid></div>
+      </section>
+
+      <section class="mentorship-section" id="mentorship">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Mentorship</p>
+            <h2>Guidance from senior lawyers and respected legal voices.</h2>
+          </div>
+          <button class="secondary-action" type="button" data-open-modal="mentor">Request mentorship</button>
+        </div>
+        <div class="mentorship-grid">
+          <article class="mentor-card">
+            <span class="status">For young lawyers</span>
+            <h3>Practice-area mentorship circles</h3>
+            <p>
+              Small moderated circles where junior lawyers can learn from SANs, senior advocates, partners,
+              legal academics and experienced practitioners across litigation, corporate practice and specialist areas.
+            </p>
+          </article>
+          <article class="mentor-card">
+            <span class="status">For senior lawyers</span>
+            <h3>Give back without clutter</h3>
+            <p>
+              Senior lawyers can host office-hour sessions, publish mentorship notes, recommend reading lists and
+              support professional development without turning the platform into social noise.
+            </p>
+          </article>
+          <article class="mentor-card">
+            <span class="status">Curated access</span>
+            <h3>Mentor requests are reviewed</h3>
+            <p>
+              Requests are screened by LearnedCircle so mentorship remains professional, respectful and focused on
+              growth, ethics, advocacy, client handling and career direction.
+            </p>
+          </article>
+        </div>
+        <div class="mentor-roster" data-mentor-roster></div>
+      </section>
+
+      <section class="action-band" id="advertise">
+        <div>
+          <p class="eyebrow">Advertise and accounts</p>
+          <h2>Reach legal clients, lawyers and employers without cluttering the experience.</h2>
+          <p>
+            Sponsored placements can support featured lawyer profiles, job posts, articles, CLE programs and legal
+            service announcements while keeping ads clearly labelled.
+          </p>
+        </div>
+        <div class="action-grid">
+          <article class="action-card">
+            <span class="status">For lawyers</span>
+            <h3>Create or verify a lawyer account</h3>
+            <p>Upload credentials, select practice areas and unlock messaging, publishing and referrals.</p>
+            <a class="primary-action" href="account.html">Account Login/Signup</a>
+          </article>
+          <article class="action-card sponsored-card">
+            <span class="status">Free or paid</span>
+            <h3>Advert placement</h3>
+            <p>Choose a free reviewed listing or a paid placement for stronger visibility and more reliable promotion.</p>
+            <button class="secondary-action" type="button" data-open-modal="advertise">Advertise</button>
+          </article>
+        </div>
+        <div class="advert-grid" data-advert-grid></div>
+      </section>
+
+      <section class="membership" id="membership">
+        <div class="membership-copy">
+          <p class="eyebrow">Premium membership</p>
+          <h2>Unlock verification, visibility and direct collaboration.</h2>
+          <p>
+            Premium accounts receive verified profile treatment, direct posting, direct client contact, instant messaging,
+            featured listings, lawyer-to-lawyer introductions, proposal responses and priority placement for client briefs.
+          </p>
+        </div>
+        <div class="plan-grid">
+          <article class="plan-card">
+            <h3>Free</h3>
+            <p class="price">N0</p>
+            <ul>
+              <li>Directory profile</li>
+              <li>Article drafts for review</li>
+              <li>Public Q&A participation</li>
+            </ul>
+            <a class="secondary-action" href="account.html?mode=signup">Create profile</a>
+          </article>
+          <article class="plan-card featured-plan">
+            <span class="plan-label">Recommended</span>
+            <h3>Premium Lawyer</h3>
+            <div class="billing-options" aria-label="Premium lawyer billing options">
+              <p class="price">N10,000 <span>/ month</span></p>
+              <p class="price yearly-price">N100,000 <span>/ year</span></p>
+            </div>
+            <ul>
+              <li>Verified badge and featured listing</li>
+              <li>Direct posting for jobs, articles and opportunities</li>
+              <li>Direct client contact on the website</li>
+              <li>Online lawyer chat, secure messaging and file intake</li>
+              <li>Mentorship visibility for senior lawyers</li>
+            </ul>
+            <a class="primary-action" href="account.html">Upgrade lawyer account</a>
+          </article>
+          <article class="plan-card">
+            <h3>Employer</h3>
+            <p class="price">Per post</p>
+            <ul>
+              <li>Post legal jobs and retainers</li>
+              <li>Search lawyers by specialization</li>
+              <li>Receive curated applicant lists</li>
+            </ul>
+            <button type="button" class="secondary-action" data-open-modal="job">Post a job</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="payment-section" id="payment-plans">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Payment plan preparation</p>
+            <h2>Launch pricing can be connected to payment once the account is ready.</h2>
+          </div>
+          <a class="secondary-action" href="trust.html#advertise-policy">Advertise rules</a>
+        </div>
+        <div class="payment-grid">
+          <article class="payment-card">
+            <span class="status">Lawyer premium</span>
+            <h3>Monthly plan</h3>
+            <p class="price">N10,000 <span>/ month</span></p>
+            <p>Verified badge, direct contact, online chat visibility, direct publishing and priority matching.</p>
+          </article>
+          <article class="payment-card">
+            <span class="status">Lawyer premium</span>
+            <h3>Yearly plan</h3>
+            <p class="price">N100,000 <span>/ year</span></p>
+            <p>
+              Includes verified badge, direct contact, online chat visibility, direct publishing, priority matching,
+              preferred directory placement and annual savings.
+            </p>
+          </article>
+          <article class="payment-card">
+            <span class="status">Employers</span>
+            <h3>Job posting</h3>
+            <p class="price">Per post</p>
+            <p>Reviewed job, retainer or opportunity listing with applicant routing and admin support.</p>
+          </article>
+          <article class="payment-card">
+            <span class="status">Advertising</span>
+            <h3>Paid advert</h3>
+            <p class="price">Priority</p>
+            <p>Clearly labelled advert placement with stronger visibility than free reviewed adverts.</p>
+          </article>
+          <article class="payment-card">
+            <span class="status">Featured listing</span>
+            <h3>Featured lawyer</h3>
+            <p class="price">Placement</p>
+            <p>Premium profile placement for lawyers who meet verification and professional content standards.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>LearnedCircle</strong>
+        <p>Legal help, lawyer networking, professional visibility and opportunity exchange.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#lawyers">Find a lawyer</a>
+        <a href="#forum">Forum</a>
+        <a href="#articles">Articles</a>
+        <a href="#guest-blog">Guest blog</a>
+        <a href="#mentorship">Mentorship</a>
+        <a href="#legal-news">Legal news</a>
+        <a href="#classifieds">Post a job</a>
+        <a href="#membership">Membership</a>
+        <a href="trust.html#about">About</a>
+        <a href="trust.html#contact">Contact</a>
+        <a href="trust.html#verification-policy">Verification policy</a>
+        <a href="trust.html#advertise-policy">Advertise with us</a>
+        <a href="legal.html#terms">Terms</a>
+        <a href="legal.html#privacy">Privacy</a>
+        <a href="legal.html#disclaimer">Disclaimer</a>
+      </div>
+      <div class="footer-credit" aria-label="Ownership credit">
+        <span>Powered by Advocati LP</span>
+      </div>
+    </footer>
+
+    <dialog class="action-modal" data-modal>
+      <button class="modal-close" type="button" aria-label="Close" data-close-modal>&times;</button>
+      <div data-modal-content></div>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
