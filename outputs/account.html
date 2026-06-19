@@ -138,6 +138,11 @@
             <p>Articles and drafts linked to your account.</p>
           </article>
           <article class="summary-card">
+            <span class="status">Invoices</span>
+            <strong>0/5</strong>
+            <p>Free monthly invoice allowance.</p>
+          </article>
+          <article class="summary-card">
             <span class="status">Networking</span>
             <strong>0</strong>
             <p>Lawyer follows, mentees and profile activity.</p>
@@ -341,6 +346,80 @@
             <button class="primary-action full-span" type="submit">Publish or submit article</button>
             <p class="form-status full-span" data-article-status hidden></p>
           </form>
+        </article>
+
+        <article class="account-card account-wide" id="invoice-workspace">
+          <div>
+            <p class="eyebrow">Invoice</p>
+            <h3>Create a branded legal-service invoice.</h3>
+            <p>
+              Free plan lawyers can generate up to five invoices per month. Business invoice plan unlocks unlimited
+              invoices, reusable firm branding, download and WhatsApp sharing from the profile dashboard.
+            </p>
+          </div>
+          <div class="invoice-plan-strip" aria-label="Invoice plan options">
+            <article>
+              <span class="status">Free plan</span>
+              <strong>5 invoices / month</strong>
+              <p>For occasional billing and simple consultation invoices.</p>
+            </article>
+            <article>
+              <span class="status">Business plan</span>
+              <strong>Unlimited invoices</strong>
+              <p>For firms and active practitioners who need repeated billing.</p>
+            </article>
+          </div>
+          <form class="account-form lawyer-profile-form" data-invoice-form>
+            <label>
+              Firm name
+              <input name="firmName" type="text" placeholder="e.g. Learned & Co." required />
+            </label>
+            <label>
+              Firm logo URL
+              <input name="firmLogoUrl" type="url" placeholder="https://..." />
+            </label>
+            <label>
+              Invoice number
+              <input name="invoiceNumber" type="text" placeholder="LC-INV-001" required />
+            </label>
+            <label>
+              Invoice date
+              <input name="invoiceDate" type="date" required />
+            </label>
+            <label>
+              Client name
+              <input name="clientName" type="text" placeholder="Client or company name" required />
+            </label>
+            <label>
+              Client WhatsApp number
+              <input name="clientWhatsapp" type="tel" placeholder="e.g. 2348012345678" />
+            </label>
+            <label class="full-span">
+              Firm address or payment details
+              <textarea name="firmDetails" placeholder="Office address, bank details, tax ID or payment instruction."></textarea>
+            </label>
+            <label class="full-span">
+              Matter or service description
+              <textarea name="matter" placeholder="e.g. Legal consultation, contract review, retainer invoice." required></textarea>
+            </label>
+            <label class="full-span">
+              Invoice items
+              <textarea name="lineItems" placeholder="One item per line, for example: Contract review | 50000" required></textarea>
+            </label>
+            <label class="full-span">
+              Notes
+              <textarea name="notes" placeholder="Optional payment terms or professional note."></textarea>
+            </label>
+            <div class="invoice-actions full-span">
+              <button class="primary-action" type="submit">Generate invoice</button>
+              <button class="secondary-action" type="button" data-download-invoice disabled>Download invoice</button>
+              <button class="secondary-action" type="button" data-whatsapp-invoice disabled>Send to WhatsApp</button>
+            </div>
+            <p class="form-status full-span" data-invoice-status hidden></p>
+          </form>
+          <div class="invoice-preview" data-invoice-preview>
+            <p>Invoice preview will appear here after generation.</p>
+          </div>
         </article>
 
         <article class="account-card account-wide" id="lawyer-network">

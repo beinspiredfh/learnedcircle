@@ -23,6 +23,11 @@ const messageRecipient = document.querySelector("[data-message-recipient]");
 const messageList = document.querySelector("[data-message-list]");
 const peerSuggestions = document.querySelector("[data-peer-suggestions]");
 const dashboardSummary = document.querySelector("[data-dashboard-summary]");
+const invoiceForm = document.querySelector("[data-invoice-form]");
+const invoiceStatus = document.querySelector("[data-invoice-status]");
+const invoicePreview = document.querySelector("[data-invoice-preview]");
+const downloadInvoiceButton = document.querySelector("[data-download-invoice]");
+const whatsappInvoiceButton = document.querySelector("[data-whatsapp-invoice]");
 const nigeriaLocationSelects = document.querySelectorAll("[data-nigeria-location-select]");
 
 const nigeriaLocations = [
@@ -67,6 +72,8 @@ const nigeriaLocations = [
 
 let session = readSession();
 let currentProfile = null;
+let currentInvoice = null;
+let lastDashboardSummary = {};
 
 nigeriaLocationSelects.forEach((select) => {
   nigeriaLocations.forEach((location) => {
@@ -136,6 +143,28 @@ function membershipLabel(value) {
   }[value] || value;
 }
 
+function invoiceStorageKey() {
+  const date = new Date();
+  const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  return `learnedcircle_invoice_count_${currentProfile?.id || currentProfile?.email || "guest"}_${month}`;
+}
+
+function getInvoiceCount() {
+  return Number(localStorage.getItem(invoiceStorageKey()) || 0);
+}
+
+function setInvoiceCount(count) {
+  localStorage.setItem(invoiceStorageKey(), String(count));
+}
+
+function hasBusinessInvoiceAccess() {
+  return currentProfile?.membership === "premium_active" || currentProfile?.invoice_plan === "business";
+}
+
+function invoiceAllowanceLabel() {
+  return hasBusinessInvoiceAccess() ? "Unlimited" : `${getInvoiceCount()}/5`;
+}
+
 function renderDashboard(profile, user) {
   currentProfile = profile;
   dashboardTitle.textContent = `Welcome, ${profile.full_name}`;
@@ -157,6 +186,7 @@ function renderDashboard(profile, user) {
 
 function renderDashboardSummary(summary = {}) {
   if (!dashboardSummary) return;
+  lastDashboardSummary = summary;
 
   const verification = summary.lawyerProfile?.verified
     ? "Verified"
@@ -192,11 +222,101 @@ function renderDashboardSummary(summary = {}) {
       <p>${draftCount} draft${draftCount === 1 ? "" : "s"} still waiting for review.</p>
     </article>
     <article class="summary-card">
+      <span class="status">Invoices</span>
+      <strong>${invoiceAllowanceLabel()}</strong>
+      <p>${hasBusinessInvoiceAccess() ? "Business invoice access is active." : "Free plan allows five generated invoices each month."}</p>
+    </article>
+    <article class="summary-card">
       <span class="status">Networking</span>
       <strong>${followers + following}</strong>
       <p>${followers} follower${followers === 1 ? "" : "s"} and ${following} lawyer${following === 1 ? "" : "s"} followed.</p>
     </article>
   `;
+}
+
+function money(value) {
+  return Number(value || 0).toLocaleString("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0
+  });
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function parseInvoiceItems(rawItems) {
+  return rawItems
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [description, amount] = line.split("|").map((part) => part?.trim());
+      const value = Number(String(amount || "0").replace(/[^0-9.]/g, ""));
+      return {
+        description: description || "Legal service",
+        amount: Number.isFinite(value) ? value : 0
+      };
+    });
+}
+
+function invoiceHtml(invoice) {
+  const rows = invoice.items.map((item) => `
+    <tr>
+      <td>${escapeHtml(item.description)}</td>
+      <td>${money(item.amount)}</td>
+    </tr>
+  `).join("");
+
+  return `
+    <article class="invoice-document">
+      <header>
+        <div>
+          ${invoice.firmLogoUrl ? `<img src="${escapeHtml(invoice.firmLogoUrl)}" alt="${escapeHtml(invoice.firmName)} logo" />` : ""}
+          <h2>${escapeHtml(invoice.firmName)}</h2>
+          <p>${escapeHtml(invoice.firmDetails || "Legal services invoice")}</p>
+        </div>
+        <div>
+          <strong>Invoice</strong>
+          <span>${escapeHtml(invoice.invoiceNumber)}</span>
+          <small>${escapeHtml(invoice.invoiceDate)}</small>
+        </div>
+      </header>
+      <section>
+        <h3>Bill to</h3>
+        <p>${escapeHtml(invoice.clientName)}</p>
+        <p>${escapeHtml(invoice.matter)}</p>
+      </section>
+      <table>
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+        <tfoot>
+          <tr>
+            <th>Total</th>
+            <th>${money(invoice.total)}</th>
+          </tr>
+        </tfoot>
+      </table>
+      ${invoice.notes ? `<footer>${escapeHtml(invoice.notes)}</footer>` : ""}
+    </article>
+  `;
+}
+
+function renderInvoice(invoice) {
+  invoicePreview.innerHTML = invoiceHtml(invoice);
+  downloadInvoiceButton.disabled = false;
+  whatsappInvoiceButton.disabled = false;
 }
 
 async function loadDashboardSummary() {
@@ -479,6 +599,98 @@ articleForm.addEventListener("submit", async (event) => {
   }
 });
 
+invoiceForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const formData = new FormData(invoiceForm);
+  const businessAccess = hasBusinessInvoiceAccess();
+  const currentCount = getInvoiceCount();
+
+  if (!businessAccess && currentCount >= 5) {
+    setStatus(invoiceStatus, "Free plan limit reached. Upgrade to Business invoice plan for unlimited invoices.");
+    return;
+  }
+
+  const items = parseInvoiceItems(formData.get("lineItems") || "");
+  const total = items.reduce((sum, item) => sum + item.amount, 0);
+
+  currentInvoice = {
+    firmName: formData.get("firmName"),
+    firmLogoUrl: formData.get("firmLogoUrl"),
+    firmDetails: formData.get("firmDetails"),
+    invoiceNumber: formData.get("invoiceNumber"),
+    invoiceDate: formData.get("invoiceDate"),
+    clientName: formData.get("clientName"),
+    clientWhatsapp: formData.get("clientWhatsapp"),
+    matter: formData.get("matter"),
+    items,
+    total,
+    notes: formData.get("notes")
+  };
+
+  if (!businessAccess) {
+    setInvoiceCount(currentCount + 1);
+  }
+
+  renderInvoice(currentInvoice);
+  renderDashboardSummary(lastDashboardSummary);
+  setStatus(invoiceStatus, businessAccess
+    ? "Invoice generated. Business plan has unlimited monthly invoices."
+    : `Invoice generated. ${5 - getInvoiceCount()} free invoice${5 - getInvoiceCount() === 1 ? "" : "s"} remaining this month.`
+  );
+});
+
+downloadInvoiceButton?.addEventListener("click", () => {
+  if (!currentInvoice) return;
+
+  const documentHtml = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${escapeHtml(currentInvoice.invoiceNumber)} | ${escapeHtml(currentInvoice.firmName)}</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 32px; color: #132620; }
+      .invoice-document { max-width: 760px; margin: 0 auto; }
+      header { display: flex; justify-content: space-between; gap: 24px; border-bottom: 2px solid #b48a45; padding-bottom: 18px; }
+      img { max-width: 84px; max-height: 84px; object-fit: contain; }
+      h2, h3, p { margin: 0 0 8px; }
+      section { margin: 24px 0; }
+      table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+      th, td { border-bottom: 1px solid #d8cebc; padding: 12px; text-align: left; }
+      th:last-child, td:last-child { text-align: right; }
+      tfoot th { font-size: 1.1rem; }
+      footer { margin-top: 22px; color: #5f6b66; }
+      @media print { body { margin: 18mm; } }
+    </style>
+  </head>
+  <body>${invoiceHtml(currentInvoice)}</body>
+</html>`;
+  const blob = new Blob([documentHtml], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${currentInvoice.invoiceNumber || "learnedcircle-invoice"}.html`;
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
+whatsappInvoiceButton?.addEventListener("click", () => {
+  if (!currentInvoice) return;
+
+  const phone = String(currentInvoice.clientWhatsapp || "").replace(/[^0-9]/g, "");
+  const message = [
+    `${currentInvoice.firmName} invoice ${currentInvoice.invoiceNumber}`,
+    `Client: ${currentInvoice.clientName}`,
+    `Matter: ${currentInvoice.matter}`,
+    `Total: ${money(currentInvoice.total)}`,
+    "Please confirm receipt. A downloadable copy can also be sent separately."
+  ].join("\n");
+  const url = phone
+    ? `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+    : `https://wa.me/?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank", "noopener");
+});
+
 messageForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const formData = new FormData(messageForm);
@@ -536,6 +748,10 @@ document.querySelector("[data-logout]").addEventListener("click", () => {
 const initialMode = new URLSearchParams(window.location.search).get("mode");
 if (initialMode === "signup") {
   document.querySelector('[data-auth-tab="signup"]').click();
+}
+
+if (invoiceForm?.elements.invoiceDate) {
+  invoiceForm.elements.invoiceDate.value = new Date().toISOString().slice(0, 10);
 }
 
 loadAccount();

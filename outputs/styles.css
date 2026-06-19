@@ -728,6 +728,115 @@ a {
   color: var(--muted);
 }
 
+.invoice-plan-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.invoice-plan-strip article {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  background: var(--paper-soft);
+}
+
+.invoice-plan-strip strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  color: var(--ink);
+}
+
+.invoice-plan-strip p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.invoice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.invoice-actions button {
+  width: auto;
+  min-width: 180px;
+}
+
+.invoice-preview {
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  background: var(--paper-soft);
+  overflow-x: auto;
+}
+
+.invoice-preview > p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.invoice-document {
+  display: grid;
+  gap: 18px;
+  min-width: 520px;
+  color: var(--ink);
+}
+
+.invoice-document header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 2px solid var(--brass);
+  padding-bottom: 14px;
+}
+
+.invoice-document img {
+  max-width: 72px;
+  max-height: 72px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
+.invoice-document h2,
+.invoice-document h3,
+.invoice-document p {
+  margin: 0;
+}
+
+.invoice-document header div:last-child {
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+}
+
+.invoice-document header strong {
+  font-size: 1.3rem;
+}
+
+.invoice-document table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.invoice-document th,
+.invoice-document td {
+  border-bottom: 1px solid var(--line);
+  padding: 10px;
+  text-align: left;
+}
+
+.invoice-document th:last-child,
+.invoice-document td:last-child {
+  text-align: right;
+}
+
+.invoice-document footer {
+  color: var(--muted);
+}
+
 .peer-suggestions {
   display: grid;
   gap: 8px;
@@ -1648,7 +1757,7 @@ textarea {
 }
 
 .payment-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .membership .eyebrow {
@@ -2058,6 +2167,7 @@ li + li {
   .premium-benefits,
   .account-grid,
   .network-grid,
+  .invoice-plan-strip,
   .lawyer-profile-form {
     grid-template-columns: 1fr;
   }
