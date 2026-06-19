@@ -224,7 +224,7 @@ function renderDashboardSummary(summary = {}) {
     <article class="summary-card">
       <span class="status">Invoices</span>
       <strong>${invoiceAllowanceLabel()}</strong>
-      <p>${hasBusinessInvoiceAccess() ? "Business invoice access is active." : "Free plan allows five generated invoices each month."}</p>
+      <p>${hasBusinessInvoiceAccess() ? "Premium includes unlimited branded invoices." : "Free registration allows five generated invoices each month."}</p>
     </article>
     <article class="summary-card">
       <span class="status">Networking</span>
@@ -606,7 +606,7 @@ invoiceForm?.addEventListener("submit", (event) => {
   const currentCount = getInvoiceCount();
 
   if (!businessAccess && currentCount >= 5) {
-    setStatus(invoiceStatus, "Free plan limit reached. Upgrade to Business invoice plan for unlimited invoices.");
+    setStatus(invoiceStatus, "Free registration invoice limit reached. Upgrade to premium for unlimited branded invoices.");
     return;
   }
 
@@ -634,7 +634,7 @@ invoiceForm?.addEventListener("submit", (event) => {
   renderInvoice(currentInvoice);
   renderDashboardSummary(lastDashboardSummary);
   setStatus(invoiceStatus, businessAccess
-    ? "Invoice generated. Business plan has unlimited monthly invoices."
+    ? "Invoice generated. Premium membership includes unlimited monthly invoices."
     : `Invoice generated. ${5 - getInvoiceCount()} free invoice${5 - getInvoiceCount() === 1 ? "" : "s"} remaining this month.`
   );
 });
