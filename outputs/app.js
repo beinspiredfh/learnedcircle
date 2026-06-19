@@ -1029,7 +1029,7 @@ function modalTemplate(type, context = {}) {
     },
     job: {
       title: "Post an opportunity",
-      copy: "Create an account to submit legal jobs, retainers, referral briefs or outsourced legal work. Free listings go to admin review before publication. Verified premium accounts can publish faster, feature listings and receive direct replies.",
+      copy: "Create an account to submit legal jobs, retainers, referral briefs or outsourced legal work. Free listings go to admin review before publication. Verified lawyers with active premium access can publish faster, feature listings and receive direct replies.",
       fields: ["Account email", "Organization", "Role or opportunity", "Practice area", "Location", "Budget or fee range", "Brief description"],
       moderationType: "Opportunity draft"
     },
@@ -1078,8 +1078,8 @@ function modalTemplate(type, context = {}) {
     },
     upgrade: {
       title: "Upgrade lawyer account",
-      copy: "Start the premium verification flow for direct posting, direct client contact, featured profile placement, online lawyer chat and secure file intake.",
-      fields: ["Full name", "Email address", "NBA branch or professional body", "Primary practice areas", "Verification note"],
+      copy: "Request premium access for direct posting, direct client contact, featured profile placement, online lawyer chat and secure file intake. Verification remains separate and requires admin review of SCN and lawyer profile details.",
+      fields: ["Full name", "Email address", "SCN", "NBA branch or professional body", "Primary practice areas", "Verification note"],
       moderationType: "Premium lawyer upgrade request"
     },
     advertise: {
