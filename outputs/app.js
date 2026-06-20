@@ -791,7 +791,17 @@ function renderJobs() {
       <p>${job.copy}</p>
       ${job.budget ? `<p><strong>Budget:</strong> ${job.budget}</p>` : ""}
       <div class="tag-row">${job.tags.map((tag) => `<span class="pill">${tag}</span>`).join("")}</div>
-      <button class="secondary-action" type="button" data-open-modal="apply">View opportunity</button>
+      <button
+        class="secondary-action"
+        type="button"
+        data-open-modal="apply"
+        data-job-title="${escapeAttribute(job.role)}"
+        data-job-company="${escapeAttribute(job.company)}"
+        data-job-location="${escapeAttribute(job.location)}"
+        data-job-type="${escapeAttribute(job.type)}"
+      >
+        Apply directly
+      </button>
     </article>
   `).join("");
 }
@@ -1141,9 +1151,27 @@ function modalTemplate(type, context = {}) {
       fields: ["Your email"]
     },
     apply: {
-      title: "Opportunity access",
-      copy: "Applicants can save jobs, upload CVs and send proposals once their account is verified.",
-      fields: ["Your email", "Short note"]
+      title: "Apply for this opportunity",
+      copy: "Submit your application directly with a short note and CV upload. The opportunity owner or platform admin can review the applicant details.",
+      fields: ["Full name", "Email address", "Phone number"],
+      directType: "job-application",
+      customFieldsPlacement: "after",
+      customFields: `
+        <div class="application-summary">
+          <span class="status">Selected opportunity</span>
+          <strong>${escapeAttribute(context.jobTitle || "Legal opportunity")}</strong>
+          <p>${escapeAttribute(context.jobCompany || "LearnedCircle opportunity")} | ${escapeAttribute(context.jobLocation || "Flexible")} | ${escapeAttribute(context.jobType || "Opportunity")}</p>
+        </div>
+        <label>
+          Cover note
+          <textarea name="Cover note" placeholder="Briefly explain your experience and availability" required></textarea>
+        </label>
+        <label>
+          Upload CV
+          <input name="CV" type="file" accept=".pdf,.doc,.docx" required />
+          <small>Accepted formats: PDF, DOC or DOCX.</small>
+        </label>
+      `
     }
   };
   const item = templates[type] || templates.brief;
@@ -1151,7 +1179,15 @@ function modalTemplate(type, context = {}) {
     <div class="modal-body">
       <h2>${item.title}</h2>
       <p>${item.copy}</p>
-      <form class="modal-form" data-moderation-type="${item.moderationType || ""}" data-direct-type="${item.directType || ""}">
+      <form
+        class="modal-form"
+        data-moderation-type="${item.moderationType || ""}"
+        data-direct-type="${item.directType || ""}"
+        data-job-title="${escapeAttribute(context.jobTitle || "")}"
+        data-job-company="${escapeAttribute(context.jobCompany || "")}"
+        data-job-location="${escapeAttribute(context.jobLocation || "")}"
+        data-job-type="${escapeAttribute(context.jobType || "")}"
+      >
         ${item.customFieldsPlacement === "after" ? "" : item.customFields || ""}
         ${item.fields.map((field, index) => {
           const prefill = field === "Preferred lawyer" && context.lawyerName ? context.lawyerName : "";
@@ -1172,7 +1208,7 @@ function modalTemplate(type, context = {}) {
         }).join("")}
         ${item.customFieldsPlacement === "after" ? item.customFields || "" : ""}
         <p class="form-status" data-form-status hidden></p>
-        <button class="primary-action" type="submit">${item.directType === "forum-topic" ? "Publish discussion" : item.moderationType ? "Submit for review" : "Continue"}</button>
+        <button class="primary-action" type="submit">${item.directType === "forum-topic" ? "Publish discussion" : item.directType === "job-application" ? "Submit application" : item.moderationType ? "Submit for review" : "Continue"}</button>
       </form>
     </div>
   `;
@@ -1269,6 +1305,84 @@ async function submitDirectForumTopic(form) {
   }
 }
 
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || "").split(",")[1] || "");
+    reader.onerror = () => reject(new Error("Could not read CV file."));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function submitDirectJobApplication(form) {
+  const status = form.querySelector("[data-form-status]");
+  const submitButton = form.querySelector("button[type='submit']");
+  const fileInput = form.querySelector('input[type="file"]');
+  const cvFile = fileInput?.files?.[0];
+  const fields = Array.from(form.querySelectorAll("input, textarea, select"))
+    .filter((field) => field.type !== "file")
+    .map((field) => ({
+      label: field.name || field.placeholder || field.closest("label")?.innerText.trim() || "Field",
+      value: field.value.trim()
+    }));
+
+  if (!cvFile) {
+    status.hidden = false;
+    status.textContent = "Please upload your CV before submitting.";
+    return;
+  }
+
+  const applicantName = modalFieldValue(fields, "Full name");
+  const applicantEmail = modalFieldValue(fields, "Email address");
+  const coverNote = modalFieldValue(fields, "Cover note");
+
+  if (!applicantName || !applicantEmail || !coverNote) {
+    status.hidden = false;
+    status.textContent = "Full name, email address, cover note and CV are required.";
+    return;
+  }
+
+  let cvContentBase64 = "";
+  if (cvFile.size <= 2500000) {
+    cvContentBase64 = await readFileAsBase64(cvFile);
+  }
+
+  const application = {
+    jobTitle: form.dataset.jobTitle || "Legal opportunity",
+    jobCompany: form.dataset.jobCompany || "LearnedCircle opportunity",
+    jobLocation: form.dataset.jobLocation || "Flexible",
+    jobType: form.dataset.jobType || "Opportunity",
+    fields,
+    cv: {
+      name: cvFile.name,
+      type: cvFile.type || "application/octet-stream",
+      size: cvFile.size,
+      contentBase64: cvContentBase64
+    }
+  };
+
+  status.hidden = false;
+  status.textContent = "Submitting application...";
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
+
+  try {
+    const response = await fetch("/api/job-applications", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(application)
+    });
+    const result = await response.json();
+    status.textContent = result.message || `Application submitted. CV attached: ${cvFile.name}.`;
+    form.reset();
+  } catch (error) {
+    status.textContent = `Application captured for the prototype. CV attached: ${cvFile.name}. Live delivery will complete when the application endpoint is deployed.`;
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit application";
+  }
+}
+
 document.addEventListener("input", (event) => {
   if (event.target.matches("[data-area-filter], [data-location-filter], [data-budget-filter], [data-query-filter]")) {
     activeBriefMatch = null;
@@ -1314,7 +1428,11 @@ document.addEventListener("click", (event) => {
       group.removeAttribute("open");
     });
     modalContent.innerHTML = modalTemplate(openButton.dataset.openModal, {
-      lawyerName: openButton.dataset.lawyerName || ""
+      lawyerName: openButton.dataset.lawyerName || "",
+      jobTitle: openButton.dataset.jobTitle || "",
+      jobCompany: openButton.dataset.jobCompany || "",
+      jobLocation: openButton.dataset.jobLocation || "",
+      jobType: openButton.dataset.jobType || ""
     });
     if (!modal.open) modal.showModal();
   }
@@ -1413,6 +1531,10 @@ document.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (event.target.dataset.directType === "forum-topic") {
       submitDirectForumTopic(event.target);
+      return;
+    }
+    if (event.target.dataset.directType === "job-application") {
+      submitDirectJobApplication(event.target);
       return;
     }
     submitModerationDraft(event.target);

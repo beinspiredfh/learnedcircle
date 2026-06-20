@@ -1985,6 +1985,32 @@ li + li {
   margin-top: 4px;
 }
 
+.application-summary {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  background: var(--paper-soft);
+}
+
+.application-summary strong {
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+
+.application-summary p,
+.modal-form small {
+  margin: 0;
+  color: var(--muted);
+}
+
+.modal-form input[type="file"] {
+  padding: 14px;
+  background: var(--paper-soft);
+  cursor: pointer;
+}
+
 .option-choice span {
   display: grid;
   gap: 4px;
