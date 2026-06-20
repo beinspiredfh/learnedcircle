@@ -26,6 +26,8 @@ const dashboardSummary = document.querySelector("[data-dashboard-summary]");
 const invoiceForm = document.querySelector("[data-invoice-form]");
 const invoiceStatus = document.querySelector("[data-invoice-status]");
 const invoicePreview = document.querySelector("[data-invoice-preview]");
+const invoiceAllowance = document.querySelector("[data-invoice-allowance]");
+const generateInvoiceButton = invoiceForm?.querySelector('button[type="submit"]');
 const downloadInvoiceButton = document.querySelector("[data-download-invoice]");
 const whatsappInvoiceButton = document.querySelector("[data-whatsapp-invoice]");
 const nigeriaLocationSelects = document.querySelectorAll("[data-nigeria-location-select]");
@@ -165,6 +167,33 @@ function invoiceAllowanceLabel() {
   return hasBusinessInvoiceAccess() ? "Unlimited" : `${getInvoiceCount()}/5`;
 }
 
+function freeInvoiceRemaining() {
+  return Math.max(0, 5 - getInvoiceCount());
+}
+
+function updateInvoiceAccessUi() {
+  if (!invoiceForm) return;
+
+  const businessAccess = hasBusinessInvoiceAccess();
+  const remaining = freeInvoiceRemaining();
+
+  if (invoiceAllowance) {
+    invoiceAllowance.hidden = false;
+    invoiceAllowance.textContent = businessAccess
+      ? "Premium plan: unlimited branded invoices are available."
+      : `Free plan: ${remaining} of 5 invoice${remaining === 1 ? "" : "s"} remaining this month.`;
+  }
+
+  if (generateInvoiceButton) {
+    generateInvoiceButton.disabled = !businessAccess && remaining === 0;
+    generateInvoiceButton.textContent = businessAccess
+      ? "Generate invoice"
+      : remaining === 0
+        ? "Free limit reached"
+        : `Generate invoice (${remaining} free left)`;
+  }
+}
+
 function renderDashboard(profile, user) {
   currentProfile = profile;
   dashboardTitle.textContent = `Welcome, ${profile.full_name}`;
@@ -180,6 +209,7 @@ function renderDashboard(profile, user) {
   profileForm.elements.role.value = profile.role || "client";
   authPanel.hidden = true;
   dashboard.hidden = false;
+  updateInvoiceAccessUi();
   loadDashboardSummary();
   loadMessageCenter();
 }
@@ -607,6 +637,7 @@ invoiceForm?.addEventListener("submit", (event) => {
 
   if (!businessAccess && currentCount >= 5) {
     setStatus(invoiceStatus, "Free registration invoice limit reached. Upgrade to premium for unlimited branded invoices.");
+    updateInvoiceAccessUi();
     return;
   }
 
@@ -633,6 +664,7 @@ invoiceForm?.addEventListener("submit", (event) => {
 
   renderInvoice(currentInvoice);
   renderDashboardSummary(lastDashboardSummary);
+  updateInvoiceAccessUi();
   setStatus(invoiceStatus, businessAccess
     ? "Invoice generated. Premium membership includes unlimited monthly invoices."
     : `Invoice generated. ${5 - getInvoiceCount()} free invoice${5 - getInvoiceCount() === 1 ? "" : "s"} remaining this month.`
@@ -754,4 +786,5 @@ if (invoiceForm?.elements.invoiceDate) {
   invoiceForm.elements.invoiceDate.value = new Date().toISOString().slice(0, 10);
 }
 
+updateInvoiceAccessUi();
 loadAccount();
