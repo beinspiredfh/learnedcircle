@@ -3,6 +3,7 @@ const SESSION_KEY = "learnedcircle_session";
 const authPanel = document.querySelector("[data-auth-panel]");
 const dashboard = document.querySelector("[data-dashboard]");
 const dashboardTitle = document.querySelector("[data-dashboard-title]");
+const membershipBanner = document.querySelector("[data-membership-banner]");
 const accountFacts = document.querySelector("[data-account-facts]");
 const loginForm = document.querySelector("[data-login-form]");
 const signupForm = document.querySelector("[data-signup-form]");
@@ -145,6 +146,22 @@ function membershipLabel(value) {
   }[value] || value;
 }
 
+function membershipTone(value) {
+  if (value === "premium_active") return "premium";
+  if (value === "premium_pending") return "pending";
+  return "free";
+}
+
+function membershipBenefitText(value) {
+  if (value === "premium_active") {
+    return "Premium benefits active: direct client contact, online visibility, direct publishing, priority matching and unlimited branded invoices.";
+  }
+  if (value === "premium_pending") {
+    return "Premium request pending review. Benefits activate after payment and admin approval.";
+  }
+  return "Free account: public access, reviewed posts and five invoices per month. Premium unlocks direct contact, visibility and unlimited branded invoices.";
+}
+
 function invoiceStorageKey() {
   const date = new Date();
   const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
@@ -196,15 +213,32 @@ function updateInvoiceAccessUi() {
 
 function renderDashboard(profile, user) {
   currentProfile = profile;
+  const membership = profile.membership || "free";
   dashboardTitle.textContent = `Welcome, ${profile.full_name}`;
+  if (membershipBanner) {
+    membershipBanner.className = `membership-banner ${membershipTone(membership)}`;
+    membershipBanner.textContent = `${membershipLabel(membership)} - ${membershipBenefitText(membership)}`;
+  }
   accountFacts.innerHTML = `
     <dt>Email</dt>
     <dd>${user.email}</dd>
     <dt>Role</dt>
     <dd>${roleLabel(profile.role)}</dd>
     <dt>Membership</dt>
-    <dd>${membershipLabel(profile.membership)}</dd>
+    <dd><span class="membership-pill ${membershipTone(membership)}">${membershipLabel(membership)}</span></dd>
   `;
+  document.querySelectorAll("[data-premium-request]").forEach((button) => {
+    if (membership === "premium_active") {
+      button.disabled = true;
+      button.textContent = "Premium active";
+    } else if (membership === "premium_pending") {
+      button.disabled = true;
+      button.textContent = "Premium pending review";
+    } else {
+      button.disabled = false;
+      button.textContent = "Request premium review";
+    }
+  });
   profileForm.elements.fullName.value = profile.full_name || "";
   profileForm.elements.role.value = profile.role || "client";
   authPanel.hidden = true;
@@ -237,9 +271,9 @@ function renderDashboardSummary(summary = {}) {
       <p>${summary.lawyerProfile?.displayName || "Submit or update your lawyer profile for admin review."}</p>
     </article>
     <article class="summary-card">
-      <span class="status">Membership</span>
+      <span class="status ${membershipTone(currentProfile?.membership || "free")}">Membership</span>
       <strong>${membership}</strong>
-      <p>Premium unlocks direct posting, client contact and stronger profile visibility.</p>
+      <p>${membershipBenefitText(currentProfile?.membership || "free")}</p>
     </article>
     <article class="summary-card">
       <span class="status">Messages</span>
