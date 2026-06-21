@@ -613,6 +613,7 @@ module.exports = async function handler(request, response) {
       return;
     }
 
+    const profile = await loadProfile(user.id);
     const article = body.article || {};
     const articleFile = article.articleFile || null;
     const articleDraft = {
@@ -642,7 +643,7 @@ module.exports = async function handler(request, response) {
     );
     const lawyerProfiles = await lawyerResponse.json();
 
-    if (lawyerResponse.ok && lawyerProfiles[0]) {
+    if (profile?.membership === "premium_active" && lawyerResponse.ok && lawyerProfiles[0]) {
       const publishResponse = await supabaseServiceFetch("/rest/v1/articles", {
         method: "POST",
         headers: { Prefer: "return=representation" },
