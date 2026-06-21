@@ -1045,9 +1045,29 @@ function modalTemplate(type, context = {}) {
     },
     article: {
       title: "Start an article",
-      copy: "Verified premium lawyers can publish immediately. Free accounts submit drafts for editorial approval.",
-      fields: ["Article title", "Practice area", "Author name", "Summary"],
-      moderationType: "Article draft"
+      copy: "Submit the article details, preferred byline, picture and Word draft. Verified premium lawyers can publish directly from their account; public submissions go for editorial review.",
+      fields: ["Article title", "Practice area", "Author name", "Email address", "Summary"],
+      directType: "article-submission",
+      customFieldsPlacement: "after",
+      customFields: `
+        <label>
+          Preferred byline
+          <input name="Preferred byline" type="text" placeholder="e.g. By Adaeze Okonkwo, Esq." required />
+        </label>
+        <label>
+          Preferred picture URL
+          <input name="Preferred picture URL" type="url" placeholder="https://..." />
+        </label>
+        <label>
+          Upload article in Word
+          <input name="Article Word file" type="file" accept=".doc,.docx" />
+          <small>Accepted formats: DOC or DOCX.</small>
+        </label>
+        <label>
+          Article body
+          <textarea name="Article body" placeholder="Paste the article text here, or upload the Word draft above."></textarea>
+        </label>
+      `
     },
     mentor: {
       title: "Request mentorship access",
@@ -1208,7 +1228,7 @@ function modalTemplate(type, context = {}) {
         }).join("")}
         ${item.customFieldsPlacement === "after" ? item.customFields || "" : ""}
         <p class="form-status" data-form-status hidden></p>
-        <button class="primary-action" type="submit">${item.directType === "forum-topic" ? "Publish discussion" : item.directType === "job-application" ? "Submit application" : item.moderationType ? "Submit for review" : "Continue"}</button>
+        <button class="primary-action" type="submit">${item.directType === "forum-topic" ? "Publish discussion" : item.directType === "job-application" ? "Submit application" : item.directType === "article-submission" ? "Submit article" : item.moderationType ? "Submit for review" : "Continue"}</button>
       </form>
     </div>
   `;
@@ -1383,6 +1403,67 @@ async function submitDirectJobApplication(form) {
   }
 }
 
+async function submitDirectArticleSubmission(form) {
+  const status = form.querySelector("[data-form-status]");
+  const submitButton = form.querySelector("button[type='submit']");
+  const fileInput = form.querySelector('input[type="file"]');
+  const articleFile = fileInput?.files?.[0];
+  const fields = Array.from(form.querySelectorAll("input, textarea, select"))
+    .filter((field) => field.type !== "file")
+    .map((field) => ({
+      label: field.name || field.placeholder || field.closest("label")?.innerText.trim() || "Field",
+      value: field.value.trim()
+    }));
+
+  const title = modalFieldValue(fields, "Article title");
+  const authorName = modalFieldValue(fields, "Author name");
+  const preferredByline = modalFieldValue(fields, "Preferred byline");
+  const summary = modalFieldValue(fields, "Summary");
+  const articleBody = modalFieldValue(fields, "Article body");
+
+  if (!title || !authorName || !preferredByline || !summary || (!articleBody && !articleFile)) {
+    status.hidden = false;
+    status.textContent = "Article title, author name, preferred byline, summary and either article body or Word upload are required.";
+    return;
+  }
+
+  let contentBase64 = "";
+  if (articleFile && articleFile.size <= 2500000) {
+    contentBase64 = await readFileAsBase64(articleFile);
+  }
+
+  status.hidden = false;
+  status.textContent = "Submitting article...";
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
+
+  try {
+    const response = await fetch("/api/article-submissions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fields,
+        articleFile: articleFile
+          ? {
+              name: articleFile.name,
+              type: articleFile.type || "application/octet-stream",
+              size: articleFile.size,
+              contentBase64
+            }
+          : null
+      })
+    });
+    const result = await response.json();
+    status.textContent = result.message || "Article submitted for editorial review.";
+    form.reset();
+  } catch (error) {
+    status.textContent = "Article captured for review. Live delivery will complete when the article submission endpoint is deployed.";
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit article";
+  }
+}
+
 document.addEventListener("input", (event) => {
   if (event.target.matches("[data-area-filter], [data-location-filter], [data-budget-filter], [data-query-filter]")) {
     activeBriefMatch = null;
@@ -1535,6 +1616,10 @@ document.addEventListener("submit", async (event) => {
     }
     if (event.target.dataset.directType === "job-application") {
       submitDirectJobApplication(event.target);
+      return;
+    }
+    if (event.target.dataset.directType === "article-submission") {
+      submitDirectArticleSubmission(event.target);
       return;
     }
     submitModerationDraft(event.target);

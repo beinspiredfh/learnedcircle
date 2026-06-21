@@ -155,7 +155,8 @@ async function notifyModeration(payload = {}) {
       from: process.env.MODERATION_FROM_EMAIL || "LearnedCircle <onboarding@resend.dev>",
       to: [moderationEmail],
       subject,
-      html
+      html,
+      attachments: payload.attachments || []
     })
   }).catch(() => null);
 }
@@ -613,13 +614,21 @@ module.exports = async function handler(request, response) {
     }
 
     const article = body.article || {};
+    const articleFile = article.articleFile || null;
     const articleDraft = {
       author_id: user.id,
       title: cleanText(article.title),
       practice_area: cleanText(article.practiceArea),
       summary: cleanText(article.summary),
-      body: cleanText(article.body),
+      body: cleanText(article.body || (articleFile?.name ? `Article uploaded as ${articleFile.name} for editorial processing.` : "")),
       byline: cleanText(article.byline),
+      writer_picture_url: cleanText(article.writerPictureUrl, 500),
+      article_file: articleFile ? {
+        name: cleanText(articleFile.name, 240),
+        type: cleanText(articleFile.type, 120),
+        size: Number(articleFile.size || 0),
+        contentBase64: cleanText(articleFile.contentBase64, 3500000)
+      } : null,
       status: "pending_review"
     };
 
@@ -638,7 +647,11 @@ module.exports = async function handler(request, response) {
         method: "POST",
         headers: { Prefer: "return=representation" },
         body: JSON.stringify({
-          ...articleDraft,
+          author_id: articleDraft.author_id,
+          title: articleDraft.title,
+          practice_area: articleDraft.practice_area,
+          summary: articleDraft.summary,
+          body: articleDraft.body,
           byline: articleDraft.byline || `By ${lawyerProfiles[0].display_name}`,
           status: "approved"
         })
@@ -671,9 +684,17 @@ module.exports = async function handler(request, response) {
             { label: "Article title", value: articleDraft.title },
             { label: "Practice area", value: articleDraft.practice_area },
             { label: "Byline", value: articleDraft.byline },
+            { label: "Preferred picture URL", value: articleDraft.writer_picture_url || "Not provided" },
             { label: "Summary", value: articleDraft.summary },
-            { label: "Article body", value: articleDraft.body }
+            { label: "Article body", value: articleDraft.body },
+            { label: "Word article file", value: articleDraft.article_file?.name || "Not uploaded" }
           ],
+          article_file: articleDraft.article_file ? {
+            name: articleDraft.article_file.name,
+            type: articleDraft.article_file.type,
+            size: articleDraft.article_file.size,
+            attached_to_email: Boolean(articleDraft.article_file.contentBase64)
+          } : null,
           received_at: new Date().toISOString()
         },
         status: "pending_review"
@@ -693,8 +714,13 @@ module.exports = async function handler(request, response) {
         { label: "Article title", value: articleDraft.title },
         { label: "Practice area", value: articleDraft.practice_area },
         { label: "Byline", value: articleDraft.byline },
-        { label: "Summary", value: articleDraft.summary }
-      ]
+        { label: "Preferred picture URL", value: articleDraft.writer_picture_url || "Not provided" },
+        { label: "Summary", value: articleDraft.summary },
+        { label: "Word article file", value: articleDraft.article_file?.name || "Not uploaded" }
+      ],
+      attachments: articleDraft.article_file?.contentBase64
+        ? [{ filename: articleDraft.article_file.name, content: articleDraft.article_file.contentBase64 }]
+        : []
     });
 
     response.status(200).json({

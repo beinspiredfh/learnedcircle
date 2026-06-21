@@ -337,13 +337,22 @@
               Byline
               <input name="byline" type="text" placeholder="e.g. By Adaeze Okonkwo, Esq." required />
             </label>
+            <label>
+              Preferred picture URL
+              <input name="writerPictureUrl" type="url" placeholder="https://..." />
+            </label>
+            <label>
+              Upload article in Word
+              <input name="articleFile" type="file" accept=".doc,.docx" />
+              <small>Accepted formats: DOC or DOCX.</small>
+            </label>
             <label class="full-span">
               Summary
               <textarea name="summary" placeholder="Short summary for the article card." required></textarea>
             </label>
             <label class="full-span">
               Article body
-              <textarea name="body" placeholder="Paste or draft the article text here." required></textarea>
+              <textarea name="body" placeholder="Paste or draft the article text here, or upload the Word draft above."></textarea>
             </label>
             <button class="primary-action full-span" type="submit">Publish or submit article</button>
             <p class="form-status full-span" data-article-status hidden></p>

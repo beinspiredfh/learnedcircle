@@ -383,6 +383,15 @@ function renderInvoice(invoice) {
   whatsappInvoiceButton.disabled = false;
 }
 
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || "").split(",")[1] || "");
+    reader.onerror = () => reject(new Error("Could not read file."));
+    reader.readAsDataURL(file);
+  });
+}
+
 async function loadDashboardSummary() {
   if (!session?.access_token) return;
 
@@ -642,7 +651,25 @@ jobPostForm.addEventListener("submit", async (event) => {
 articleForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const formData = new FormData(articleForm);
+  const articleFile = articleForm.elements.articleFile?.files?.[0];
+  const articleBody = String(formData.get("body") || "").trim();
+
+  if (!articleBody && !articleFile) {
+    setStatus(articleStatus, "Article body or Word upload is required.");
+    return;
+  }
+
   setStatus(articleStatus, "Publishing or submitting article...");
+
+  let articleFilePayload = null;
+  if (articleFile) {
+    articleFilePayload = {
+      name: articleFile.name,
+      type: articleFile.type || "application/octet-stream",
+      size: articleFile.size,
+      contentBase64: articleFile.size <= 2500000 ? await readFileAsBase64(articleFile) : ""
+    };
+  }
 
   try {
     const result = await accountRequest({
@@ -652,8 +679,10 @@ articleForm.addEventListener("submit", async (event) => {
         title: formData.get("title"),
         practiceArea: formData.get("practiceArea"),
         byline: formData.get("byline"),
+        writerPictureUrl: formData.get("writerPictureUrl"),
         summary: formData.get("summary"),
-        body: formData.get("body")
+        body: formData.get("body"),
+        articleFile: articleFilePayload
       }
     });
     setStatus(articleStatus, result.message);
