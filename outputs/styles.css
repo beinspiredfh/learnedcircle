@@ -1233,6 +1233,21 @@ textarea {
   color: var(--muted);
 }
 
+.premium-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  border: 1px solid rgba(180, 138, 69, 0.62);
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: var(--brass);
+  color: var(--ink);
+  font-size: 0.64rem;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 .avatar {
   display: grid;
   width: 52px;
@@ -1315,6 +1330,173 @@ textarea {
 .launch-trust,
 .payment-section {
   background: var(--paper-soft);
+}
+
+.ai-assistant-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  gap: clamp(18px, 4vw, 34px);
+  align-items: stretch;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: clamp(28px, 6vw, 72px) clamp(18px, 4vw, 54px);
+  background:
+    linear-gradient(135deg, rgba(19, 38, 32, 0.96), rgba(52, 81, 95, 0.9)),
+    var(--ink);
+  color: var(--paper-soft);
+}
+
+.ai-assistant-copy {
+  display: grid;
+  align-content: center;
+  gap: 16px;
+  max-width: 780px;
+}
+
+.ai-assistant-copy h2 {
+  max-width: 780px;
+  margin: 0;
+  color: var(--white);
+  font-size: clamp(2.1rem, 5vw, 4.7rem);
+  line-height: 0.98;
+}
+
+.ai-assistant-copy p:not(.eyebrow) {
+  max-width: 720px;
+  margin: 0;
+  color: rgba(251, 250, 246, 0.78);
+  font-size: clamp(1rem, 1.9vw, 1.25rem);
+}
+
+.ai-disclaimer {
+  display: grid;
+  gap: 6px;
+  border: 1px solid rgba(180, 138, 69, 0.46);
+  border-radius: var(--radius);
+  padding: 14px;
+  background: rgba(180, 138, 69, 0.12);
+  color: var(--paper-soft);
+}
+
+.ai-disclaimer strong {
+  color: var(--brass);
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ai-disclaimer span {
+  color: rgba(251, 250, 246, 0.82);
+  font-size: 0.95rem;
+}
+
+.ai-disclaimer.compact {
+  margin: 10px 0;
+  background: rgba(180, 138, 69, 0.08);
+  color: var(--ink);
+}
+
+.ai-disclaimer.compact span {
+  color: var(--muted);
+}
+
+.ai-assistant-preview {
+  display: grid;
+  align-items: center;
+}
+
+.assistant-window {
+  display: grid;
+  gap: 14px;
+  border: 1px solid rgba(245, 241, 232, 0.24);
+  border-radius: var(--radius);
+  padding: 18px;
+  background: rgba(251, 250, 246, 0.96);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+}
+
+.assistant-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.assistant-header small {
+  margin-left: auto;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.assistant-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--brass);
+  box-shadow: 0 0 0 5px rgba(180, 138, 69, 0.16);
+}
+
+.assistant-message {
+  max-width: 92%;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  color: var(--ink-2);
+}
+
+.assistant-message-user {
+  justify-self: end;
+  background: rgba(52, 81, 95, 0.12);
+}
+
+.assistant-message-bot {
+  justify-self: start;
+  background: var(--paper);
+}
+
+.assistant-result {
+  display: grid;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.assistant-result section {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  background: var(--paper-soft);
+}
+
+.assistant-result h3 {
+  margin: 0;
+  color: var(--ink);
+}
+
+.assistant-result p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.assistant-result ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.assistant-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.assistant-consent {
+  margin-top: 4px;
 }
 
 .trust-card-grid,
@@ -2049,6 +2231,13 @@ li + li {
   color: var(--muted);
 }
 
+.optional-label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: none;
+}
+
 .modal-form input[type="file"] {
   padding: 14px;
   background: var(--paper-soft);
@@ -2134,6 +2323,7 @@ li + li {
   .workspace,
   .split-section,
   .action-band,
+  .ai-assistant-section,
   .payment-grid,
   .membership {
     grid-template-columns: 1fr;
@@ -2272,6 +2462,7 @@ li + li {
   .workspace,
   .section-band,
   .split-section,
+  .ai-assistant-section,
   .community-hub,
   .mentorship-section,
   .action-band,

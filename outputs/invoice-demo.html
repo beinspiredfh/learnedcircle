@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Invoice demo | LearnedCircle</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="LearnedCircle home">
+        <span class="brand-mark">LC</span>
+        <span>
+          <strong>LearnedCircle</strong>
+          <small>invoice workspace demo</small>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="Demo navigation">
+        <a href="account.html">Account</a>
+        <a href="index.html#payment-plans">Premium</a>
+      </nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="account-card account-wide" id="invoice-workspace">
+        <div>
+          <p class="eyebrow">Invoice</p>
+          <h1>Create a branded legal-service invoice.</h1>
+          <p>
+            This is how the lawyer dashboard invoice tool will look. Free registration can generate five invoices per
+            month; premium membership unlocks unlimited branded invoices.
+          </p>
+          <p class="form-status invoice-allowance" data-invoice-allowance>
+            Free plan: 5 of 5 invoices remaining this month.
+          </p>
+        </div>
+
+        <div class="invoice-plan-strip" aria-label="Invoice plan options">
+          <article>
+            <span class="status">Free plan</span>
+            <strong>5 invoices / month</strong>
+            <p>Good for occasional billing and simple consultation invoices.</p>
+          </article>
+          <article>
+            <span class="status">Premium</span>
+            <strong>Unlimited invoices</strong>
+            <p>Included with premium membership for active lawyers and firms.</p>
+          </article>
+        </div>
+
+        <form class="account-form lawyer-profile-form" data-invoice-demo-form>
+          <label>
+            Firm name
+            <input name="firmName" type="text" value="Adewale & Partners" required />
+          </label>
+          <label>
+            Firm logo URL
+            <input name="firmLogoUrl" type="url" placeholder="https://..." />
+          </label>
+          <label>
+            Invoice number
+            <input name="invoiceNumber" type="text" value="LC-INV-001" required />
+          </label>
+          <label>
+            Invoice date
+            <input name="invoiceDate" type="date" required />
+          </label>
+          <label>
+            Client name
+            <input name="clientName" type="text" value="Oakridge Holdings Ltd" required />
+          </label>
+          <label>
+            Client WhatsApp number
+            <input name="clientWhatsapp" type="tel" value="2348012345678" />
+          </label>
+          <label class="full-span">
+            Firm address or payment details
+            <textarea name="firmDetails">12 Marina Road, Lagos. Bank: LearnedCircle Demo Bank. Account: 0000000000.</textarea>
+          </label>
+          <label class="full-span">
+            Matter or service description
+            <textarea name="matter" required>Corporate advisory and contract review for supplier agreement.</textarea>
+          </label>
+          <label class="full-span">
+            Invoice items
+            <textarea name="lineItems" required>Initial consultation | 50000
+Contract review | 150000
+Regulatory advisory note | 100000</textarea>
+          </label>
+          <label class="full-span">
+            Notes
+            <textarea name="notes">Payment due within 7 days. This demo invoice is for preview only.</textarea>
+          </label>
+          <div class="invoice-actions full-span">
+            <button class="primary-action" type="submit" data-generate-invoice>Generate invoice (5 free left)</button>
+            <button class="secondary-action" type="button" data-download-invoice disabled>Download invoice</button>
+            <button class="secondary-action" type="button" data-whatsapp-invoice disabled>Send to WhatsApp</button>
+          </div>
+          <p class="form-status full-span" data-invoice-status hidden></p>
+        </form>
+
+        <div class="invoice-preview" data-invoice-preview>
+          <p>Invoice preview will appear here after generation.</p>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const form = document.querySelector("[data-invoice-demo-form]");
+      const preview = document.querySelector("[data-invoice-preview]");
+      const status = document.querySelector("[data-invoice-status]");
+      const allowance = document.querySelector("[data-invoice-allowance]");
+      const generateButton = document.querySelector("[data-generate-invoice]");
+      const downloadButton = document.querySelector("[data-download-invoice]");
+      const whatsappButton = document.querySelector("[data-whatsapp-invoice]");
+      let freeUsed = 0;
+      let currentInvoice = null;
+
+      form.elements.invoiceDate.value = new Date().toISOString().slice(0, 10);
+
+      function money(value) {
+        return `N${Number(value || 0).toLocaleString("en-NG")}`;
+      }
+
+      function escapeHtml(value) {
+        return String(value || "").replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        }[char]));
+      }
+
+      function parseItems(rawItems) {
+        return rawItems
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean)
+          .map((line) => {
+            const [description, amount] = line.split("|").map((part) => part.trim());
+            return { description, amount: Number(amount || 0) };
+          });
+      }
+
+      function invoiceHtml(invoice) {
+        const rows = invoice.items.map((item) => `
+          <tr>
+            <td>${escapeHtml(item.description)}</td>
+            <td>${money(item.amount)}</td>
+          </tr>
+        `).join("");
+
+        return `
+          <article class="invoice-document">
+            <header>
+              <div>
+                ${invoice.firmLogoUrl ? `<img src="${escapeHtml(invoice.firmLogoUrl)}" alt="${escapeHtml(invoice.firmName)} logo" />` : ""}
+                <h2>${escapeHtml(invoice.firmName)}</h2>
+                <p>${escapeHtml(invoice.firmDetails || "Legal services invoice")}</p>
+              </div>
+              <div>
+                <strong>Invoice</strong>
+                <span>${escapeHtml(invoice.invoiceNumber)}</span>
+                <small>${escapeHtml(invoice.invoiceDate)}</small>
+              </div>
+            </header>
+            <section>
+              <h3>Bill to</h3>
+              <p>${escapeHtml(invoice.clientName)}</p>
+              <p>${escapeHtml(invoice.matter)}</p>
+            </section>
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+              <tfoot>
+                <tr>
+                  <th>Total</th>
+                  <th>${money(invoice.total)}</th>
+                </tr>
+              </tfoot>
+            </table>
+            ${invoice.notes ? `<footer>${escapeHtml(invoice.notes)}</footer>` : ""}
+          </article>
+        `;
+      }
+
+      function updateAllowance() {
+        const remaining = Math.max(0, 5 - freeUsed);
+        allowance.textContent = `Free plan: ${remaining} of 5 invoice${remaining === 1 ? "" : "s"} remaining this month.`;
+        generateButton.disabled = remaining === 0;
+        generateButton.textContent = remaining === 0 ? "Free limit reached" : `Generate invoice (${remaining} free left)`;
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (freeUsed >= 5) {
+          status.hidden = false;
+          status.textContent = "Free registration invoice limit reached. Upgrade to premium for unlimited branded invoices.";
+          updateAllowance();
+          return;
+        }
+
+        const formData = new FormData(form);
+        const items = parseItems(formData.get("lineItems") || "");
+        currentInvoice = {
+          firmName: formData.get("firmName"),
+          firmLogoUrl: formData.get("firmLogoUrl"),
+          firmDetails: formData.get("firmDetails"),
+          invoiceNumber: formData.get("invoiceNumber"),
+          invoiceDate: formData.get("invoiceDate"),
+          clientName: formData.get("clientName"),
+          clientWhatsapp: formData.get("clientWhatsapp"),
+          matter: formData.get("matter"),
+          items,
+          total: items.reduce((sum, item) => sum + item.amount, 0),
+          notes: formData.get("notes")
+        };
+
+        freeUsed += 1;
+        preview.innerHTML = invoiceHtml(currentInvoice);
+        downloadButton.disabled = false;
+        whatsappButton.disabled = false;
+        status.hidden = false;
+        status.textContent = `Invoice generated. ${Math.max(0, 5 - freeUsed)} free invoices remaining this month.`;
+        updateAllowance();
+      });
+
+      downloadButton.addEventListener("click", () => {
+        if (!currentInvoice) return;
+        status.hidden = false;
+        status.textContent = "Download would save this branded invoice as an HTML file from the real dashboard.";
+      });
+
+      whatsappButton.addEventListener("click", () => {
+        if (!currentInvoice) return;
+        const phone = String(currentInvoice.clientWhatsapp || "").replace(/[^0-9]/g, "");
+        const message = encodeURIComponent(`${currentInvoice.firmName} invoice ${currentInvoice.invoiceNumber}\\nTotal: ${money(currentInvoice.total)}`);
+        window.open(`https://wa.me/${phone}?text=${message}`, "_blank", "noopener");
+      });
+
+      updateAllowance();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LearnedCircle Investor Summary</title>
+    <style>
+      :root {
+        --ink: #132620;
+        --ink-2: #20352f;
+        --brass: #b48a45;
+        --paper: #f5f1e8;
+        --paper-soft: #fbfaf6;
+        --slate: #34515f;
+        --line: #d8d0c0;
+        --muted: #68736e;
+        --white: #ffffff;
+        --blue: #f5f1e8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        color: var(--ink);
+        background: var(--paper-soft);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1,
+      h2,
+      .amount {
+        font-family: Georgia, "Times New Roman", serif;
+        letter-spacing: 0;
+      }
+
+      .page {
+        width: 1123px;
+        min-height: 794px;
+        padding: 18px 30px;
+        background:
+          linear-gradient(90deg, rgba(251, 250, 246, 0.97), rgba(251, 250, 246, 0.88)),
+          url("assets/legal-hero-courthouse.png") right center / 58% auto no-repeat;
+        border: 1px solid var(--line);
+      }
+
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .mark {
+        width: 54px;
+        height: 54px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        border: 2px solid var(--brass);
+        background: var(--ink);
+        color: var(--brass);
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 700;
+        font-size: 20px;
+      }
+
+      .brand strong {
+        display: block;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 30px;
+        line-height: 1;
+      }
+
+      .brand span {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .label {
+        width: fit-content;
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--white);
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+        padding: 12px 0 10px;
+      }
+
+      .eyebrow {
+        margin-bottom: 8px;
+        color: var(--brass);
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 660px;
+        font-size: 38px;
+        line-height: 0.94;
+        margin-bottom: 10px;
+      }
+
+      .lead {
+        max-width: 650px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.3;
+      }
+
+      .ask {
+        align-self: stretch;
+        padding: 15px;
+        border-radius: 8px;
+        background: var(--ink);
+        color: var(--white);
+      }
+
+      .ask p {
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 13px;
+        line-height: 1.36;
+      }
+
+      .amount {
+        display: block;
+        margin: 8px 0 6px;
+        color: var(--white);
+        font-size: 38px;
+        line-height: 1;
+      }
+
+      .grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .three {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .four {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .card {
+        min-height: 78px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.94);
+      }
+
+      .card.blue {
+        background: rgba(223, 234, 240, 0.95);
+      }
+
+      .card h3 {
+        margin-bottom: 6px;
+        font-size: 16px;
+        line-height: 1.1;
+      }
+
+      .card p {
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.25;
+      }
+
+      .metric {
+        padding: 9px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--white);
+      }
+
+      .metric strong {
+        display: block;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 27px;
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .section-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin: 10px 0 6px;
+      }
+
+      .section-title h2 {
+        font-size: 22px;
+      }
+
+      .mini-table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.96);
+      }
+
+      .mini-table th,
+      .mini-table td {
+        padding: 6px 9px;
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+        font-size: 11px;
+      }
+
+      .mini-table th {
+        background: var(--paper);
+        color: var(--ink);
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .mini-table tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 10px;
+      }
+
+      .footer strong {
+        color: var(--ink);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      @page {
+        size: A4 landscape;
+        margin: 0;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+
+        .page {
+          width: 297mm;
+          height: 210mm;
+          border: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="top">
+        <div class="brand">
+          <div class="mark">LC</div>
+          <div>
+            <strong>LearnedCircle</strong>
+            <span>learnedcircle.com</span>
+          </div>
+        </div>
+        <div class="label">One-page investor summary</div>
+      </header>
+
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Nigeria-first legal marketplace and professional network</p>
+          <h1>Trusted legal discovery, lawyer visibility and opportunity exchange.</h1>
+          <p class="lead">
+            LearnedCircle connects clients with verified lawyers, corporate law specialists, tax experts, law firms, employers and legal professionals through one premium legal platform built for growth.
+          </p>
+        </div>
+
+        <aside class="ask">
+          <p class="label" style="background: var(--paper); color: var(--ink); border-color: transparent;">Seed ask</p>
+          <span class="amount">N100,000,000</span>
+          <p><strong style="color: var(--white);">For 12% equity.</strong> Growth options include N200,000,000 for 15% and N500,000,000 for 20%. Capital will support market entry, lawyer acquisition, hiring, verification and national rollout.</p>
+        </aside>
+      </section>
+
+      <section class="grid four">
+        <div class="metric">
+          <strong>200k+</strong>
+          <span>Addressable Nigerian lawyer market</span>
+        </div>
+        <div class="metric">
+          <strong>N10k</strong>
+          <span>Monthly premium lawyer plan</span>
+        </div>
+        <div class="metric">
+          <strong>N100k</strong>
+          <span>Yearly premium lawyer plan</span>
+        </div>
+        <div class="metric">
+          <strong>N520m</strong>
+          <span>Base-case annual revenue potential</span>
+        </div>
+      </section>
+
+      <div class="section-title">
+        <h2>Why It Matters</h2>
+        <span class="label">Built for trust and revenue</span>
+      </div>
+
+      <section class="grid three">
+        <article class="card">
+          <h3>Problem</h3>
+          <p>Clients struggle to find credible lawyers. Lawyers need visibility, direct briefs, publishing, networking and professional opportunities.</p>
+        </article>
+        <article class="card blue">
+          <h3>Solution</h3>
+          <p>Verified profiles, direct client contact, legal articles, job listings, adverts, online chat, mentorship and branded invoices.</p>
+        </article>
+        <article class="card">
+          <h3>Revenue</h3>
+          <p>Recurring premium subscriptions, paid jobs, adverts, featured placements, sponsored content and future professional tools.</p>
+        </article>
+      </section>
+
+      <div class="section-title">
+        <h2>Financial Scenarios</h2>
+        <span class="label">Illustrative annual potential</span>
+      </div>
+
+      <table class="mini-table">
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Lawyers Onboarded</th>
+            <th>Premium Lawyers</th>
+            <th>Premium ARR</th>
+            <th>Jobs + Adverts</th>
+            <th>Total Annual Potential</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Conservative</strong></td>
+            <td>11,000</td>
+            <td>1,100</td>
+            <td>N110m</td>
+            <td>N25m</td>
+            <td><strong>N135m</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Base case</strong></td>
+            <td>22,000</td>
+            <td>4,400</td>
+            <td>N440m</td>
+            <td>N80m</td>
+            <td><strong>N520m</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Upside</strong></td>
+            <td>44,000</td>
+            <td>13,200</td>
+            <td>N1.32bn</td>
+            <td>N200m</td>
+            <td><strong>N1.52bn</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">
+        <h2>Use of Funds</h2>
+        <span class="label">Growth capital</span>
+      </div>
+
+      <section class="grid three">
+        <article class="card">
+          <h3>Marketing and acquisition</h3>
+          <p>NBA branch outreach, digital campaigns, lawyer onboarding, employer partnerships and legal community visibility.</p>
+        </article>
+        <article class="card">
+          <h3>Hiring and operations</h3>
+          <p>Growth, support, verification, content operations, partnerships and customer success team members.</p>
+        </article>
+        <article class="card">
+          <h3>Trust and scale</h3>
+          <p>Verification workflows, moderation, data discipline, product polish and national rollout execution.</p>
+        </article>
+      </section>
+
+      <footer class="footer">
+        <span>Prepared June 2026. Financial projections are illustrative and subject to final diligence.</span>
+        <strong>Powered by Advocati LP</strong>
+      </footer>
+    </main>
+  </body>
+</html>

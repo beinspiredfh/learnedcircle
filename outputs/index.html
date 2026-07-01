@@ -27,6 +27,7 @@
       </a>
       <nav class="main-nav" aria-label="Main navigation">
         <a href="#lawyers">Find lawyers</a>
+        <a href="#ai-assistant">AI Assistant</a>
         <details class="nav-group">
           <summary class="nav-parent">Forum</summary>
           <div class="submenu" aria-label="Forum submenu">
@@ -62,10 +63,10 @@
             </p>
           </div>
           <div class="trust-strip" aria-label="Platform highlights">
-            <button type="button" data-open-modal="signup">Verified legal profiles</button>
+            <button type="button" data-open-modal="signup">Create verified profile</button>
+            <button type="button" data-open-modal="assistant">AI legal assistant</button>
             <button type="button" data-jump-tab="online">Chat with Verified Lawyers Online</button>
             <button type="button" data-scroll-target="classifieds">Jobs and Opportunities</button>
-            <button type="button" data-jump-tab="probono">Pro bono Access</button>
           </div>
         </div>
 
@@ -147,8 +148,47 @@
           <article class="trust-card">
             <span class="rule-number">04</span>
             <h3>Premium accounts receive stronger visibility</h3>
-            <p>Payment unlocks direct contact, publishing tools, online visibility and priority matching. The verified badge still requires admin review.</p>
+            <p>Payment unlocks direct contact, unlimited AI assistant chats, publishing tools, online visibility and priority matching. The verified badge still requires admin review.</p>
           </article>
+        </div>
+      </section>
+
+      <section class="ai-assistant-section" id="ai-assistant">
+        <div class="ai-assistant-copy">
+          <p class="eyebrow">AI legal assistant</p>
+          <h2>Ask a general legal question and get an instant information reply.</h2>
+          <p>
+            LearnedCircle AI gives instant general legal information, helps users organise facts, identify likely
+            practice areas, prepare questions and understand possible next steps. It does not replace a lawyer and
+            does not provide legal advice.
+          </p>
+          <div class="ai-disclaimer">
+            <strong>Important disclaimer</strong>
+            <span>
+              This assistant provides general legal information only. Do not rely on it as legal advice, do not submit
+              highly sensitive facts, and speak with a qualified lawyer before taking action.
+            </span>
+          </div>
+          <div class="membership-actions">
+            <button class="primary-action" type="button" data-open-modal="assistant">Ask AI assistant</button>
+            <button class="secondary-action" type="button" data-open-modal="brief">Submit a case brief</button>
+          </div>
+        </div>
+        <div class="ai-assistant-preview" aria-label="AI assistant preview">
+          <div class="assistant-window">
+            <div class="assistant-header">
+              <span class="assistant-dot"></span>
+              <strong>LearnedCircle AI</strong>
+              <small>Information only</small>
+            </div>
+            <div class="assistant-message assistant-message-user">
+              Can you explain generally what I should know before I speak with a lawyer?
+            </div>
+            <div class="assistant-message assistant-message-bot">
+              I can give general legal information, highlight possible practice areas, list documents to gather and
+              suggest questions to ask a verified lawyer.
+            </div>
+          </div>
         </div>
       </section>
 
@@ -463,10 +503,10 @@
             <a class="primary-action" href="account.html">Account Login/Signup</a>
           </article>
           <article class="action-card sponsored-card">
-            <span class="status">Free or paid</span>
+            <span class="status">Admin reviewed</span>
             <h3>Advert placement</h3>
-            <p>Choose a free reviewed listing or a paid placement for stronger visibility and more reliable promotion.</p>
-            <button class="secondary-action" type="button" data-open-modal="advertise">Advertise</button>
+            <p>Click to get advert rate: N10,000 daily, N20,000 weekly or N100,000 monthly. Adverts may be accepted or rejected after review.</p>
+            <button class="secondary-action" type="button" data-open-modal="advertise">Click to get advert rate</button>
           </article>
         </div>
         <div class="advert-grid" data-advert-grid></div>
@@ -477,7 +517,7 @@
           <p class="eyebrow">Premium membership</p>
           <h2>Premium access after lawyer review.</h2>
           <p>
-            Premium accounts unlock direct client contact, online visibility, direct publishing and stronger placement.
+            Premium accounts unlock direct client contact, unlimited AI assistant chats, online visibility, direct publishing and stronger placement.
             Lawyer verification remains a separate admin review of SCN, call details and profile information.
           </p>
           <div class="membership-actions">
@@ -494,12 +534,12 @@
           <article>
             <span>02</span>
             <h3>Direct access</h3>
-            <p>Let clients contact you directly and appear in online lawyer matching when you are available.</p>
+            <p>Let clients contact you directly without admin message review and appear in online lawyer matching when you are available.</p>
           </article>
           <article>
             <span>03</span>
-            <h3>Publishing and invoices</h3>
-            <p>Post approved content and generate unlimited branded invoices from your lawyer dashboard.</p>
+            <h3>AI, publishing and invoices</h3>
+            <p>Use unlimited AI assistant chats, post approved content and generate unlimited branded invoices from your lawyer dashboard.</p>
           </article>
         </div>
       </section>
@@ -517,14 +557,14 @@
             <span class="status">Premium</span>
             <h3>Premium Monthly</h3>
             <p class="price">N10,000 <span>/ month</span></p>
-            <p>Direct contact, online chat visibility, direct publishing, unlimited branded invoices and priority matching after admin verification.</p>
+            <p>Direct contact without admin message review, unlimited AI assistant chats, online chat visibility, direct publishing, unlimited branded invoices and priority matching after admin verification.</p>
           </article>
           <article class="payment-card">
             <span class="status">Premium</span>
             <h3>Premium Yearly</h3>
             <p class="price">N100,000 <span>/ year</span></p>
             <p>
-              Includes direct contact, online chat visibility, direct publishing, unlimited branded invoices, priority
+              Includes direct contact without admin message review, unlimited AI assistant chats, online chat visibility, direct publishing, unlimited branded invoices, priority
               matching, preferred directory placement and annual savings.
             </p>
           </article>
@@ -537,14 +577,14 @@
           <article class="payment-card">
             <span class="status">Advertising</span>
             <h3>Paid advert</h3>
-            <p class="price">Priority</p>
-            <p>Clearly labelled advert placement with stronger visibility than free reviewed adverts.</p>
+            <p class="price">N10k / N20k / N100k</p>
+            <p>Daily, weekly and monthly advert options. Every advert is reviewed and may be accepted, rejected or edited for platform standards.</p>
           </article>
           <article class="payment-card">
             <span class="status">Featured listing</span>
             <h3>Featured lawyer</h3>
-            <p class="price">Placement</p>
-            <p>Premium profile placement for lawyers who meet verification and professional content standards.</p>
+            <p class="price">Admin priced</p>
+            <p>Featured rates are determined by admin after reviewing profile quality, placement request, duration and professional fit.</p>
           </article>
         </div>
       </section>

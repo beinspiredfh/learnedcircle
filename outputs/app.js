@@ -471,6 +471,10 @@ const modalContent = document.querySelector("[data-modal-content]");
 let activeTab = "lawyers";
 let activeBriefMatch = null;
 
+function isPremiumLawyer(lawyer) {
+  return String(lawyer?.budget || "").toLowerCase() === "premium";
+}
+
 specializations.forEach((area) => {
   const option = document.createElement("option");
   option.value = area;
@@ -486,6 +490,7 @@ nigeriaLocations.forEach((location) => {
 });
 
 function lawyerCard(lawyer) {
+  const premium = isPremiumLawyer(lawyer);
   const badges = [
     lawyer.proBono ? "Open to pro bono" : "Paid matters",
     lawyer.tax ? "Tax specialist" : null,
@@ -506,6 +511,7 @@ function lawyerCard(lawyer) {
           <div class="name-line">
             <h3>${lawyer.name}</h3>
             <span class="verification-badge${lawyer.verified ? "" : " pending"}">${verificationLabel}</span>
+            ${premium ? `<span class="premium-badge">Premium</span>` : ""}
           </div>
           <div class="meta-row">
             <span class="status">${lawyer.title}</span>
@@ -523,7 +529,7 @@ function lawyerCard(lawyer) {
         ${badges.map((badge) => `<span class="status">${badge}</span>`).join("")}
       </div>
       <div class="card-actions">
-        <button class="primary-action" type="button" data-open-modal="message" data-lawyer-name="${lawyer.name}">Message</button>
+        <button class="primary-action" type="button" data-open-modal="message" data-lawyer-name="${lawyer.name}" data-lawyer-premium="${premium ? "true" : "false"}">${premium ? "Message directly" : "Message"}</button>
         <button class="secondary-action" type="button" data-lawyer-profile="${encodeURIComponent(lawyer.name)}">View profile</button>
       </div>
     </article>
@@ -534,6 +540,7 @@ function lawyerProfileTemplate(lawyer) {
   const verificationLabel = lawyer.verified ? "Verified" : "Pending";
   const profile = lawyer.profile;
   const menteeCount = Number(profile.menteeCount || 0);
+  const premium = isPremiumLawyer(lawyer);
 
   return `
     <div class="modal-body profile-modal">
@@ -543,6 +550,7 @@ function lawyerProfileTemplate(lawyer) {
           <div class="name-line">
             <h2>${lawyer.name}</h2>
             <span class="verification-badge${lawyer.verified ? "" : " pending"}">${verificationLabel}</span>
+            ${premium ? `<span class="premium-badge">Premium</span>` : ""}
           </div>
           <p>${lawyer.title} | ${profile.experience} | ${lawyer.location}</p>
         </div>
@@ -575,7 +583,11 @@ function lawyerProfileTemplate(lawyer) {
         </section>
         <section>
           <h3>Client access</h3>
-          <p>${lawyer.budget === "Premium" ? "Direct client contact enabled for premium account." : "Contact requests route through LearnedCircle review."}</p>
+          <p>${premium ? "Direct client contact enabled. Messages to this premium lawyer do not pass through admin review." : "Contact requests route through LearnedCircle review."}</p>
+        </section>
+        <section>
+          <h3>Paid legal work through portal</h3>
+          <p>Clients can request consultation or document drafting from this profile. The lawyer sets the fee, the client pays through LearnedCircle, and 5% is deducted to LearnedCircle before lawyer settlement.</p>
         </section>
         ${profile.openToMentorship ? `
         <section>
@@ -589,7 +601,8 @@ function lawyerProfileTemplate(lawyer) {
         <ul>${profile.publications.map((item) => `<li>${item}</li>`).join("")}</ul>
       </div>
       <div class="card-actions">
-        <button class="primary-action" type="button" data-open-modal="message" data-lawyer-name="${lawyer.name}">Message</button>
+        <button class="primary-action" type="button" data-open-modal="message" data-lawyer-name="${lawyer.name}" data-lawyer-premium="${premium ? "true" : "false"}">${premium ? "Message directly" : "Message"}</button>
+        <button class="secondary-action" type="button" data-open-modal="clientWork" data-lawyer-name="${lawyer.name}">Give this lawyer paid work</button>
         <button class="secondary-action" type="button" data-open-modal="report" data-lawyer-name="${lawyer.name}">Report profile</button>
         <button class="secondary-action" type="button" data-close-modal>Close profile</button>
       </div>
@@ -708,6 +721,114 @@ function escapeAttribute(value) {
     .replace(/"/g, "&quot;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+function assistantResponse(input) {
+  const text = String(input || "").toLowerCase();
+  const matchedAreas = [];
+
+  const keywordMap = [
+    { area: "Property Law", words: ["land", "tenant", "rent", "lease", "property", "house", "title", "survey", "deed"] },
+    { area: "Corporate Law", words: ["company", "shares", "founder", "director", "contract", "startup", "business"] },
+    { area: "Family Law", words: ["custody", "divorce", "marriage", "child", "maintenance", "family"] },
+    { area: "Employment Law", words: ["employment", "salary", "termination", "dismissal", "workplace", "employee"] },
+    { area: "Tax Law", words: ["tax", "firs", "vat", "withholding", "assessment", "compliance"] },
+    { area: "Criminal Law", words: ["police", "arrest", "bail", "charge", "detention", "criminal"] },
+    { area: "Data Protection / Privacy Law", words: ["data", "privacy", "ndpa", "ndpr", "personal information"] },
+    { area: "Intellectual Property Law", words: ["trademark", "copyright", "brand", "patent", "software", "licence"] }
+  ];
+
+  keywordMap.forEach((item) => {
+    if (item.words.some((word) => text.includes(word)) && !matchedAreas.includes(item.area)) {
+      matchedAreas.push(item.area);
+    }
+  });
+
+  const areas = matchedAreas.length ? matchedAreas.slice(0, 3) : ["General practice", "Corporate Law", "Dispute resolution"];
+  const urgent = ["arrest", "detention", "injunction", "deadline", "eviction", "police", "court date", "served"].some((word) => text.includes(word));
+  const documents = [
+    "Write a short timeline of what happened and the dates involved.",
+    "List the people, company names, addresses and contact details involved.",
+    "Gather relevant documents, messages, contracts, receipts, notices or court papers.",
+    "Write the outcome you want before contacting a lawyer."
+  ];
+
+  if (urgent) {
+    documents.unshift("Because this may be urgent, contact a qualified lawyer immediately before taking action.");
+  }
+
+  const primaryArea = areas[0] || "General practice";
+  const generalReplies = {
+    "Property Law":
+      "Based on the facts provided, this appears to involve a property, tenancy, lease or land-related concern. In general, users should preserve notices, rent records, agreements and messages, avoid self-help steps, and speak with a qualified property lawyer before responding to any notice or deadline.",
+    "Corporate Law":
+      "Based on the facts provided, this may involve a business, company, contract or founder-related issue. In general, users should review written agreements, company records, payment evidence and correspondence before taking a position, and should speak with a qualified corporate lawyer before signing or terminating anything.",
+    "Family Law":
+      "Based on the facts provided, this may involve a family, custody, divorce, maintenance or succession issue. In general, users should keep documents and communication calm, avoid threats or informal arrangements that may worsen the dispute, and speak with a qualified family lawyer about lawful options.",
+    "Employment Law":
+      "Based on the facts provided, this may involve employment, workplace rights, salary, termination or dismissal. In general, users should preserve their employment contract, payslips, HR letters and messages, and speak with a qualified employment lawyer before resigning, signing a settlement or missing any deadline.",
+    "Tax Law":
+      "Based on the facts provided, this may involve tax compliance, assessment, VAT, withholding tax or regulatory obligations. In general, users should gather tax notices, returns, invoices, receipts and correspondence, then speak with a qualified tax professional before responding formally.",
+    "Criminal Law":
+      "Based on the facts provided, this may involve police, arrest, detention, bail or a criminal allegation. In general, urgent legal help is important. The user should avoid making detailed statements without a lawyer and contact a qualified criminal defence lawyer immediately.",
+    "Data Protection / Privacy Law":
+      "Based on the facts provided, this may involve personal data, privacy, consent, breach notification or compliance. In general, users should preserve records of the data involved, affected persons, notices and internal steps taken, then speak with a qualified privacy lawyer before making formal statements.",
+    "Intellectual Property Law":
+      "Based on the facts provided, this may involve trademark, copyright, brand, software, patent or licensing rights. In general, users should gather ownership records, registration details, contracts and evidence of use or infringement, then speak with a qualified intellectual property lawyer."
+  };
+
+  return {
+    areas,
+    reply:
+      generalReplies[primaryArea] ||
+      "Based on the facts provided, this appears to require general legal review. In general, users should organise the timeline, preserve documents and messages, avoid making admissions or signing documents under pressure, and speak with a qualified lawyer before taking action.",
+    documents,
+    questions: [
+      "What is the main problem you want solved?",
+      "Is there any court date, deadline, arrest, notice or threat of enforcement?",
+      "Have you signed any agreement or received any formal document?",
+      "What state or location is the matter connected to?"
+    ],
+    disclaimer:
+      "This is general legal information from a prototype assistant. It is not legal advice, does not create a lawyer-client relationship and should not be relied on as a substitute for a qualified lawyer."
+  };
+}
+
+function assistantResultTemplate(result) {
+  return `
+    <div class="assistant-result" data-assistant-result>
+      <div class="ai-disclaimer compact">
+        <strong>Not legal advice</strong>
+        <span>${escapeAttribute(result.disclaimer)}</span>
+      </div>
+      <section>
+        <h3>Instant general information</h3>
+        <p>${escapeAttribute(result.reply || "This assistant can provide general legal information and help you prepare before contacting a qualified lawyer.")}</p>
+      </section>
+      <section>
+        <h3>Likely lawyer categories</h3>
+        <div class="tag-row">
+          ${result.areas.map((area) => `<span class="status">${escapeAttribute(area)}</span>`).join("")}
+        </div>
+      </section>
+      <section>
+        <h3>What to prepare</h3>
+        <ul>
+          ${result.documents.map((item) => `<li>${escapeAttribute(item)}</li>`).join("")}
+        </ul>
+      </section>
+      <section>
+        <h3>Questions to answer before contacting a lawyer</h3>
+        <ul>
+          ${result.questions.map((item) => `<li>${escapeAttribute(item)}</li>`).join("")}
+        </ul>
+      </section>
+      <div class="assistant-actions">
+        <button class="primary-action" type="button" data-open-modal="brief">Submit a case brief</button>
+        <button class="secondary-action" type="button" data-close-modal data-scroll-target="lawyers">Find verified lawyers</button>
+      </div>
+    </div>
+  `;
 }
 
 function normalizeApprovedJob(job) {
@@ -1112,10 +1233,51 @@ function modalTemplate(type, context = {}) {
       fields: ["Full name", "Email address", "SCN", "NBA branch or professional body", "Primary practice areas", "Verification note"],
       moderationType: "Premium lawyer upgrade request"
     },
+    assistant: {
+      title: "AI legal assistant",
+      copy: "Ask a simple legal question and receive a straight general-information reply. Free public users get five questions per day. Active premium members get unlimited AI assistant chats.",
+      fields: [],
+      directType: "ai-assistant",
+      customFieldsPlacement: "after",
+      customFields: `
+        <label>
+          Access type
+          <select name="AI access type">
+            <option value="Free visitor">Free visitor - five questions per day</option>
+            <option value="Free registered member">Free registered member - five questions per day</option>
+            <option value="Active premium member">Active premium member - unlimited chats</option>
+          </select>
+        </label>
+        <label>
+          Ask your general legal question
+          <textarea name="Your general legal question" placeholder="Example: My landlord served me a quit notice but my rent has not expired. What should I generally know?" required></textarea>
+        </label>
+        <label>
+          Location <span class="optional-label">optional</span>
+          <input name="Your location" type="text" placeholder="Lagos, Abuja, Rivers..." />
+        </label>
+        <label>
+          What do you want to achieve? <span class="optional-label">optional</span>
+          <input name="What outcome do you want?" type="text" placeholder="Understand options, find a lawyer, prepare documents..." />
+        </label>
+        <div class="ai-disclaimer">
+          <strong>Before you continue</strong>
+          <span>
+            Do not upload confidential documents or rely on this as legal advice. The assistant does not create a
+            lawyer-client relationship. For advice about your rights, deadlines or strategy, contact a verified lawyer.
+          </span>
+        </div>
+        <label class="terms-check assistant-consent">
+          <input name="AI disclaimer accepted" type="checkbox" required />
+          <span>I understand this is general legal information only and not legal advice.</span>
+        </label>
+        <div data-assistant-output></div>
+      `
+    },
     advertise: {
       title: "Advertise on LearnedCircle",
-      copy: "Choose a free reviewed advert or a paid priority advert. Paid adverts receive stronger visibility, clearer placement and more reliable promotion after payment confirmation.",
-      fields: ["Organization", "Advert type", "Target audience", "Campaign note"],
+      copy: "Choose an advert duration and submit the campaign for admin review. Paid advert rates are N10,000 for one day, N20,000 for one week and N100,000 for one month. LearnedCircle may accept, reject or request edits before publication.",
+      fields: ["Organization", "Contact email", "Target audience", "Campaign note"],
       moderationType: "Advert request",
       customFields: `
         <fieldset class="option-fieldset">
@@ -1128,13 +1290,51 @@ function modalTemplate(type, context = {}) {
             </span>
           </label>
           <label class="option-choice">
-            <input type="radio" name="Advert option" value="Paid advert" />
+            <input type="radio" name="Advert option" value="Paid advert - N10,000 daily" />
             <span>
-              <strong>Paid advert</strong>
-              Higher visibility, priority placement and more reliable campaign support after payment.
+              <strong>N10,000 daily advert</strong>
+              One-day paid placement after admin approval and payment confirmation.
+            </span>
+          </label>
+          <label class="option-choice">
+            <input type="radio" name="Advert option" value="Paid advert - N20,000 weekly" />
+            <span>
+              <strong>N20,000 weekly advert</strong>
+              Seven-day paid placement after admin approval and payment confirmation.
+            </span>
+          </label>
+          <label class="option-choice">
+            <input type="radio" name="Advert option" value="Paid advert - N100,000 monthly" />
+            <span>
+              <strong>N100,000 monthly advert</strong>
+              One-month paid placement after admin approval and payment confirmation.
             </span>
           </label>
         </fieldset>
+        <label>
+          Preferred advert start date
+          <input name="Preferred advert start date" type="date" />
+        </label>
+      `
+    },
+    clientWork: {
+      title: "Start paid legal work",
+      copy: "Use this when a client wants to give a lawyer a paid consultation, drafting task or specific legal job through this website. The lawyer will charge the client through LearnedCircle, the client pays through the portal, and 5% of the amount charged is deducted to LearnedCircle before the lawyer receives settlement.",
+      fields: ["Client name", "Email address", "Phone number", "Preferred lawyer", "Type of work", "Estimated fee or budget", "Work description"],
+      moderationType: "Client paid legal work request",
+      customFieldsPlacement: "after",
+      customFields: `
+        <div class="ai-disclaimer">
+          <strong>Portal payment caution</strong>
+          <span>
+            Do not pay outside LearnedCircle for work introduced through the platform. The lawyer's fee, payment timing
+            and deliverables should be confirmed through the portal before work starts. Platform commission is 5%.
+          </span>
+        </div>
+        <label class="terms-check">
+          <input name="Portal payment acknowledged" type="checkbox" required />
+          <span>I understand payments for this work should be made through LearnedCircle.</span>
+        </label>
       `
     },
     forum: {
@@ -1155,9 +1355,12 @@ function modalTemplate(type, context = {}) {
     },
     message: {
       title: "Contact a lawyer",
-      copy: "No account is required. Search for a lawyer and send a short direct contact request. Online lawyer chat is shown separately for lawyers who are currently active.",
+      copy: context.lawyerIsPremium
+        ? "No account is required. This premium lawyer accepts direct client messages on LearnedCircle without admin message review."
+        : "No account is required. This lawyer is verified or listed, but not on direct premium messaging, so the first contact request is routed through LearnedCircle review.",
       fields: ["Full name", "Email address", "Phone number", "Preferred lawyer", "Area of law", "Message"],
-      moderationType: "Client lawyer contact request"
+      directType: context.lawyerIsPremium ? "premium-message" : "",
+      moderationType: context.lawyerIsPremium ? "" : "Client lawyer contact request"
     },
     report: {
       title: "Report a profile or listing",
@@ -1216,7 +1419,9 @@ function modalTemplate(type, context = {}) {
             field.toLowerCase().includes("case") ||
             field.toLowerCase().includes("message") ||
             field.toLowerCase().includes("summary") ||
-            field.toLowerCase().includes("note");
+            field.toLowerCase().includes("note") ||
+            field.toLowerCase().includes("what happened") ||
+            field.toLowerCase().includes("outcome");
           return `
           <label>
             ${field}
@@ -1228,7 +1433,7 @@ function modalTemplate(type, context = {}) {
         }).join("")}
         ${item.customFieldsPlacement === "after" ? item.customFields || "" : ""}
         <p class="form-status" data-form-status hidden></p>
-        <button class="primary-action" type="submit">${item.directType === "forum-topic" ? "Publish discussion" : item.directType === "job-application" ? "Submit application" : item.directType === "article-submission" ? "Submit article" : item.moderationType ? "Submit for review" : "Continue"}</button>
+        <button class="primary-action" type="submit">${item.directType === "forum-topic" ? "Publish discussion" : item.directType === "job-application" ? "Submit application" : item.directType === "article-submission" ? "Submit article" : item.directType === "ai-assistant" ? "Prepare guidance" : item.moderationType ? "Submit for review" : "Continue"}</button>
       </form>
     </div>
   `;
@@ -1276,6 +1481,141 @@ async function submitModerationDraft(form) {
 
 function modalFieldValue(fields, label) {
   return fields.find((field) => field.label.toLowerCase() === label.toLowerCase())?.value || "";
+}
+
+const AI_FREE_DAILY_LIMIT = 5;
+
+function isPremiumAssistantAccess(form) {
+  const accessType = form.querySelector('[name="AI access type"]')?.value || "";
+  return accessType.toLowerCase().includes("active premium");
+}
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function getAssistantUsage() {
+  try {
+    const usage = JSON.parse(localStorage.getItem("learnedcircle-ai-usage") || "{}");
+    if (usage.date !== todayKey()) {
+      return { date: todayKey(), count: 0 };
+    }
+    return { date: usage.date, count: Number(usage.count || 0) };
+  } catch (error) {
+    return { date: todayKey(), count: 0 };
+  }
+}
+
+function incrementAssistantUsage() {
+  const usage = getAssistantUsage();
+  const nextUsage = { date: todayKey(), count: usage.count + 1 };
+  localStorage.setItem("learnedcircle-ai-usage", JSON.stringify(nextUsage));
+  return nextUsage;
+}
+
+async function submitAssistantPrompt(form) {
+  const status = form.querySelector("[data-form-status]");
+  const output = form.querySelector("[data-assistant-output]");
+  const submitButton = form.querySelector("button[type='submit']");
+  const fields = Array.from(form.querySelectorAll("input, textarea, select"))
+    .filter((field) => field.type !== "checkbox")
+    .map((field) => ({
+      label: field.name || field.placeholder || field.closest("label")?.innerText.trim() || "Field",
+      value: field.value.trim()
+    }));
+  const consent = form.querySelector('input[name="AI disclaimer accepted"]');
+  const facts = modalFieldValue(fields, "Your general legal question") || modalFieldValue(fields, "What happened?");
+  const outcome = modalFieldValue(fields, "What outcome do you want?");
+  const location = modalFieldValue(fields, "Your location");
+  const usage = getAssistantUsage();
+  const premiumAccess = isPremiumAssistantAccess(form);
+
+  status.hidden = false;
+  if (!premiumAccess && usage.count >= AI_FREE_DAILY_LIMIT) {
+    status.textContent = "You have used today’s free AI assistant questions. Please sign up, submit a case brief, or contact a verified lawyer.";
+    if (output) {
+      output.innerHTML = `
+        <div class="assistant-result">
+          <section>
+            <h3>Daily free limit reached</h3>
+            <p>Free public users can ask ${AI_FREE_DAILY_LIMIT} general legal information questions per day. This helps keep the service available while LearnedCircle grows.</p>
+          </section>
+          <div class="assistant-actions">
+            <button class="primary-action" type="button" data-open-modal="brief">Submit a case brief</button>
+            <button class="secondary-action" type="button" data-close-modal data-scroll-target="lawyers">Find verified lawyers</button>
+          </div>
+        </div>
+      `;
+    }
+    return;
+  }
+
+  if (!consent?.checked) {
+    status.textContent = "Please accept the AI disclaimer before using the assistant.";
+    return;
+  }
+
+  if (!facts) {
+    status.textContent = "Please enter your general legal question.";
+    return;
+  }
+
+  const fallbackResult = assistantResponse(`${location} ${facts} ${outcome}`);
+  submitButton.disabled = true;
+  submitButton.textContent = "Preparing...";
+  status.textContent = "Preparing AI guidance with the legal disclaimer applied...";
+
+  try {
+    const response = await fetch("/api/ai-legal-assistant", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        location,
+        facts,
+        outcome,
+        disclaimerAccepted: consent.checked
+      })
+    });
+    const payload = await response.json();
+    const result = payload.ok && payload.result ? payload.result : fallbackResult;
+    const fallbackNote = payload.configured === false
+      ? " AI backend is ready; add OPENAI_API_KEY in Vercel to activate richer answers. Showing the built-in assistant for now."
+      : "";
+    const nextUsage = premiumAccess ? { count: -Infinity } : incrementAssistantUsage();
+
+    status.textContent = premiumAccess
+      ? `Assistant response prepared.${fallbackNote} Premium access has unlimited AI assistant chats.`
+      : `Assistant response prepared.${fallbackNote} Free questions left today: ${Math.max(AI_FREE_DAILY_LIMIT - nextUsage.count, 0)}.`;
+    if (output) {
+      output.innerHTML = assistantResultTemplate(result);
+    }
+  } catch (error) {
+    const nextUsage = premiumAccess ? { count: -Infinity } : incrementAssistantUsage();
+    status.textContent = "Assistant response prepared from the built-in guidance engine. Connect the AI backend for richer responses.";
+    status.textContent += premiumAccess
+      ? " Premium access has unlimited AI assistant chats."
+      : ` Free questions left today: ${Math.max(AI_FREE_DAILY_LIMIT - nextUsage.count, 0)}.`;
+    if (output) {
+      output.innerHTML = assistantResultTemplate(fallbackResult);
+    }
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Prepare guidance";
+  }
+}
+
+async function submitDirectPlatformAction(form, successMessage) {
+  const status = form.querySelector("[data-form-status]");
+  const submitButton = form.querySelector("button[type='submit']");
+
+  status.hidden = false;
+  status.textContent = "Submitting...";
+  submitButton.disabled = true;
+
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  status.textContent = successMessage;
+  form.reset();
+  submitButton.disabled = false;
 }
 
 async function submitDirectForumTopic(form) {
@@ -1510,6 +1850,7 @@ document.addEventListener("click", (event) => {
     });
     modalContent.innerHTML = modalTemplate(openButton.dataset.openModal, {
       lawyerName: openButton.dataset.lawyerName || "",
+      lawyerIsPremium: openButton.dataset.lawyerPremium === "true",
       jobTitle: openButton.dataset.jobTitle || "",
       jobCompany: openButton.dataset.jobCompany || "",
       jobLocation: openButton.dataset.jobLocation || "",
@@ -1620,6 +1961,14 @@ document.addEventListener("submit", async (event) => {
     }
     if (event.target.dataset.directType === "article-submission") {
       submitDirectArticleSubmission(event.target);
+      return;
+    }
+    if (event.target.dataset.directType === "ai-assistant") {
+      submitAssistantPrompt(event.target);
+      return;
+    }
+    if (event.target.dataset.directType === "premium-message") {
+      submitDirectPlatformAction(event.target, "Message sent directly to the premium lawyer. It did not pass through admin review.");
       return;
     }
     submitModerationDraft(event.target);

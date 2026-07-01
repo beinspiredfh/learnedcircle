@@ -1,0 +1,1191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LearnedCircle Investor Proposal</title>
+    <style>
+      :root {
+        --ink: #132620;
+        --ink-2: #20352f;
+        --brass: #b48a45;
+        --brass-dark: #8a6833;
+        --paper: #f5f1e8;
+        --paper-soft: #fbfaf6;
+        --slate: #34515f;
+        --line: #d8d0c0;
+        --muted: #68736e;
+        --white: #ffffff;
+        --blue: #f5f1e8;
+        --shadow: 0 18px 45px rgba(19, 38, 32, 0.12);
+        --radius: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper-soft);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1,
+      h2,
+      .price,
+      .big-number {
+        font-family: Georgia, "Times New Roman", serif;
+        letter-spacing: 0;
+      }
+
+      .proposal {
+        max-width: 1180px;
+        margin: 0 auto;
+        background: var(--paper-soft);
+      }
+
+      .section {
+        padding: 54px clamp(24px, 5vw, 64px);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .hero {
+        position: relative;
+        min-height: 720px;
+        display: grid;
+        align-items: end;
+        overflow: hidden;
+        color: var(--white);
+        background:
+          linear-gradient(90deg, rgba(8, 28, 24, 0.96), rgba(8, 28, 24, 0.78) 42%, rgba(8, 28, 24, 0.25)),
+          url("assets/legal-hero-courthouse.png") center / cover no-repeat;
+      }
+
+      .hero-inner {
+        width: min(920px, 100%);
+        padding: 64px clamp(24px, 5vw, 64px);
+      }
+
+      .brand-row {
+        position: absolute;
+        top: 34px;
+        left: clamp(24px, 5vw, 64px);
+        right: clamp(24px, 5vw, 64px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .brand-lockup {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .mark {
+        width: 72px;
+        height: 72px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        border: 2px solid var(--brass);
+        background: var(--ink);
+        color: var(--brass);
+        box-shadow: inset 0 0 0 7px rgba(180, 138, 69, 0.12);
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 700;
+        font-size: 22px;
+      }
+
+      .brand-lockup strong {
+        display: block;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(30px, 4vw, 48px);
+        line-height: 1;
+      }
+
+      .brand-lockup span {
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 18px;
+      }
+
+      .confidential {
+        padding: 10px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 999px;
+        color: rgba(255, 255, 255, 0.84);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 12px;
+      }
+
+      .eyebrow {
+        color: var(--brass);
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-size: 14px;
+        margin-bottom: 18px;
+      }
+
+      .hero h1 {
+        max-width: 860px;
+        font-size: clamp(50px, 8vw, 90px);
+        line-height: 0.95;
+        margin-bottom: 24px;
+      }
+
+      .hero-copy {
+        max-width: 760px;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: clamp(20px, 2.4vw, 28px);
+      }
+
+      .hero-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 44px;
+      }
+
+      .metric {
+        min-height: 130px;
+        padding: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(8px);
+        border-radius: var(--radius);
+      }
+
+      .metric strong {
+        display: block;
+        color: var(--white);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(32px, 5vw, 54px);
+        line-height: 1;
+        margin-bottom: 10px;
+      }
+
+      .metric span {
+        color: rgba(255, 255, 255, 0.78);
+        font-weight: 700;
+      }
+
+      .heading {
+        max-width: 850px;
+        margin-bottom: 30px;
+      }
+
+      .heading h2 {
+        font-size: clamp(34px, 5vw, 60px);
+        line-height: 1;
+        margin-bottom: 16px;
+      }
+
+      .heading p {
+        color: var(--muted);
+        font-size: 19px;
+      }
+
+      .grid {
+        display: grid;
+        gap: 18px;
+      }
+
+      .grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid.three {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .grid.four {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .card {
+        padding: 26px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--white);
+        box-shadow: 0 12px 30px rgba(19, 38, 32, 0.06);
+      }
+
+      .card.dark {
+        color: var(--white);
+        background: var(--ink);
+        border-color: var(--ink);
+      }
+
+      .card.blue {
+        background: var(--blue);
+      }
+
+      .card h3 {
+        font-size: 24px;
+        line-height: 1.15;
+        margin-bottom: 12px;
+      }
+
+      .card p,
+      li {
+        color: var(--muted);
+        font-size: 17px;
+      }
+
+      .card.dark p,
+      .card.dark li {
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      ul {
+        margin: 14px 0 0;
+        padding-left: 22px;
+      }
+
+      li + li {
+        margin-top: 9px;
+      }
+
+      .step {
+        position: relative;
+        padding-left: 78px;
+      }
+
+      .step::before {
+        content: attr(data-step);
+        position: absolute;
+        left: 22px;
+        top: 24px;
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--ink);
+        color: var(--brass);
+        font-weight: 900;
+      }
+
+      .scenario-table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--white);
+      }
+
+      .scenario-table th,
+      .scenario-table td {
+        padding: 18px;
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+        font-size: 16px;
+      }
+
+      .scenario-table th {
+        color: var(--ink);
+        background: var(--paper);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 12px;
+      }
+
+      .scenario-table tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .scenario-table strong {
+        color: var(--ink);
+      }
+
+      .bar-wrap {
+        min-height: 390px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--white);
+      }
+
+      .bar-chart {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+        align-items: end;
+        min-height: 260px;
+        padding-top: 20px;
+        border-bottom: 2px solid var(--line);
+      }
+
+      .bar {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        height: 260px;
+      }
+
+      .bar-fill {
+        width: 100%;
+        min-height: 18px;
+        border-radius: 8px 8px 0 0;
+        background: linear-gradient(180deg, var(--brass), var(--brass-dark));
+        display: grid;
+        place-items: start center;
+        padding-top: 12px;
+        color: var(--white);
+        font-weight: 900;
+      }
+
+      .bar:nth-child(2) .bar-fill {
+        background: linear-gradient(180deg, var(--slate), #203d4a);
+      }
+
+      .bar:nth-child(3) .bar-fill {
+        background: linear-gradient(180deg, var(--ink), #071713);
+      }
+
+      .bar-label {
+        font-weight: 900;
+        color: var(--ink);
+      }
+
+      .funnel {
+        display: grid;
+        gap: 12px;
+      }
+
+      .funnel-row {
+        display: grid;
+        grid-template-columns: 150px 1fr 140px;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .funnel-track {
+        height: 44px;
+        border: 1px solid var(--line);
+        background: var(--paper);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      .funnel-fill {
+        height: 100%;
+        background: var(--ink);
+        border-radius: 999px;
+      }
+
+      .funnel-row:nth-child(2) .funnel-fill {
+        background: var(--slate);
+      }
+
+      .funnel-row:nth-child(3) .funnel-fill {
+        background: var(--brass);
+      }
+
+      .funnel-label,
+      .funnel-value {
+        font-weight: 900;
+      }
+
+      .price {
+        color: var(--ink);
+        font-size: clamp(42px, 6vw, 74px);
+        line-height: 1;
+        margin: 12px 0;
+      }
+
+      .price span {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 0.42em;
+        color: var(--muted);
+      }
+
+      .big-number {
+        color: var(--ink);
+        font-size: clamp(48px, 7vw, 78px);
+        line-height: 1;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        min-height: 34px;
+        padding: 6px 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--paper);
+        color: var(--ink);
+        font-weight: 900;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 22px;
+        align-items: stretch;
+      }
+
+      .stacked {
+        display: grid;
+        gap: 12px;
+      }
+
+      .fund-row {
+        display: grid;
+        grid-template-columns: 170px 1fr 60px;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .fund-track {
+        height: 18px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: var(--paper);
+      }
+
+      .fund-fill {
+        height: 100%;
+        background: var(--brass);
+      }
+
+      .fund-row:nth-child(2) .fund-fill {
+        background: var(--slate);
+      }
+
+      .fund-row:nth-child(3) .fund-fill {
+        background: var(--ink);
+      }
+
+      .fund-row:nth-child(4) .fund-fill {
+        background: #6d7d77;
+      }
+
+      .fund-row:nth-child(5) .fund-fill {
+        background: var(--brass-dark);
+      }
+
+      .timeline {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: var(--white);
+      }
+
+      .timeline .card {
+        border: 0;
+        border-right: 1px solid var(--line);
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .timeline .card:last-child {
+        border-right: 0;
+      }
+
+      .footer {
+        padding: 34px clamp(24px, 5vw, 64px);
+        color: var(--white);
+        background: var(--ink);
+      }
+
+      .footer p {
+        color: rgba(255, 255, 255, 0.72);
+        max-width: 780px;
+      }
+
+      .footer strong {
+        display: block;
+        margin-top: 20px;
+        color: var(--brass);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      @media (max-width: 820px) {
+        .hero {
+          min-height: auto;
+        }
+
+        .brand-row {
+          position: static;
+          padding: 24px;
+          background: rgba(8, 28, 24, 0.75);
+          flex-wrap: wrap;
+        }
+
+        .hero-inner {
+          padding-top: 120px;
+        }
+
+        .hero-metrics,
+        .grid.two,
+        .grid.three,
+        .grid.four,
+        .split,
+        .timeline {
+          grid-template-columns: 1fr;
+        }
+
+        .funnel-row,
+        .fund-row {
+          grid-template-columns: 1fr;
+        }
+
+        .timeline .card {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .timeline .card:last-child {
+          border-bottom: 0;
+        }
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+
+        .proposal {
+          max-width: none;
+        }
+
+        .section,
+        .hero,
+        .footer {
+          break-inside: avoid;
+        }
+
+        .card,
+        .scenario-table,
+        .bar-wrap {
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="proposal">
+      <section class="hero">
+        <div class="brand-row">
+          <div class="brand-lockup" aria-label="LearnedCircle">
+            <div class="mark">LC</div>
+            <div>
+              <strong>LearnedCircle</strong>
+              <span>learnedcircle.com</span>
+            </div>
+          </div>
+          <div class="confidential">Investor Proposal</div>
+        </div>
+
+        <div class="hero-inner">
+          <p class="eyebrow">Nigeria-first legal marketplace and professional network</p>
+          <h1>Building the trusted legal network for clients, lawyers and opportunity.</h1>
+          <p class="hero-copy">
+            LearnedCircle connects clients with verified lawyers, corporate law specialists, tax experts, general practice lawyers, law firms, employers and legal professionals through one premium legal platform that is ready for commercial scale.
+          </p>
+          <div class="hero-metrics">
+            <div class="metric">
+              <strong>200k+</strong>
+              <span>Nigerian lawyers in the addressable professional market</span>
+            </div>
+            <div class="metric">
+              <strong>N10,000</strong>
+              <span>Monthly premium lawyer subscription</span>
+            </div>
+            <div class="metric">
+              <strong>N100m</strong>
+              <span>Primary seed ask for 12% equity</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">The Opportunity</p>
+          <h2>Legal services need trust, visibility and speed.</h2>
+          <p>
+            Clients struggle to identify credible lawyers. Lawyers struggle to stand out, publish expertise, receive quality briefs, collaborate with peers and find serious opportunities. LearnedCircle turns that fragmented market into a searchable, verified, content-rich network.
+          </p>
+        </div>
+
+        <div class="grid three">
+          <article class="card">
+            <span class="tag">Clients</span>
+            <h3>Find verified help faster</h3>
+            <p>Search by matter, location, availability, pro bono openness and practice area, then contact verified lawyers directly.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Lawyers</span>
+            <h3>Build a professional profile</h3>
+            <p>Verification, articles, profile views, online chat visibility, branded invoices, mentorship and lawyer-to-lawyer networking.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Employers</span>
+            <h3>Post legal opportunities</h3>
+            <p>Law firms, companies and organizations can publish jobs, retainers, adverts and opportunities with applicant routing.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Founder and Sponsor</p>
+          <h2>A legal-sector project with a clear owner and operating vision.</h2>
+          <p>
+            LearnedCircle is founder-led and powered by Advocati LP, with a practical focus on helping lawyers become more visible, helping clients find suitable legal support, and helping the legal profession create new digital opportunities.
+          </p>
+        </div>
+
+        <div class="grid three">
+          <article class="card">
+            <span class="tag">Founder vision</span>
+            <h3>Build a trusted legal network</h3>
+            <p>The platform is designed around legal credibility, professional visibility, client access, lawyer networking and opportunity exchange.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Sponsor</span>
+            <h3>Powered by Advocati LP</h3>
+            <p>Advocati LP provides the ownership identity and professional direction for LearnedCircle as the platform grows.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Team plan</span>
+            <h3>Lean growth team after funding</h3>
+            <p>Investment will support hiring across growth, verification, customer support, content operations and partnerships.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Product</p>
+          <h2>More than a directory, already structured for revenue.</h2>
+          <p>
+            LearnedCircle combines lawyer discovery, professional publishing, classifieds, mentorship, messaging, payment-enabled premium access and practice tools in a single clean platform. The next stage is not basic setup. It is team building, marketing, lawyer acquisition and national rollout.
+          </p>
+        </div>
+
+        <div class="grid four">
+          <article class="card step" data-step="01">
+            <h3>Verified lawyer profiles</h3>
+            <p>SCN, year of call, practice areas, location, pro bono status, verification and public profile details.</p>
+          </article>
+          <article class="card step" data-step="02">
+            <h3>Premium direct access</h3>
+            <p>Active premium lawyers unlock direct client contact, faster publishing, online chat visibility and preferred matching.</p>
+          </article>
+          <article class="card step" data-step="03">
+            <h3>Legal content network</h3>
+            <p>Articles, debate, legal news and admin-published guest blogs by senior lawyers, SANs and retired judges.</p>
+          </article>
+          <article class="card step" data-step="04">
+            <h3>Lawyer business tools</h3>
+            <p>Branded invoices, WhatsApp sending, job applications with CV upload, messaging and notifications.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Execution Status</p>
+          <h2>Built, live and ready for growth capital.</h2>
+          <p>
+            The investment case assumes the essential platform actions have been completed: domain, hosting, core pages, account flows, moderation structure, database foundation, premium plan logic and payment path. Investor capital is therefore focused on employing the right people and marketing the platform into the legal market.
+          </p>
+        </div>
+
+        <div class="grid four">
+          <article class="card">
+            <span class="tag">Platform</span>
+            <h3>Live web presence</h3>
+            <p>LearnedCircle is positioned as a working legal marketplace with professional branding and public user flows.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Revenue</span>
+            <h3>Premium model ready</h3>
+            <p>Subscription pricing, premium benefits and payment-led activation are part of the commercial structure.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Operations</span>
+            <h3>Verification path</h3>
+            <p>Lawyer profile intake, SCN collection, moderation and verification logic support trust and quality control.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Scale</span>
+            <h3>Funding use is growth</h3>
+            <p>Capital is targeted at hiring, marketing, partnerships, lawyer acquisition and support operations.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Current Traction</p>
+          <h2>Key building blocks are already in place.</h2>
+          <p>
+            LearnedCircle is no longer just a concept. The core product direction, public website, premium proposition and operating workflows have already been shaped. The next phase is to take this foundation into the market.
+          </p>
+        </div>
+
+        <div class="grid four">
+          <article class="card">
+            <span class="tag">Brand</span>
+            <h3>Domain and identity</h3>
+            <p>learnedcircle.com, legal-style branding, LC logo, premium color system and public-facing platform design.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Product</span>
+            <h3>Core user flows</h3>
+            <p>Lawyer profiles, client case brief, direct contact, jobs, adverts, articles, debate, guest blog and mentorship.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Revenue</span>
+            <h3>Premium plans</h3>
+            <p>N10,000 monthly and N100,000 yearly premium lawyer plan with direct contact, publishing and invoice benefits.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Operations</span>
+            <h3>Admin and trust flows</h3>
+            <p>Moderation, verification, terms, privacy, disclaimers, article review logic and lawyer profile review structure.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Market Model</p>
+          <h2>Conservative adoption still creates a strong recurring revenue path.</h2>
+          <p>
+            Nigeria's lawyer market is commonly discussed in the 200,000 to 250,000 range. This proposal models a conservative midpoint of 220,000 lawyers to show how modest adoption can still create substantial recurring revenue.
+          </p>
+        </div>
+
+        <div class="split">
+          <div class="card">
+            <h3>Adoption funnel</h3>
+            <p>Illustrative first major scale target based on 10% lawyer onboarding and 20% premium conversion from a 220,000-lawyer model.</p>
+            <div class="funnel" style="margin-top: 22px;">
+              <div class="funnel-row">
+                <span class="funnel-label">Market</span>
+                <div class="funnel-track"><div class="funnel-fill" style="width: 100%;"></div></div>
+                <span class="funnel-value">220,000</span>
+              </div>
+              <div class="funnel-row">
+                <span class="funnel-label">Registered</span>
+                <div class="funnel-track"><div class="funnel-fill" style="width: 10%;"></div></div>
+                <span class="funnel-value">22,000</span>
+              </div>
+              <div class="funnel-row">
+                <span class="funnel-label">Premium</span>
+                <div class="funnel-track"><div class="funnel-fill" style="width: 2%; min-width: 32px;"></div></div>
+                <span class="funnel-value">4,400</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bar-wrap">
+            <h3>Annual revenue scenarios</h3>
+            <div class="bar-chart" aria-label="Annual revenue scenario chart">
+              <div class="bar">
+                <div class="bar-fill" style="height: 24%;">N135m</div>
+                <div class="bar-label">Conservative</div>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" style="height: 58%;">N520m</div>
+                <div class="bar-label">Base Case</div>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" style="height: 100%;">N1.52bn</div>
+                <div class="bar-label">Upside</div>
+              </div>
+            </div>
+            <p style="color: var(--muted);">Revenue includes premium subscriptions plus estimated jobs, adverts and featured placements.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Financial Potential</p>
+          <h2>Three simple scenarios.</h2>
+          <p>
+            Pricing is based on the current LearnedCircle premium plan: N10,000 monthly or N100,000 yearly. The yearly figure is used for clean annualized modeling.
+          </p>
+        </div>
+
+        <table class="scenario-table">
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>Lawyer onboarding</th>
+              <th>Premium conversion</th>
+              <th>Premium ARR</th>
+              <th>Jobs + adverts</th>
+              <th>Total annual potential</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Conservative</strong></td>
+              <td>11,000 lawyers (5%)</td>
+              <td>1,100 premium (10%)</td>
+              <td>N110m</td>
+              <td>N25m</td>
+              <td><strong>N135m</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Base case</strong></td>
+              <td>22,000 lawyers (10%)</td>
+              <td>4,400 premium (20%)</td>
+              <td>N440m</td>
+              <td>N80m</td>
+              <td><strong>N520m</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Upside</strong></td>
+              <td>44,000 lawyers (20%)</td>
+              <td>13,200 premium (30%)</td>
+              <td>N1.32bn</td>
+              <td>N200m</td>
+              <td><strong>N1.52bn</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Revenue Streams</p>
+          <h2>Recurring subscriptions first, marketplace revenue second.</h2>
+        </div>
+
+        <div class="grid three">
+          <article class="card blue">
+            <span class="tag">Core</span>
+            <h3>Premium lawyers</h3>
+            <p class="price">N10,000 <span>/ month</span></p>
+            <p class="price" style="font-size: 44px;">N100,000 <span>/ year</span></p>
+            <ul>
+              <li>Verified badge and profile visibility.</li>
+              <li>Direct client contact on the website.</li>
+              <li>Direct article, job and opportunity publishing for active premium members.</li>
+              <li>Unlimited branded invoices.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <span class="tag">Marketplace</span>
+            <h3>Jobs and opportunities</h3>
+            <p>Employers, law firms and companies pay to list roles, retainers, internships, consulting mandates and legal opportunities.</p>
+            <ul>
+              <li>Per-post revenue.</li>
+              <li>Featured opportunity placements.</li>
+              <li>Applicant routing and CV upload.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <span class="tag">Media</span>
+            <h3>Ads and sponsored visibility</h3>
+            <p>Paid adverts give law firms, legal education providers, publishers and corporate services better visibility.</p>
+            <ul>
+              <li>Free and paid advert options.</li>
+              <li>Featured lawyer placement.</li>
+              <li>Sponsored webinars and legal resources.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Investment Ask</p>
+          <h2>Investment options from N100m to N500m.</h2>
+          <p>
+            LearnedCircle is seeking growth capital to accelerate market entry, expand lawyer acquisition, strengthen verification operations, grow brand visibility and support national rollout. The platform infrastructure, premium model and payment pathway are already in place, allowing investor capital to focus primarily on growth and execution.
+          </p>
+        </div>
+
+        <div class="grid three">
+          <article class="card dark">
+            <span class="tag">Seed entry</span>
+            <h3>N100,000,000</h3>
+            <p class="big-number" style="color: var(--white);">12%</p>
+            <p>Primary investment option for market entry, lawyer acquisition, verification operations and focused launch growth.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Growth round</span>
+            <h3>N200,000,000 for 15%</h3>
+            <p>Stronger option for wider marketing, hiring, support operations, partnerships and national rollout.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Strategic round</span>
+            <h3>N500,000,000 for 20%</h3>
+            <p>Best suited for a strategic investor or group that can support fast national scale, institutional partnerships and long-term expansion.</p>
+          </article>
+        </div>
+
+        <div class="card" style="margin-top: 18px;">
+          <h3>Strategic investor alignment</h3>
+          <p>
+            The preferred investor is one who can contribute more than capital, including legal-sector relationships, institutional access, marketing reach, technology support, employer partnerships or national distribution.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Use of Funds</p>
+          <h2>Capital goes into hiring, marketing, trust and acquisition.</h2>
+        </div>
+
+        <div class="split">
+          <div class="card">
+            <h3>Proposed allocation</h3>
+            <div class="stacked" style="margin-top: 20px;">
+              <div class="fund-row">
+                <span>Marketing + growth</span>
+                <div class="fund-track"><div class="fund-fill" style="width: 35%;"></div></div>
+                <strong>35%</strong>
+              </div>
+              <div class="fund-row">
+                <span>Hiring + operations</span>
+                <div class="fund-track"><div class="fund-fill" style="width: 30%;"></div></div>
+                <strong>30%</strong>
+              </div>
+              <div class="fund-row">
+                <span>Lawyer acquisition</span>
+                <div class="fund-track"><div class="fund-fill" style="width: 15%;"></div></div>
+                <strong>15%</strong>
+              </div>
+              <div class="fund-row">
+                <span>Trust + verification</span>
+                <div class="fund-track"><div class="fund-fill" style="width: 10%;"></div></div>
+                <strong>10%</strong>
+              </div>
+              <div class="fund-row">
+                <span>Reserve + product polish</span>
+                <div class="fund-track"><div class="fund-fill" style="width: 10%;"></div></div>
+                <strong>10%</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>What the round should achieve</h3>
+            <ul>
+              <li>Employ a lean growth, support, verification and content operations team.</li>
+              <li>Market LearnedCircle through legal communities, branch networks, digital campaigns and strategic partnerships.</li>
+              <li>Scale lawyer verification and admin moderation workflows after payment activation.</li>
+              <li>Acquire verified lawyers across Nigerian states and FCT.</li>
+              <li>Build repeat usage through articles, debate, mentorship, jobs, invoices and messaging.</li>
+              <li>Prepare for institutional partnerships with firms, legal education providers and employers.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Go-To-Market</p>
+          <h2>How LearnedCircle will reach lawyers and clients.</h2>
+          <p>
+            The growth plan is to start with lawyers, then use their profiles, articles, mentorship activity and availability to attract clients, employers and advertisers.
+          </p>
+        </div>
+
+        <div class="grid three">
+          <article class="card">
+            <span class="tag">Lawyers</span>
+            <h3>Professional community rollout</h3>
+            <ul>
+              <li>NBA branch outreach and legal community partnerships.</li>
+              <li>Young lawyers groups, law school alumni and practice-area circles.</li>
+              <li>Senior lawyer mentorship as a trust and engagement driver.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <span class="tag">Clients</span>
+            <h3>Search-led client acquisition</h3>
+            <ul>
+              <li>Legal articles and explainers that attract search traffic.</li>
+              <li>Simple case brief flow for people who need legal help.</li>
+              <li>Direct contact with verified premium lawyers online.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <span class="tag">Revenue</span>
+            <h3>Employer and advertiser pipeline</h3>
+            <ul>
+              <li>Law firms and companies posting jobs and retainers.</li>
+              <li>Paid adverts for legal services, education and business tools.</li>
+              <li>Featured placements for verified and premium professionals.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Milestones</p>
+          <h2>Clear operating targets after investment.</h2>
+        </div>
+
+        <div class="timeline">
+          <article class="card">
+            <span class="tag">0-3 months</span>
+            <h3>Scale readiness</h3>
+            <p>Hire core team, activate marketing campaigns, onboard founding lawyers and formalize verification support.</p>
+          </article>
+          <article class="card">
+            <span class="tag">3-6 months</span>
+            <h3>Initial traction</h3>
+            <p>1,500 to 3,000 lawyer profiles, early premium users, paid job posts, adverts and legal content pipeline.</p>
+          </article>
+          <article class="card">
+            <span class="tag">6-12 months</span>
+            <h3>Commercial proof</h3>
+            <p>5,000 to 10,000 profiles, 500 to 1,500 premium lawyers, repeated job posts and visible client demand.</p>
+          </article>
+          <article class="card">
+            <span class="tag">12-24 months</span>
+            <h3>National scale</h3>
+            <p>22,000 registered lawyers, nationwide coverage, stronger brand trust and defensible recurring revenue.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Risk and Mitigation</p>
+          <h2>The main risks are known and manageable.</h2>
+          <p>
+            Investors expect risk. The strength of LearnedCircle is that the most obvious risks can be reduced with verification, moderation, clear terms, careful payment flows and focused operations.
+          </p>
+        </div>
+
+        <table class="scenario-table">
+          <thead>
+            <tr>
+              <th>Risk</th>
+              <th>What could happen</th>
+              <th>How LearnedCircle reduces it</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Fake or weak profiles</strong></td>
+              <td>Unverified users may create misleading lawyer profiles.</td>
+              <td>SCN collection, year of call, admin verification, reporting tools and public verification status.</td>
+            </tr>
+            <tr>
+              <td><strong>Legal liability</strong></td>
+              <td>Users may treat platform content as legal advice from LearnedCircle.</td>
+              <td>Terms, privacy notice, disclaimer, participant undertaking and clear separation between platform and lawyer advice.</td>
+            </tr>
+            <tr>
+              <td><strong>Moderation burden</strong></td>
+              <td>Draft posts, adverts and profiles may require review.</td>
+              <td>Admin moderation queue, premium publishing rules, report profile workflow and content standards.</td>
+            </tr>
+            <tr>
+              <td><strong>Slow paid conversion</strong></td>
+              <td>Some lawyers may use free accounts without upgrading.</td>
+              <td>Premium benefits include direct contact, visibility, online chat, faster publishing and unlimited branded invoices.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Why LearnedCircle Can Win</p>
+          <h2>A focused legal network with multiple reasons to return.</h2>
+        </div>
+
+        <div class="grid two">
+          <article class="card">
+            <h3>Trust-based positioning</h3>
+            <p>Verification, SCN collection, moderation, terms, privacy, disclaimers and lawyer status controls make the platform feel credible from day one.</p>
+          </article>
+          <article class="card">
+            <h3>Recurring professional value</h3>
+            <p>Lawyers do not only create profiles. They can receive clients, publish, mentor, chat, follow peers, apply to opportunities and generate invoices.</p>
+          </article>
+          <article class="card">
+            <h3>Network effects</h3>
+            <p>More lawyers improve client matching. More content improves search. More jobs improve daily usefulness. More mentors improve professional community.</p>
+          </article>
+          <article class="card">
+            <h3>Expandable model</h3>
+            <p>The platform can expand from Nigeria into diaspora legal work, African legal networks, legal education, compliance tools and practice management.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="heading">
+          <p class="eyebrow">Investor Upside</p>
+          <h2>The platform can grow beyond its first market.</h2>
+          <p>
+            The first opportunity is Nigeria. The bigger opportunity is a trusted legal network that can expand into African legal markets, diaspora legal needs, legal education, compliance support and professional tools.
+          </p>
+        </div>
+
+        <div class="grid three">
+          <article class="card">
+            <span class="tag">Future rounds</span>
+            <h3>Higher valuation after traction</h3>
+            <p>Stronger user numbers, recurring revenue and verified lawyer adoption can support a larger institutional funding round.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Expansion</span>
+            <h3>Regional legal network</h3>
+            <p>The model can extend from Nigeria into Africa-focused legal discovery, cross-border services and diaspora legal support.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Exit options</span>
+            <h3>Strategic acquisition or dividends</h3>
+            <p>Potential exits may include acquisition by legal-tech, legal media, compliance, company services or practice-management platforms.</p>
+          </article>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>
+          This proposal is an illustrative investment model prepared for discussion. Financial projections are planning scenarios, not guaranteed results. Final investor terms should be reviewed with legal, tax and financial advisers before execution.
+        </p>
+        <strong>Powered by Advocati LP</strong>
+      </footer>
+    </main>
+  </body>
+</html>
