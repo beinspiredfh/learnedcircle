@@ -24,6 +24,7 @@ const messageRecipient = document.querySelector("[data-message-recipient]");
 const messageList = document.querySelector("[data-message-list]");
 const peerSuggestions = document.querySelector("[data-peer-suggestions]");
 const dashboardSummary = document.querySelector("[data-dashboard-summary]");
+const paymentStatusGrid = document.querySelector("[data-payment-status-grid]");
 const invoiceForm = document.querySelector("[data-invoice-form]");
 const invoiceStatus = document.querySelector("[data-invoice-status]");
 const invoicePreview = document.querySelector("[data-invoice-preview]");
@@ -162,6 +163,48 @@ function membershipBenefitText(value) {
   return "Free account: public access, reviewed posts and five invoices per month. Premium unlocks direct contact, visibility and unlimited branded invoices.";
 }
 
+function paymentStateFromMembership(value) {
+  if (value === "premium_active") return "premium_active";
+  if (value === "premium_pending") return "pending_payment";
+  if (value === "premium_expired") return "payment_failed";
+  return "free";
+}
+
+function renderPaymentStatus(value) {
+  if (!paymentStatusGrid) return;
+
+  const activeState = paymentStateFromMembership(value);
+  const states = [
+    {
+      key: "free",
+      title: "Free account",
+      copy: "Five invoices monthly, reviewed publishing, and standard profile tools."
+    },
+    {
+      key: "pending_payment",
+      title: "Pending payment",
+      copy: "Payment or admin confirmation is still being reviewed before premium activates."
+    },
+    {
+      key: "premium_active",
+      title: "Premium active",
+      copy: "Direct messages, priority visibility, unlimited AI chats and unlimited branded invoices."
+    },
+    {
+      key: "payment_failed",
+      title: "Payment failed",
+      copy: "Premium is not active. Retry payment or contact admin with your payment reference."
+    }
+  ];
+
+  paymentStatusGrid.innerHTML = states.map((state) => `
+    <article class="payment-state ${state.key === activeState ? "active" : ""}">
+      <span>${state.title}</span>
+      <p>${state.copy}</p>
+    </article>
+  `).join("");
+}
+
 function invoiceStorageKey() {
   const date = new Date();
   const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
@@ -219,6 +262,7 @@ function renderDashboard(profile, user) {
     membershipBanner.className = `membership-banner ${membershipTone(membership)}`;
     membershipBanner.textContent = `${membershipLabel(membership)} - ${membershipBenefitText(membership)}`;
   }
+  renderPaymentStatus(membership);
   accountFacts.innerHTML = `
     <dt>Email</dt>
     <dd>${user.email}</dd>
