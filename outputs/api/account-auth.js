@@ -1,6 +1,7 @@
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://tnxdulqdfanzlawuonmf.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY =
   process.env.SUPABASE_PUBLISHABLE_KEY || "sb_publishable_UxaC8agmrd3bAkxhxQRzXA_uOCvnyKd";
+const crypto = require("crypto");
 
 const NIGERIA_LOCATIONS = new Set([
   "Abia",
@@ -116,6 +117,218 @@ function splitList(value) {
     .filter(Boolean);
 }
 
+function originFromRequest(request) {
+  const host = request.headers.host || "learnedcircle.com";
+  const protocol = request.headers["x-forwarded-proto"] || "https";
+  return `${protocol}://${host}`;
+}
+
+function getPaystackSecretKey() {
+  return process.env.PAYSTACK_SECRET_KEY || process.env.PAYSTACK_TEST_SECRET_KEY;
+}
+
+function paystackReady() {
+  return Boolean(getPaystackSecretKey());
+}
+
+function moneyKobo(value) {
+  return Number(value || 0);
+}
+
+function commissionKobo(amountKobo, rate = 5) {
+  return Math.ceil(moneyKobo(amountKobo) * (rate / 100));
+}
+
+function premiumPlan(planCode) {
+  const plans = {
+    monthly: {
+      planCode: "monthly",
+      label: "Premium Monthly",
+      amountKobo: 1000000
+    },
+    yearly: {
+      planCode: "yearly",
+      label: "Premium Yearly",
+      amountKobo: 10000000
+    }
+  };
+
+  return plans[planCode] || plans.monthly;
+}
+
+function advertPlan(duration) {
+  const plans = {
+    daily: { duration: "daily", label: "Daily advert", amountKobo: 1000000 },
+    weekly: { duration: "weekly", label: "Weekly advert", amountKobo: 2000000 },
+    monthly: { duration: "monthly", label: "Monthly advert", amountKobo: 10000000 }
+  };
+
+  return plans[duration] || plans.daily;
+}
+
+async function paystackRequest(path, options = {}) {
+  const secretKey = getPaystackSecretKey();
+
+  if (!secretKey) {
+    return {
+      ok: false,
+      status: 503,
+      json: async () => ({ message: "Paystack secret key is not configured yet." })
+    };
+  }
+
+  return fetch(`https://api.paystack.co${path}`, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${secretKey}`,
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    }
+  });
+}
+
+async function initializePaystackTransaction({ email, amountKobo, reference, callbackUrl, metadata }) {
+  const paystackResponse = await paystackRequest("/transaction/initialize", {
+    method: "POST",
+    body: JSON.stringify({
+      email,
+      amount: amountKobo,
+      reference,
+      callback_url: callbackUrl,
+      metadata
+    })
+  });
+  const paystackData = await paystackResponse.json();
+
+  if (!paystackResponse.ok || paystackData.status !== true) {
+    return {
+      ok: false,
+      status: paystackResponse.status || 502,
+      message: paystackData.message || "Paystack could not initialize payment."
+    };
+  }
+
+  return {
+    ok: true,
+    authorizationUrl: paystackData.data.authorization_url,
+    accessCode: paystackData.data.access_code,
+    reference: paystackData.data.reference
+  };
+}
+
+async function verifyPaystackTransaction(reference) {
+  const verifyResponse = await paystackRequest(`/transaction/verify/${encodeURIComponent(reference)}`);
+  const verifyData = await verifyResponse.json();
+
+  if (!verifyResponse.ok || verifyData.status !== true) {
+    return {
+      ok: false,
+      status: verifyResponse.status || 502,
+      message: verifyData.message || "Paystack payment verification failed."
+    };
+  }
+
+  return {
+    ok: true,
+    data: verifyData.data,
+    paid: verifyData.data.status === "success"
+  };
+}
+
+async function insertPlatformPayment(payment = {}) {
+  const paymentResponse = await supabaseServiceFetch("/rest/v1/platform_payments", {
+    method: "POST",
+    headers: { Prefer: "return=representation" },
+    body: JSON.stringify(payment)
+  });
+  const paymentRows = await paymentResponse.json();
+
+  if (!paymentResponse.ok) {
+    return { ok: false, status: paymentResponse.status, message: paymentRows.message || "Could not create payment record." };
+  }
+
+  return { ok: true, payment: paymentRows[0] };
+}
+
+async function markPaymentStatus(reference, status, metadata = {}) {
+  const paymentResponse = await supabaseServiceFetch(
+    `/rest/v1/platform_payments?provider_reference=eq.${encodeURIComponent(reference)}`,
+    {
+      method: "PATCH",
+      headers: { Prefer: "return=representation" },
+      body: JSON.stringify({ status, metadata })
+    }
+  );
+  const paymentRows = await paymentResponse.json();
+
+  if (!paymentResponse.ok) {
+    return { ok: false, status: paymentResponse.status, message: paymentRows.message || "Could not update payment record." };
+  }
+
+  return { ok: true, payment: paymentRows[0] };
+}
+
+function paystackSignatureValid(rawBody, signature) {
+  const secretKey = getPaystackSecretKey();
+
+  if (!secretKey || !signature) return false;
+
+  const digest = crypto
+    .createHmac("sha512", secretKey)
+    .update(rawBody)
+    .digest("hex");
+
+  return digest === signature;
+}
+
+async function applySuccessfulPayment(reference, paystackData = {}) {
+  const paymentUpdate = await markPaymentStatus(reference, "paid", {
+    paystack: paystackData,
+    verified_at: new Date().toISOString()
+  });
+
+  if (!paymentUpdate.ok) return paymentUpdate;
+
+  const payment = paymentUpdate.payment;
+
+  if (payment?.payment_type === "premium_subscription" && payment.metadata?.user_id) {
+    await supabaseServiceFetch(`/rest/v1/profiles?id=eq.${encodeURIComponent(payment.metadata.user_id)}`, {
+      method: "PATCH",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({ membership: "premium_pending" })
+    });
+
+    await supabaseServiceFetch("/rest/v1/premium_subscriptions", {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({
+        account_email: payment.payer_email,
+        plan_code: payment.metadata.plan_code || "monthly",
+        payment_id: payment.id,
+        starts_at: new Date().toISOString(),
+        status: "active",
+        metadata: payment.metadata || {}
+      })
+    });
+  }
+
+  if (payment?.payment_type === "client_legal_work") {
+    await supabaseServiceFetch("/rest/v1/platform_commissions", {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({
+        payment_id: payment.id,
+        commission_rate: 5,
+        commission_amount_kobo: commissionKobo(payment.amount_kobo, 5),
+        status: "earned",
+        metadata: payment.metadata || {}
+      })
+    });
+  }
+
+  return { ok: true, payment };
+}
+
 function escapeHtml(value) {
   return String(value || "")
     .replace(/&/g, "&amp;")
@@ -209,6 +422,28 @@ module.exports = async function handler(request, response) {
   }
 
   const body = await readJson(request);
+  const paystackSignature = request.headers["x-paystack-signature"];
+
+  if (paystackSignature && body?.event) {
+    const rawBody = typeof request.body === "string" ? request.body : JSON.stringify(body || {});
+
+    if (!paystackSignatureValid(rawBody, paystackSignature)) {
+      response.status(401).json({ ok: false, message: "Invalid Paystack signature." });
+      return;
+    }
+
+    if (body.event === "charge.success" && body.data?.reference) {
+      const applied = await applySuccessfulPayment(body.data.reference, body.data);
+
+      if (!applied.ok) {
+        response.status(applied.status || 500).json({ ok: false, message: applied.message || "Payment webhook could not be applied." });
+        return;
+      }
+    }
+
+    response.status(200).json({ ok: true, message: "Paystack webhook received." });
+    return;
+  }
 
   if (body.action === "signup") {
     const fullName = String(body.fullName || "").trim();
@@ -373,6 +608,325 @@ module.exports = async function handler(request, response) {
         followers: followers.length,
         following: following.length
       }
+    });
+    return;
+  }
+
+  if (body.action === "initialize-premium-payment") {
+    const user = await verifyUser(body.accessToken);
+
+    if (!user) {
+      response.status(401).json({ ok: false, message: "Session expired. Please log in again." });
+      return;
+    }
+
+    if (!paystackReady()) {
+      response.status(503).json({
+        ok: false,
+        message: "Paystack is not configured yet. Premium payment can be requested for admin review for now."
+      });
+      return;
+    }
+
+    const profile = await loadProfile(user.id);
+    const plan = premiumPlan(String(body.planCode || "monthly"));
+    const reference = `LC-PREMIUM-${plan.planCode}-${Date.now()}-${user.id.slice(0, 8)}`;
+    const callbackUrl = `${originFromRequest(request)}/account.html?payment=paystack&reference=${encodeURIComponent(reference)}`;
+    const metadata = {
+      learnedcircle_type: "premium_subscription",
+      user_id: user.id,
+      email: user.email,
+      plan_code: plan.planCode,
+      profile_role: profile?.role || null
+    };
+
+    const paymentRecord = await insertPlatformPayment({
+      payment_type: "premium_subscription",
+      payer_name: profile?.full_name || user.email,
+      payer_email: user.email,
+      provider: "paystack",
+      provider_reference: reference,
+      amount_kobo: plan.amountKobo,
+      currency: "NGN",
+      status: "awaiting_payment",
+      metadata
+    });
+
+    if (!paymentRecord.ok) {
+      response.status(paymentRecord.status).json({ ok: false, message: paymentRecord.message });
+      return;
+    }
+
+    const checkout = await initializePaystackTransaction({
+      email: user.email,
+      amountKobo: plan.amountKobo,
+      reference,
+      callbackUrl,
+      metadata
+    });
+
+    if (!checkout.ok) {
+      response.status(checkout.status).json({ ok: false, message: checkout.message });
+      return;
+    }
+
+    response.status(200).json({
+      ok: true,
+      message: "Paystack checkout created.",
+      authorizationUrl: checkout.authorizationUrl,
+      accessCode: checkout.accessCode,
+      reference: checkout.reference,
+      payment: paymentRecord.payment
+    });
+    return;
+  }
+
+  if (body.action === "initialize-advert-payment") {
+    const email = cleanText(body.email).toLowerCase();
+    const organization = cleanText(body.organization);
+    const plan = advertPlan(String(body.duration || "daily"));
+
+    if (!email || !organization) {
+      response.status(400).json({ ok: false, message: "Organization and contact email are required for advert payment." });
+      return;
+    }
+
+    if (!paystackReady()) {
+      response.status(503).json({ ok: false, message: "Paystack is not configured yet. Submit the advert request for admin review." });
+      return;
+    }
+
+    const reference = `LC-ADVERT-${plan.duration}-${Date.now()}`;
+    const callbackUrl = `${originFromRequest(request)}/index.html?payment=paystack&reference=${encodeURIComponent(reference)}#advertise`;
+    const metadata = {
+      learnedcircle_type: "advert",
+      organization,
+      advert_duration: plan.duration
+    };
+
+    const requestResponse = await supabaseServiceFetch("/rest/v1/advert_payment_requests", {
+      method: "POST",
+      headers: { Prefer: "return=representation" },
+      body: JSON.stringify({
+        organization,
+        contact_email: email,
+        advert_duration: plan.duration,
+        quoted_amount_kobo: plan.amountKobo,
+        status: "awaiting_payment",
+        metadata
+      })
+    });
+    const requestRows = await requestResponse.json();
+
+    if (!requestResponse.ok) {
+      response.status(requestResponse.status).json({ ok: false, message: requestRows.message || "Could not create advert payment request." });
+      return;
+    }
+
+    const paymentRecord = await insertPlatformPayment({
+      payment_type: "advert",
+      payer_name: organization,
+      payer_email: email,
+      related_item_id: requestRows[0]?.id || null,
+      provider: "paystack",
+      provider_reference: reference,
+      amount_kobo: plan.amountKobo,
+      currency: "NGN",
+      status: "awaiting_payment",
+      metadata
+    });
+
+    if (!paymentRecord.ok) {
+      response.status(paymentRecord.status).json({ ok: false, message: paymentRecord.message });
+      return;
+    }
+
+    await supabaseServiceFetch(`/rest/v1/advert_payment_requests?id=eq.${encodeURIComponent(requestRows[0].id)}`, {
+      method: "PATCH",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({ payment_id: paymentRecord.payment.id })
+    });
+
+    const checkout = await initializePaystackTransaction({
+      email,
+      amountKobo: plan.amountKobo,
+      reference,
+      callbackUrl,
+      metadata
+    });
+
+    if (!checkout.ok) {
+      response.status(checkout.status).json({ ok: false, message: checkout.message });
+      return;
+    }
+
+    response.status(200).json({
+      ok: true,
+      message: "Advert payment checkout created.",
+      authorizationUrl: checkout.authorizationUrl,
+      reference: checkout.reference
+    });
+    return;
+  }
+
+  if (body.action === "initialize-lawyer-work-payment") {
+    const email = cleanText(body.email).toLowerCase();
+    const clientName = cleanText(body.clientName);
+    const lawyerName = cleanText(body.lawyerName);
+    const lawyerProfileId = cleanText(body.lawyerProfileId);
+    const workType = cleanText(body.workType || "Legal work");
+    const workDescription = cleanText(body.workDescription);
+    const quoteAmountKobo = moneyKobo(body.quoteAmountKobo);
+
+    if (!email || !clientName || !lawyerName || !lawyerProfileId || !workDescription || quoteAmountKobo <= 0) {
+      response.status(400).json({ ok: false, message: "Client details, lawyer, work description and quote amount are required." });
+      return;
+    }
+
+    if (!paystackReady()) {
+      response.status(503).json({ ok: false, message: "Paystack is not configured yet. Save the quote and collect payment after setup." });
+      return;
+    }
+
+    const platformCommissionKobo = commissionKobo(quoteAmountKobo, 5);
+    const lawyerSettlementKobo = Math.max(quoteAmountKobo - platformCommissionKobo, 0);
+    const reference = `LC-WORK-${Date.now()}-${lawyerProfileId.slice(0, 8)}`;
+    const callbackUrl = `${originFromRequest(request)}/index.html?payment=paystack&reference=${encodeURIComponent(reference)}#lawyers`;
+    const metadata = {
+      learnedcircle_type: "client_legal_work",
+      lawyer_profile_id: lawyerProfileId,
+      lawyer_name: lawyerName,
+      work_type: workType,
+      platform_commission_rate: 5,
+      platform_commission_kobo: platformCommissionKobo,
+      lawyer_settlement_kobo: lawyerSettlementKobo
+    };
+
+    const workResponse = await supabaseServiceFetch("/rest/v1/lawyer_work_requests", {
+      method: "POST",
+      headers: { Prefer: "return=representation" },
+      body: JSON.stringify({
+        client_name: clientName,
+        client_email: email,
+        client_phone: cleanText(body.clientPhone) || null,
+        lawyer_profile_id: lawyerProfileId,
+        lawyer_name: lawyerName,
+        work_type: workType,
+        work_description: workDescription,
+        status: "awaiting_payment",
+        metadata
+      })
+    });
+    const workRows = await workResponse.json();
+
+    if (!workResponse.ok) {
+      response.status(workResponse.status).json({ ok: false, message: workRows.message || "Could not create lawyer work request." });
+      return;
+    }
+
+    const paymentRecord = await insertPlatformPayment({
+      payment_type: "client_legal_work",
+      payer_name: clientName,
+      payer_email: email,
+      lawyer_profile_id: lawyerProfileId,
+      related_item_id: workRows[0]?.id || null,
+      provider: "paystack",
+      provider_reference: reference,
+      amount_kobo: quoteAmountKobo,
+      currency: "NGN",
+      status: "awaiting_payment",
+      metadata
+    });
+
+    if (!paymentRecord.ok) {
+      response.status(paymentRecord.status).json({ ok: false, message: paymentRecord.message });
+      return;
+    }
+
+    const quoteResponse = await supabaseServiceFetch("/rest/v1/lawyer_work_quotes", {
+      method: "POST",
+      headers: { Prefer: "return=representation" },
+      body: JSON.stringify({
+        work_request_id: workRows[0].id,
+        lawyer_profile_id: lawyerProfileId,
+        lawyer_name: lawyerName,
+        quote_amount_kobo: quoteAmountKobo,
+        platform_commission_rate: 5,
+        platform_commission_kobo: platformCommissionKobo,
+        lawyer_settlement_kobo: lawyerSettlementKobo,
+        status: "awaiting_payment",
+        payment_id: paymentRecord.payment.id,
+        settlement_status: "not_due",
+        terms: cleanText(body.terms),
+        metadata
+      })
+    });
+    const quoteRows = await quoteResponse.json();
+
+    if (!quoteResponse.ok) {
+      response.status(quoteResponse.status).json({ ok: false, message: quoteRows.message || "Could not create lawyer quote." });
+      return;
+    }
+
+    const checkout = await initializePaystackTransaction({
+      email,
+      amountKobo: quoteAmountKobo,
+      reference,
+      callbackUrl,
+      metadata: { ...metadata, work_request_id: workRows[0].id, quote_id: quoteRows[0].id }
+    });
+
+    if (!checkout.ok) {
+      response.status(checkout.status).json({ ok: false, message: checkout.message });
+      return;
+    }
+
+    response.status(200).json({
+      ok: true,
+      message: "Client-lawyer work payment checkout created.",
+      authorizationUrl: checkout.authorizationUrl,
+      reference: checkout.reference,
+      commission: {
+        rate: 5,
+        amountKobo: platformCommissionKobo,
+        lawyerSettlementKobo
+      }
+    });
+    return;
+  }
+
+  if (body.action === "verify-paystack-payment") {
+    const reference = cleanText(body.reference);
+
+    if (!reference) {
+      response.status(400).json({ ok: false, message: "Payment reference is required." });
+      return;
+    }
+
+    const verification = await verifyPaystackTransaction(reference);
+
+    if (!verification.ok) {
+      response.status(verification.status).json({ ok: false, message: verification.message });
+      return;
+    }
+
+    const paymentUpdate = verification.paid
+      ? await applySuccessfulPayment(reference, verification.data)
+      : await markPaymentStatus(reference, "failed", {
+          paystack: verification.data,
+          verified_at: new Date().toISOString()
+        });
+
+    if (!paymentUpdate.ok) {
+      response.status(paymentUpdate.status || 500).json({ ok: false, message: paymentUpdate.message || "Could not update payment record." });
+      return;
+    }
+
+    response.status(200).json({
+      ok: true,
+      message: verification.paid ? "Payment confirmed." : "Payment was not successful.",
+      status: verification.paid ? "paid" : "failed",
+      payment: paymentUpdate.payment
     });
     return;
   }

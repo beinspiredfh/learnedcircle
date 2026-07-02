@@ -632,6 +632,25 @@ document.querySelectorAll("[data-premium-request]").forEach((button) => {
   });
 });
 
+document.querySelectorAll("[data-premium-checkout]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const planCode = button.dataset.premiumCheckout || "monthly";
+    setStatus(premiumStatus, `Creating ${planCode} premium checkout...`);
+
+    try {
+      const result = await accountRequest({
+        action: "initialize-premium-payment",
+        accessToken: session.access_token,
+        planCode
+      });
+      setStatus(premiumStatus, "Checkout ready. Redirecting to Paystack...");
+      window.location.href = result.authorizationUrl;
+    } catch (error) {
+      setStatus(premiumStatus, `${error.message} You can still use Request premium review until Paystack is fully active.`);
+    }
+  });
+});
+
 lawyerProfileForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const formData = new FormData(lawyerProfileForm);
@@ -893,5 +912,24 @@ if (invoiceForm?.elements.invoiceDate) {
   invoiceForm.elements.invoiceDate.value = new Date().toISOString().slice(0, 10);
 }
 
+async function verifyReturnedPayment() {
+  const params = new URLSearchParams(window.location.search);
+  const reference = params.get("reference");
+
+  if (params.get("payment") !== "paystack" || !reference) return;
+
+  setStatus(premiumStatus, "Confirming Paystack payment...");
+
+  try {
+    const result = await accountRequest({
+      action: "verify-paystack-payment",
+      reference
+    });
+    setStatus(premiumStatus, result.message);
+  } catch (error) {
+    setStatus(premiumStatus, error.message);
+  }
+}
+
 updateInvoiceAccessUi();
-loadAccount();
+verifyReturnedPayment().finally(loadAccount);
