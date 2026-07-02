@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LearnedCircle | Paystack setup</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="admin-page">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="LearnedCircle home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <circle cx="24" cy="24" r="21" />
+            <text x="24" y="29" text-anchor="middle">LC</text>
+          </svg>
+        </span>
+        <span>
+          <strong>LearnedCircle</strong>
+          <small>payment setup</small>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="Payment setup navigation">
+        <a href="admin.html#paystack-readiness">Admin checklist</a>
+        <a href="account.html?mode=login">Test account payment</a>
+        <a href="legal.html#payment-policy">Payment policy</a>
+      </nav>
+    </header>
+
+    <main class="admin-shell">
+      <section class="admin-hero">
+        <p class="eyebrow">Paystack setup</p>
+        <h1>Connect live payments without exposing secret keys.</h1>
+        <p>
+          This guide is for LearnedCircle admin use. It keeps the payment launch sequence clear before premium,
+          advert and client-lawyer work payments are made available to users.
+        </p>
+      </section>
+
+      <section class="admin-card admin-publish-panel">
+        <div>
+          <p class="eyebrow">Environment variables</p>
+          <h2>Add the Paystack key in Vercel.</h2>
+          <p>
+            Add the secret key only in Vercel Project Settings. Do not paste Paystack secret keys into public HTML,
+            JavaScript, GitHub issues or chat messages.
+          </p>
+        </div>
+        <div class="setup-checklist">
+          <span><strong>Production:</strong> PAYSTACK_SECRET_KEY</span>
+          <span><strong>Testing:</strong> PAYSTACK_TEST_SECRET_KEY can be used before the live key is ready.</span>
+          <span><strong>After adding a key:</strong> redeploy the Vercel project so the API route can read it.</span>
+        </div>
+      </section>
+
+      <section class="admin-card admin-publish-panel">
+        <div>
+          <p class="eyebrow">Paystack dashboard URLs</p>
+          <h2>Use these settings when configuring Paystack.</h2>
+        </div>
+        <div class="setup-checklist">
+          <span><strong>Webhook URL:</strong> https://learnedcircle.com/api/account-auth</span>
+          <span><strong>Callback route:</strong> LearnedCircle sends users back to /account.html?payment=paystack&amp;reference=...</span>
+          <span><strong>Account test page:</strong> https://learnedcircle.com/account.html?mode=login</span>
+        </div>
+      </section>
+
+      <section class="admin-card admin-publish-panel">
+        <div>
+          <p class="eyebrow">Test checklist</p>
+          <h2>Confirm these before accepting live payments.</h2>
+        </div>
+        <div class="setup-checklist">
+          <span>Log in as a test lawyer and start a monthly premium checkout.</span>
+          <span>Complete one successful Paystack test payment and confirm the account shows premium pending.</span>
+          <span>Check Supabase <strong>platform_payments</strong> for a paid record with the Paystack reference.</span>
+          <span>Check Supabase <strong>premium_subscriptions</strong> for the linked premium subscription.</span>
+          <span>Run one failed or abandoned payment and confirm the account does not become premium.</span>
+          <span>After live key activation, repeat the same test with a small real transaction before public launch.</span>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

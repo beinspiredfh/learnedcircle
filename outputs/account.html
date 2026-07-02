@@ -160,6 +160,10 @@
               once Paystack confirmation is connected.
             </p>
           </div>
+          <div class="payment-mode-note" role="note">
+            <strong>Paystack mode:</strong>
+            <span>Setup ready. Checkout will work after the Paystack secret key is added in Vercel and the project is redeployed.</span>
+          </div>
           <div class="payment-status-grid" data-payment-status-grid>
             <span>Free account</span>
             <span>Pending payment</span>
@@ -176,6 +180,10 @@
               <button class="secondary-action" type="button" data-premium-checkout="monthly">Pay monthly premium</button>
               <button class="secondary-action" type="button" data-premium-checkout="yearly">Pay yearly premium</button>
             </div>
+            <p class="payment-setup-copy">
+              If checkout is unavailable, the Paystack key has not been activated yet. Use premium review as the backup
+              route until live payment is confirmed.
+            </p>
             <button class="primary-action" type="button" data-premium-request>Request premium review</button>
             <p class="form-status" data-premium-status hidden></p>
           </article>

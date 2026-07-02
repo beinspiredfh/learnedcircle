@@ -521,6 +521,48 @@ a {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.payment-mode-note,
+.payment-setup-copy {
+  border: 1px solid rgba(188, 143, 67, 0.36);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  background: rgba(188, 143, 67, 0.1);
+  color: var(--muted);
+}
+
+.payment-mode-note {
+  display: grid;
+  gap: 4px;
+  margin: 12px 0;
+}
+
+.payment-mode-note strong {
+  color: var(--ink);
+}
+
+.payment-setup-copy {
+  margin: 12px 0;
+}
+
+.setup-checklist {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.setup-checklist span {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  background: var(--paper-soft);
+  color: var(--muted);
+}
+
+.setup-checklist strong {
+  color: var(--ink);
+}
+
 .payment-state,
 .settlement-flow article,
 .payment-guide-card {

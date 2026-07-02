@@ -25,6 +25,7 @@
       <nav class="main-nav" aria-label="Admin navigation">
         <a href="index.html">Public site</a>
         <a href="operations.html">Operating playbook</a>
+        <a href="paystack-setup.html">Paystack setup</a>
         <button class="nav-action nav-action-strong" type="button" data-refresh>Refresh queue</button>
         <button class="nav-action" type="button" data-export>Export records</button>
         <button class="nav-action" type="button" data-lock>Lock</button>
@@ -105,6 +106,25 @@
             <span>Featured placement: admin priced</span>
             <span>Settlements: pending, paid, held or disputed</span>
           </div>
+        </article>
+        <article class="admin-card admin-publish-panel" id="paystack-readiness">
+          <div>
+            <p class="eyebrow">Paystack readiness</p>
+            <h3>Switch payments on only after these items are complete.</h3>
+            <p>
+              The platform routes are ready. Add the Paystack secret key in Vercel, keep test mode visible until the
+              first successful checks are complete, then move to live mode.
+            </p>
+          </div>
+          <div class="setup-checklist" aria-label="Paystack setup checklist">
+            <span>Add <strong>PAYSTACK_SECRET_KEY</strong> to Vercel environment variables.</span>
+            <span>Set webhook URL to <strong>https://learnedcircle.com/api/account-auth</strong>.</span>
+            <span>Use account return path <strong>/account.html?payment=paystack&amp;reference=...</strong>.</span>
+            <span>Run one test monthly premium payment and confirm premium pending status.</span>
+            <span>Confirm Supabase records update in <strong>platform_payments</strong> and <strong>premium_subscriptions</strong>.</span>
+            <span>Test failed payment and webhook retry before accepting live users.</span>
+          </div>
+          <a class="secondary-action" href="paystack-setup.html">Open Paystack setup guide</a>
         </article>
         <article class="admin-card admin-publish-panel" id="payment-workflow">
           <div>
