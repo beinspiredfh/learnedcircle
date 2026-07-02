@@ -107,6 +107,52 @@
             <span>Settlements: pending, paid, held or disputed</span>
           </div>
         </article>
+        <article class="admin-card admin-publish-panel" id="payment-review-controls">
+          <div>
+            <p class="eyebrow">Payment review controls</p>
+            <h3>Review recent payment records before unlocking benefits.</h3>
+            <p>
+              Confirm Paystack references, failed payments, premium pending status and client-lawyer settlement amounts.
+              Every status change should include a short admin note for the audit trail.
+            </p>
+          </div>
+          <div class="payment-review-list" data-payment-review-list>
+            <p>Login to load payment records.</p>
+          </div>
+        </article>
+        <article class="admin-card admin-publish-panel" id="admin-notifications">
+          <div>
+            <p class="eyebrow">Admin notification email</p>
+            <h3>Send new review alerts to learnedcircle@gmail.com.</h3>
+            <p>
+              Moderation and payment alerts are sent when <strong>RESEND_API_KEY</strong>, <strong>MODERATION_EMAIL</strong>
+              and <strong>MODERATION_FROM_EMAIL</strong> are configured in Vercel. Use
+              <strong>learnedcircle@gmail.com</strong> as the moderation recipient.
+            </p>
+          </div>
+          <div class="setup-checklist">
+            <span><strong>MODERATION_EMAIL:</strong> learnedcircle@gmail.com</span>
+            <span><strong>RESEND_API_KEY:</strong> required for email delivery</span>
+            <span><strong>MODERATION_FROM_EMAIL:</strong> verified sender domain recommended</span>
+            <span><strong>Alerts:</strong> lawyer profiles, articles, jobs, adverts, premium requests and new payments</span>
+          </div>
+        </article>
+        <article class="admin-card admin-publish-panel" id="audit-trail-controls">
+          <div>
+            <p class="eyebrow">Audit trail</p>
+            <h3>Record who changed what, when, and why.</h3>
+            <p>
+              Admin approvals, rejections, archived records and payment status changes should be stored in
+              <strong>admin_audit_log</strong>. Run the audit migration once in Supabase before relying on this record
+              for compliance.
+            </p>
+          </div>
+          <div class="setup-checklist">
+            <span>Each moderation decision records item type, item id, status and reviewer note.</span>
+            <span>Each payment decision records payment id, prior status, new status and admin note.</span>
+            <span>Export records should include moderation, payment and audit data for backup.</span>
+          </div>
+        </article>
         <article class="admin-card admin-publish-panel" id="paystack-readiness">
           <div>
             <p class="eyebrow">Paystack readiness</p>

@@ -11,9 +11,11 @@ const adminSummary = document.querySelector("[data-admin-summary]");
 const adminFilterButtons = document.querySelectorAll("[data-admin-filter]");
 const guestPublishForm = document.querySelector("[data-guest-publish-form]");
 const guestPublishStatus = document.querySelector("[data-guest-publish-status]");
+const paymentReviewList = document.querySelector("[data-payment-review-list]");
 
 let adminCode = sessionStorage.getItem("learnedcircle_admin_code") || "";
 let allDraftRows = [];
+let allPaymentRows = [];
 let activeFilter = "all";
 
 const reviewerNoteTemplates = {
@@ -38,6 +40,14 @@ function formatDate(value) {
     dateStyle: "medium",
     timeStyle: "short"
   }).format(new Date(value));
+}
+
+function formatNaira(kobo) {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0
+  }).format(Number(kobo || 0) / 100);
 }
 
 async function callRpc(functionName, body) {
@@ -146,6 +156,58 @@ function renderAdminSummary(rows) {
   `;
 }
 
+function renderPaymentReview(rows = []) {
+  if (!paymentReviewList) return;
+
+  if (!rows.length) {
+    paymentReviewList.innerHTML = "<p>No payment records yet. New Paystack records will appear here after checkout starts.</p>";
+    return;
+  }
+
+  paymentReviewList.innerHTML = rows.map((payment) => {
+    const payer = payment.payer_name || payment.payer_email || "Unknown payer";
+    const reference = payment.provider_reference || "No reference yet";
+    const typeLabel = String(payment.payment_type || "payment").replace(/_/g, " ");
+    const meta = payment.metadata || {};
+    const settlement = meta.lawyer_settlement_kobo ? `Lawyer settlement: ${formatNaira(meta.lawyer_settlement_kobo)}` : "";
+
+    return `
+      <article class="payment-review-card" data-payment-id="${escapeHtml(payment.id)}">
+        <header>
+          <div>
+            <span class="status">${escapeHtml(payment.status || "pending")}</span>
+            <h4>${escapeHtml(typeLabel)} | ${formatNaira(payment.amount_kobo)}</h4>
+            <p>${escapeHtml(payer)} | ${formatDate(payment.created_at)}</p>
+          </div>
+          <p>${escapeHtml(reference)}</p>
+        </header>
+        <div class="payment-review-meta">
+          <span>${escapeHtml(payment.provider || "pending")}</span>
+          <span>${escapeHtml(payment.currency || "NGN")}</span>
+          ${settlement ? `<span>${escapeHtml(settlement)}</span>` : ""}
+          ${meta.platform_commission_kobo ? `<span>Commission: ${escapeHtml(formatNaira(meta.platform_commission_kobo))}</span>` : ""}
+        </div>
+        <form class="payment-review-form" data-payment-review-form>
+          <label>
+            Payment status
+            <select name="status">
+              ${["pending", "awaiting_payment", "paid", "failed", "refunded", "disputed", "cancelled"].map((status) => `
+                <option value="${status}" ${status === payment.status ? "selected" : ""}>${status.replace(/_/g, " ")}</option>
+              `).join("")}
+            </select>
+          </label>
+          <label>
+            Admin note
+            <textarea name="adminNote" placeholder="Record why this payment status is being changed"></textarea>
+          </label>
+          <button class="secondary-action" type="submit">Save payment review</button>
+          <p class="form-status" hidden></p>
+        </form>
+      </article>
+    `;
+  }).join("");
+}
+
 function filteredRows() {
   if (activeFilter === "all") return allDraftRows;
   return allDraftRows.filter((row) => row.item_type === activeFilter);
@@ -194,9 +256,14 @@ function renderDrafts(rows = filteredRows()) {
 async function loadQueue() {
   adminCount.textContent = "Loading drafts...";
   adminList.innerHTML = "";
-  const result = await callRpc("admin_moderation_list", { action: "list", adminCode });
+  const [result, paymentResult] = await Promise.all([
+    callRpc("admin_moderation_list", { action: "list", adminCode }),
+    callRpc("admin_payment_list", { action: "payment-list", adminCode }).catch((error) => ({ ok: false, rows: [], message: error.message }))
+  ]);
   allDraftRows = result.rows || [];
+  allPaymentRows = paymentResult.rows || [];
   renderDrafts();
+  renderPaymentReview(allPaymentRows);
 }
 
 async function unlock(code) {
@@ -340,6 +407,43 @@ adminList.addEventListener("click", async (event) => {
     action.disabled = false;
     action.textContent = action.dataset.status === "approved" ? "Approve" : action.dataset.status === "rejected" ? "Reject" : "Archive";
     window.alert(error.message);
+  }
+});
+
+paymentReviewList?.addEventListener("submit", async (event) => {
+  const form = event.target.closest("[data-payment-review-form]");
+  if (!form) return;
+  event.preventDefault();
+
+  const card = form.closest("[data-payment-id]");
+  const status = form.querySelector("select[name='status']").value;
+  const adminNote = form.querySelector("textarea[name='adminNote']").value.trim();
+  const message = form.querySelector(".form-status");
+  const button = form.querySelector("button");
+
+  if (!adminNote) {
+    window.alert("Add an admin note before changing payment status.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Saving...";
+  message.hidden = false;
+  message.textContent = "Saving payment review...";
+
+  try {
+    await callRpc("admin_payment_update", {
+      action: "payment-update",
+      adminCode,
+      id: card.dataset.paymentId,
+      status,
+      adminNote
+    });
+    await loadQueue();
+  } catch (error) {
+    message.textContent = error.message;
+    button.disabled = false;
+    button.textContent = "Save payment review";
   }
 });
 

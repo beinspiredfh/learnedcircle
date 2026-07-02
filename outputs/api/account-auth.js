@@ -374,6 +374,21 @@ async function notifyModeration(payload = {}) {
   }).catch(() => null);
 }
 
+async function notifyPaymentReview({ subject, payment, fields = [] }) {
+  await notifyModeration({
+    type: subject || "Payment review",
+    source: "LearnedCircle payment flow",
+    fields: [
+      { label: "Payment type", value: payment?.payment_type || payment?.metadata?.payment_type || "Not provided" },
+      { label: "Payer email", value: payment?.payer_email || payment?.metadata?.email || "Not provided" },
+      { label: "Amount", value: payment?.amount_kobo ? `NGN ${Math.round(Number(payment.amount_kobo) / 100).toLocaleString("en-NG")}` : "Not provided" },
+      { label: "Reference", value: payment?.provider_reference || payment?.metadata?.reference || "Not provided" },
+      { label: "Status", value: payment?.status || "Not provided" },
+      ...fields
+    ]
+  });
+}
+
 async function loadProfile(userId) {
   const profileResponse = await supabaseServiceFetch(
     `/rest/v1/profiles?id=eq.${encodeURIComponent(userId)}&select=id,full_name,email,role,membership,created_at,updated_at`
@@ -670,6 +685,15 @@ module.exports = async function handler(request, response) {
       return;
     }
 
+    await notifyPaymentReview({
+      subject: "Premium payment checkout created",
+      payment: paymentRecord.payment,
+      fields: [
+        { label: "Plan", value: plan.label },
+        { label: "Account name", value: profile?.full_name || user.email }
+      ]
+    });
+
     response.status(200).json({
       ok: true,
       message: "Paystack checkout created.",
@@ -759,6 +783,15 @@ module.exports = async function handler(request, response) {
       response.status(checkout.status).json({ ok: false, message: checkout.message });
       return;
     }
+
+    await notifyPaymentReview({
+      subject: "Advert payment checkout created",
+      payment: paymentRecord.payment,
+      fields: [
+        { label: "Organization", value: organization },
+        { label: "Advert duration", value: plan.duration }
+      ]
+    });
 
     response.status(200).json({
       ok: true,
@@ -881,6 +914,16 @@ module.exports = async function handler(request, response) {
       return;
     }
 
+    await notifyPaymentReview({
+      subject: "Client-lawyer work payment checkout created",
+      payment: paymentRecord.payment,
+      fields: [
+        { label: "Lawyer", value: lawyerName },
+        { label: "Work type", value: workType },
+        { label: "Platform commission", value: `NGN ${Math.round(platformCommissionKobo / 100).toLocaleString("en-NG")}` }
+      ]
+    });
+
     response.status(200).json({
       ok: true,
       message: "Client-lawyer work payment checkout created.",
@@ -920,6 +963,13 @@ module.exports = async function handler(request, response) {
     if (!paymentUpdate.ok) {
       response.status(paymentUpdate.status || 500).json({ ok: false, message: paymentUpdate.message || "Could not update payment record." });
       return;
+    }
+
+    if (paymentUpdate.payment?.status === "paid") {
+      await notifyPaymentReview({
+        subject: "Paystack payment confirmed",
+        payment: paymentUpdate.payment
+      });
     }
 
     response.status(200).json({

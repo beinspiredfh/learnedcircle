@@ -31,6 +31,27 @@ async function supabaseFetch(path, options = {}) {
   });
 }
 
+async function recordAuditLog(entry = {}) {
+  const auditResponse = await supabaseFetch("/rest/v1/admin_audit_log", {
+    method: "POST",
+    body: JSON.stringify({
+      action_type: entry.actionType || "admin_action",
+      target_table: entry.targetTable || null,
+      target_id: entry.targetId || null,
+      previous_state: entry.previousState || {},
+      new_state: entry.newState || {},
+      admin_note: entry.adminNote || null,
+      metadata: {
+        source: "admin_moderation_api",
+        ...(entry.metadata || {})
+      }
+    })
+  });
+
+  // Keep moderation usable if the audit migration has not been run yet.
+  return auditResponse.ok;
+}
+
 async function publishLawyerProfile(moderationRow) {
   const profile = moderationRow?.payload?.profile;
 
@@ -344,6 +365,79 @@ module.exports = async function handler(request, response) {
     return;
   }
 
+  if (body.action === "payment-list") {
+    const paymentResponse = await supabaseFetch(
+      "/rest/v1/platform_payments?select=id,created_at,updated_at,payment_type,payer_name,payer_email,lawyer_profile_id,related_item_id,provider,provider_reference,amount_kobo,currency,status,metadata&order=created_at.desc&limit=50"
+    );
+    const paymentRows = await paymentResponse.json();
+
+    if (!paymentResponse.ok) {
+      response.status(paymentResponse.status).json({ ok: false, message: paymentRows.message || "Could not load payment records." });
+      return;
+    }
+
+    response.status(200).json({ ok: true, rows: paymentRows });
+    return;
+  }
+
+  if (body.action === "payment-update") {
+    const allowedStatuses = new Set(["pending", "awaiting_payment", "paid", "failed", "refunded", "disputed", "cancelled"]);
+
+    if (!body.id || !allowedStatuses.has(body.status)) {
+      response.status(400).json({ ok: false, message: "A valid payment id and payment status are required." });
+      return;
+    }
+
+    if (!body.adminNote) {
+      response.status(400).json({ ok: false, message: "Admin note is required for payment review changes." });
+      return;
+    }
+
+    const beforeResponse = await supabaseFetch(
+      `/rest/v1/platform_payments?id=eq.${encodeURIComponent(body.id)}&select=id,status,metadata&limit=1`
+    );
+    const beforeRows = await beforeResponse.json();
+
+    if (!beforeResponse.ok || !beforeRows[0]) {
+      response.status(beforeResponse.status || 404).json({ ok: false, message: beforeRows.message || "Could not load payment record." });
+      return;
+    }
+
+    const previous = beforeRows[0];
+    const metadata = {
+      ...(previous.metadata || {}),
+      last_admin_note: body.adminNote,
+      last_admin_reviewed_at: new Date().toISOString()
+    };
+
+    const paymentResponse = await supabaseFetch(`/rest/v1/platform_payments?id=eq.${encodeURIComponent(body.id)}`, {
+      method: "PATCH",
+      headers: { Prefer: "return=representation" },
+      body: JSON.stringify({
+        status: body.status,
+        metadata
+      })
+    });
+    const paymentRows = await paymentResponse.json();
+
+    if (!paymentResponse.ok) {
+      response.status(paymentResponse.status).json({ ok: false, message: paymentRows.message || "Could not update payment record." });
+      return;
+    }
+
+    await recordAuditLog({
+      actionType: "payment_status_update",
+      targetTable: "platform_payments",
+      targetId: body.id,
+      previousState: previous,
+      newState: paymentRows[0],
+      adminNote: body.adminNote
+    });
+
+    response.status(200).json({ ok: true, row: paymentRows[0] });
+    return;
+  }
+
   if (body.action === "create-guest-article") {
     const publishResult = await createGuestArticle(body.article || {});
 
@@ -363,15 +457,17 @@ module.exports = async function handler(request, response) {
   }
 
   if (body.action === "export") {
-    const [moderation, lawyers, jobs, articles, guestArticles, adverts] = await Promise.all([
+    const [moderation, lawyers, jobs, articles, guestArticles, adverts, payments, auditLog] = await Promise.all([
       loadExportRows("/rest/v1/moderation_queue?select=id,created_at,item_type,status,payload,reviewer_note,reviewed_at&order=created_at.desc&limit=500"),
       loadExportRows("/rest/v1/lawyer_profiles?select=id,display_name,location,practice_areas,verified,direct_client_contact,pro_bono_open,created_at,updated_at&order=updated_at.desc&limit=500"),
       loadExportRows("/rest/v1/job_posts?select=id,title,organization,status,created_at,updated_at&order=created_at.desc&limit=500"),
       loadExportRows("/rest/v1/articles?select=id,title,byline,status,created_at,updated_at&order=created_at.desc&limit=500"),
       loadExportRows("/rest/v1/guest_articles?select=id,title,approved_byline,status,created_at,updated_at&order=created_at.desc&limit=500"),
-      loadExportRows("/rest/v1/advert_requests?select=id,organization,advert_type,status,created_at&order=created_at.desc&limit=500")
+      loadExportRows("/rest/v1/advert_requests?select=id,organization,advert_type,status,created_at&order=created_at.desc&limit=500"),
+      loadExportRows("/rest/v1/platform_payments?select=id,created_at,payment_type,payer_email,provider_reference,amount_kobo,currency,status,metadata&order=created_at.desc&limit=500"),
+      loadExportRows("/rest/v1/admin_audit_log?select=id,created_at,action_type,target_table,target_id,admin_note,metadata&order=created_at.desc&limit=500")
     ]);
-    const failed = [moderation, lawyers, jobs, articles, guestArticles, adverts].find((item) => !item.ok);
+    const failed = [moderation, lawyers, jobs, articles, guestArticles, adverts, payments].find((item) => !item.ok);
 
     if (failed) {
       response.status(500).json({ ok: false, message: failed.message });
@@ -387,7 +483,9 @@ module.exports = async function handler(request, response) {
         job_posts: jobs.rows,
         articles: articles.rows,
         guest_articles: guestArticles.rows,
-        advert_requests: adverts.rows
+        advert_requests: adverts.rows,
+        platform_payments: payments.rows,
+        admin_audit_log: auditLog.ok ? auditLog.rows : []
       }
     });
     return;
@@ -469,6 +567,16 @@ module.exports = async function handler(request, response) {
       response.status(dbResponse.status).json({ ok: false, message: data.message || "Could not update moderation draft." });
       return;
     }
+
+    await recordAuditLog({
+      actionType: "moderation_status_update",
+      targetTable: "moderation_queue",
+      targetId: body.id,
+      previousState: { id: body.id },
+      newState: data[0],
+      adminNote: body.reviewerNote || null,
+      metadata: { published: publishResult || null }
+    });
 
     response.status(200).json({ ok: true, row: data[0], published: publishResult });
     return;
