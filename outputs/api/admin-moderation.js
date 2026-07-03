@@ -491,6 +491,46 @@ module.exports = async function handler(request, response) {
     return;
   }
 
+  if (body.action === "delete-lawyer-profile") {
+    if (!body.id) {
+      response.status(400).json({ ok: false, message: "A lawyer profile id is required." });
+      return;
+    }
+
+    const previousResponse = await supabaseFetch(
+      `/rest/v1/lawyer_profiles?id=eq.${encodeURIComponent(body.id)}&select=*&limit=1`
+    );
+    const previousRows = await previousResponse.json();
+
+    if (!previousResponse.ok || !previousRows[0]) {
+      response.status(previousResponse.status || 404).json({ ok: false, message: previousRows.message || "Lawyer profile was not found." });
+      return;
+    }
+
+    const deleteResponse = await supabaseFetch(`/rest/v1/lawyer_profiles?id=eq.${encodeURIComponent(body.id)}`, {
+      method: "DELETE",
+      headers: { Prefer: "return=representation" }
+    });
+    const deletedRows = await deleteResponse.json();
+
+    if (!deleteResponse.ok) {
+      response.status(deleteResponse.status).json({ ok: false, message: deletedRows.message || "Could not delete lawyer profile." });
+      return;
+    }
+
+    await recordAuditLog({
+      actionType: "lawyer_profile_delete",
+      targetTable: "lawyer_profiles",
+      targetId: body.id,
+      previousState: previousRows[0],
+      newState: { deleted: true, deleted_at: new Date().toISOString() },
+      adminNote: body.adminNote || null
+    });
+
+    response.status(200).json({ ok: true, deleted: deletedRows[0] || previousRows[0] });
+    return;
+  }
+
   if (body.action === "update") {
     const allowedStatuses = new Set(["pending_review", "approved", "rejected", "archived"]);
 
