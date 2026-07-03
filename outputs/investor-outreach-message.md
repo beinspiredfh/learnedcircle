@@ -18,7 +18,7 @@ I am building LearnedCircle, a legal marketplace and professional network design
 
 The platform is already structured with lawyer profiles, premium membership, direct client contact, legal publishing, job opportunities, mentorship, adverts and verification workflows.
 
-We are now opening an investment round with three options: N100,000,000 for 12% equity, N200,000,000 for 15% equity, and N500,000,000 for 20% equity. The capital will support lawyer acquisition, marketing, hiring, verification operations and national rollout.
+We are now opening a friends-and-family investment route from N1,000,000 to N40,000,000, alongside larger seed options of N100,000,000 for 12% equity, N200,000,000 for 15% equity, and N500,000,000 for 20% equity. The capital will support lawyer acquisition, marketing, hiring, verification operations, necessary online platforms and national rollout.
 
 I have attached a one-page investor summary for your review. I would be happy to discuss the opportunity with you at your convenience.
 
@@ -37,7 +37,7 @@ I am pleased to share LearnedCircle, a Nigeria-first legal marketplace and profe
 
 LearnedCircle is designed around verified lawyer profiles, premium membership, direct client contact, legal publishing, job and opportunity listings, mentorship, adverts, online visibility and professional tools for lawyers.
 
-The platform infrastructure, premium model and payment pathway are already in place. We are now raising growth capital through three investment options: N100,000,000 for 12% equity, N200,000,000 for 15% equity, and N500,000,000 for 20% equity. The capital will accelerate lawyer acquisition, marketing, hiring, verification operations and national rollout.
+The platform infrastructure, premium model and payment pathway are already in place. We are now raising growth capital through a friends-and-family investment route from N1,000,000 to N40,000,000, with larger seed options of N100,000,000 for 12% equity, N200,000,000 for 15% equity, and N500,000,000 for 20% equity. The capital will accelerate lawyer acquisition, marketing, hiring, verification operations, online platform costs and national rollout.
 
 I have attached a one-page investor summary for your review. If the opportunity is of interest, I would be happy to share the full proposal and schedule a short meeting.
 
@@ -65,7 +65,7 @@ LearnedCircle is a legal marketplace and professional network. The platform help
 
 The initial market is Nigeria, with a lawyer market commonly discussed in the 200,000 to 250,000 range. The model uses a 220,000-lawyer midpoint. If only 10% of that market joins and 20% of those users become premium members, the platform can reach about N520m in annual revenue potential from premium subscriptions, jobs and adverts.
 
-We are offering three investment options: N100m for 12% equity, N200m for 15% equity, and N500m for 20% equity. The investment will be used mainly for marketing, lawyer acquisition, hiring, verification operations, partnerships and national rollout.
+We are offering a friends-and-family route from N1m to N40m, plus larger seed options of N100m for 12% equity, N200m for 15% equity, and N500m for 20% equity. The investment will be used mainly for marketing, lawyer acquisition, hiring, verification operations, online platforms, partnerships and national rollout.
 
 ## Attachments To Send
 
