@@ -570,6 +570,11 @@
       }
 
       @media print {
+        @page {
+          size: A4;
+          margin: 12mm 10mm;
+        }
+
         body {
           background: white;
         }
@@ -582,6 +587,18 @@
         .hero,
         .footer {
           break-inside: avoid;
+        }
+
+        .card,
+        .metric,
+        .fund-row,
+        .funnel-row,
+        .grid,
+        .split,
+        .scenario-table,
+        .bar-wrap {
+          break-inside: avoid;
+          page-break-inside: avoid;
         }
 
         .card,
@@ -1147,7 +1164,7 @@
             <tr>
               <td><strong>Fake or weak profiles</strong></td>
               <td>Unverified users may create misleading lawyer profiles.</td>
-              <td>SCN collection, year of call, admin verification, reporting tools and public verification status.</td>
+              <td>SCN collection, year of call, Call to Bar certificate submission, admin verification, reporting tools and public verification status.</td>
             </tr>
             <tr>
               <td><strong>Legal liability</strong></td>
@@ -1162,7 +1179,7 @@
             <tr>
               <td><strong>Slow paid conversion</strong></td>
               <td>Some lawyers may use free accounts without upgrading.</td>
-              <td>Premium benefits include direct contact, visibility, online chat, faster publishing and unlimited branded invoices.</td>
+              <td>Premium benefits include direct contact, visibility, online chat, faster publishing, unlimited branded invoices and unlimited AI legal assistant support for drafting.</td>
             </tr>
           </tbody>
         </table>
@@ -1189,7 +1206,7 @@
           </article>
           <article class="card">
             <h3>Expandable model</h3>
-            <p>The platform can expand from Nigeria into diaspora legal work, African legal networks, legal education, compliance tools and practice management.</p>
+            <p>The platform can expand from Nigeria into diaspora legal work, African legal networks, legal education, compliance tools, practice management and LearnedCircle Law Report (LCLR).</p>
           </article>
         </div>
       </section>

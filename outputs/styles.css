@@ -1464,6 +1464,7 @@ textarea {
 .split-section,
 .community-hub,
 .launch-trust,
+.library-section,
 .mentorship-section,
 .action-band,
 .payment-section,
@@ -1479,6 +1480,154 @@ textarea {
 .launch-trust,
 .payment-section {
   background: var(--paper-soft);
+}
+
+.news-ticker {
+  position: sticky;
+  top: 77px;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 42px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(216, 208, 192, 0.9);
+  padding: 8px clamp(18px, 4vw, 54px);
+  background: var(--ink);
+  color: var(--paper-soft);
+}
+
+.news-ticker strong {
+  flex: 0 0 auto;
+  color: var(--brass);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ticker-window {
+  display: flex;
+  gap: 36px;
+  min-width: 0;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.86rem;
+  white-space: nowrap;
+  animation: ticker-slide 28s linear infinite;
+}
+
+.ticker-window span::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: var(--brass);
+}
+
+@keyframes ticker-slide {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-52%);
+  }
+}
+
+.sticky-ad-rail {
+  position: fixed;
+  top: 172px;
+  right: 18px;
+  z-index: 850;
+  display: grid;
+  gap: 8px;
+  width: min(180px, 14vw);
+  padding: 14px;
+  border: 1px solid rgba(180, 138, 69, 0.35);
+  border-radius: var(--radius);
+  background: rgba(251, 250, 246, 0.94);
+  box-shadow: var(--shadow);
+}
+
+.sticky-ad-rail span {
+  color: var(--brass-dark);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sticky-ad-rail strong {
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.08;
+}
+
+.sticky-ad-rail p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.sticky-ad-rail button {
+  border: 0;
+  border-radius: 6px;
+  padding: 10px;
+  background: var(--ink);
+  color: var(--white);
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.library-section {
+  border-block: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--paper-soft), var(--paper));
+}
+
+.library-section .section-heading p:not(.eyebrow) {
+  max-width: 720px;
+  color: var(--muted);
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.library-card {
+  display: grid;
+  gap: 12px;
+  min-height: 260px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: 0 14px 32px rgba(19, 38, 32, 0.06);
+}
+
+.library-card h3 {
+  margin: 0;
+  font-size: 1.22rem;
+  line-height: 1.15;
+}
+
+.library-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.library-card a,
+.library-card button {
+  align-self: end;
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 9px 12px;
+  background: var(--paper-soft);
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 900;
 }
 
 .ai-assistant-section {
@@ -2512,6 +2661,14 @@ li + li {
   .premium-benefits {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .library-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sticky-ad-rail {
+    display: none;
+  }
 }
 
 @media (max-width: 860px) {
@@ -2591,6 +2748,7 @@ li + li {
   .payment-status-grid,
   .settlement-flow,
   .payment-guide-grid,
+  .library-grid,
   .mentorship-grid,
   .mentor-list,
   .plan-grid,
@@ -2618,6 +2776,10 @@ li + li {
   .profile-heading {
     align-items: flex-start;
   }
+
+  .news-ticker {
+    top: 120px;
+  }
 }
 
 @media (max-width: 560px) {
@@ -2634,6 +2796,7 @@ li + li {
   .split-section,
   .ai-assistant-section,
   .community-hub,
+  .library-section,
   .mentorship-section,
   .action-band,
   .membership,
@@ -2650,6 +2813,18 @@ li + li {
   .trust-strip,
   .article-card {
     grid-template-columns: 1fr;
+  }
+
+  .news-ticker {
+    top: 122px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+    padding-block: 8px;
+  }
+
+  .ticker-window {
+    font-size: 0.78rem;
   }
 
   .finder {

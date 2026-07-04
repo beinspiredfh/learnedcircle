@@ -32,6 +32,7 @@
           <summary class="nav-parent">Forum</summary>
           <div class="submenu" aria-label="Forum submenu">
             <a href="#forum">Forum home</a>
+            <a href="#library">Library</a>
             <a href="#articles">Articles</a>
             <a href="#guest-blog">Guest blog</a>
             <a href="#mentorship">Mentorship</a>
@@ -52,6 +53,23 @@
     </header>
 
     <main id="top">
+      <aside class="news-ticker" aria-label="Recent legal news">
+        <strong>Recent legal news</strong>
+        <div class="ticker-window">
+          <span>Supreme Court and Court of Appeal practice updates</span>
+          <span>Corporate compliance and tax filing reminders</span>
+          <span>New legal jobs, internships and retainer opportunities</span>
+          <span>Featured articles from verified lawyers and senior contributors</span>
+        </div>
+      </aside>
+
+      <aside class="sticky-ad-rail" aria-label="Sponsored advert">
+        <span>Sponsored</span>
+        <strong>Advertise to legal clients and lawyers</strong>
+        <p>Daily, weekly and monthly advert placements are reviewed before publication.</p>
+        <button type="button" data-open-modal="advertise">Get advert rate</button>
+      </aside>
+
       <section class="workspace">
         <div class="intro-panel">
           <div class="intro-copy">
@@ -119,6 +137,46 @@
 
           <div class="lawyer-grid" data-lawyer-grid></div>
         </section>
+      </section>
+
+      <section class="library-section" id="library">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Legal library</p>
+            <h2>A searchable resource shelf for lawyers, clients and researchers.</h2>
+            <p>
+              The Library gives LearnedCircle a stronger knowledge layer: articles, legal news, practice notes,
+              forms, checklists, senior commentary and future law reports in one organised place.
+            </p>
+          </div>
+          <button class="secondary-action" type="button" data-open-modal="article">Contribute material</button>
+        </div>
+        <div class="library-grid">
+          <article class="library-card">
+            <span class="status">Articles</span>
+            <h3>Practice notes and client guides</h3>
+            <p>Plain legal explainers, drafting guides, due-diligence notes and verified-lawyer articles.</p>
+            <a href="#articles">Browse articles</a>
+          </article>
+          <article class="library-card">
+            <span class="status">Legal news</span>
+            <h3>Recent legal updates</h3>
+            <p>Short updates on court notices, regulatory reminders, tax deadlines and public-interest developments.</p>
+            <a href="#legal-news">Read legal news</a>
+          </article>
+          <article class="library-card">
+            <span class="status">LCLR</span>
+            <h3>LearnedCircle Law Report</h3>
+            <p>Future curated law report and case-note product for important decisions, commentary and practitioner research.</p>
+            <a href="#guest-blog">View senior commentary</a>
+          </article>
+          <article class="library-card">
+            <span class="status">Templates</span>
+            <h3>Forms, checklists and drafting aids</h3>
+            <p>Admin-reviewed practical resources for client intake, compliance, business setup and legal documentation.</p>
+            <button type="button" data-open-modal="assistant">Ask AI assistant</button>
+          </article>
+        </div>
       </section>
 
       <section class="launch-trust" id="how-it-works">
@@ -642,6 +700,7 @@
       <div class="footer-links">
         <a href="#lawyers">Find a lawyer</a>
         <a href="#forum">Forum</a>
+        <a href="#library">Library</a>
         <a href="#articles">Articles</a>
         <a href="#guest-blog">Guest blog</a>
         <a href="#mentorship">Mentorship</a>
