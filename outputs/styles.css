@@ -1555,51 +1555,6 @@ textarea {
   }
 }
 
-.sticky-ad-rail {
-  position: fixed;
-  top: 172px;
-  right: 18px;
-  z-index: 850;
-  display: grid;
-  gap: 12px;
-  width: min(240px, 18vw);
-  padding: 18px;
-  border: 1px solid rgba(180, 138, 69, 0.35);
-  border-radius: var(--radius);
-  background: rgba(251, 250, 246, 0.94);
-  box-shadow: var(--shadow);
-}
-
-.sticky-ad-rail span {
-  color: var(--brass-dark);
-  font-size: 0.68rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.sticky-ad-rail strong {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.15rem;
-  line-height: 1.08;
-}
-
-.sticky-ad-rail p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.76rem;
-}
-
-.sticky-ad-rail button {
-  border: 0;
-  border-radius: 6px;
-  padding: 10px;
-  background: var(--ink);
-  color: var(--white);
-  cursor: pointer;
-  font-weight: 900;
-}
-
 .rotating-ad-strip {
   overflow: hidden;
   border-bottom: 1px solid var(--line);
@@ -1621,15 +1576,15 @@ textarea {
   opacity: 0;
   transform: translateY(10px);
   pointer-events: none;
-  animation: rotate-ad 15s infinite;
+  animation: rotate-ad 30s infinite;
 }
 
 .rotating-ad-track article:nth-child(2) {
-  animation-delay: 5s;
+  animation-delay: 10s;
 }
 
 .rotating-ad-track article:nth-child(3) {
-  animation-delay: 10s;
+  animation-delay: 20s;
 }
 
 .rotating-ad-track span {
@@ -2958,9 +2913,6 @@ li + li {
     flex-direction: column;
   }
 
-  .sticky-ad-rail {
-    display: none;
-  }
 }
 
 @media (max-width: 860px) {
