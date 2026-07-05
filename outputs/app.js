@@ -453,10 +453,97 @@ const seniorMentors = [
   }
 ];
 
+const libraryResources = [
+  {
+    title: "Corporate Law Starter Library",
+    area: "Corporate Law",
+    type: "Online book",
+    author: "LearnedCircle editorial desk",
+    summary: "Company formation, board governance, shareholder records, CAC filings and founder documentation.",
+    access: "Browse guide"
+  },
+  {
+    title: "Tax Practice Notes for Business Clients",
+    area: "Tax Law",
+    type: "Practice guide",
+    author: "Tax specialist contributors",
+    summary: "VAT, withholding tax, company income tax, transfer pricing basics and tax-risk checklists.",
+    access: "Read tax materials"
+  },
+  {
+    title: "Civil Litigation and Evidence Deskbook",
+    area: "Litigation",
+    type: "Online book",
+    author: "Senior bar contributors",
+    summary: "Pleadings, motions, affidavits, admissibility issues, evidence preparation and hearing checklists.",
+    access: "Open deskbook"
+  },
+  {
+    title: "Criminal Defence First Response Guide",
+    area: "Criminal Law",
+    type: "Guide",
+    author: "Verified litigation lawyers",
+    summary: "Bail applications, charge review, police-station response, rights enforcement and urgent client intake.",
+    access: "View guide"
+  },
+  {
+    title: "Property and Real Estate Transaction Handbook",
+    area: "Property Law",
+    type: "Online book",
+    author: "Real estate practice desk",
+    summary: "Title investigation, perfection, leases, due diligence, land registry steps and buyer protection notes.",
+    access: "Browse handbook"
+  },
+  {
+    title: "Family, Probate and Succession Resource Book",
+    area: "Family Law",
+    type: "Online book",
+    author: "Family law contributors",
+    summary: "Marriage, custody, maintenance, wills, probate intake and estate-administration checklists.",
+    access: "Open resource"
+  },
+  {
+    title: "Employment Law and Workplace Compliance Guide",
+    area: "Employment Law",
+    type: "Practice guide",
+    author: "LearnedCircle workplace desk",
+    summary: "Contracts, termination, workplace policies, investigations, employee rights and employer compliance.",
+    access: "Read guide"
+  },
+  {
+    title: "ADR and Arbitration Practice Materials",
+    area: "Alternative Dispute Resolution",
+    type: "Research pack",
+    author: "Arbitration mentors",
+    summary: "Arbitration clauses, mediation briefs, settlement terms, enforcement notes and hearing preparation.",
+    access: "View pack"
+  },
+  {
+    title: "Intellectual Property and Technology Law Notes",
+    area: "Intellectual Property Law",
+    type: "Online notes",
+    author: "IP and technology lawyers",
+    summary: "Trademarks, copyright, software contracts, data clauses, licensing and product-launch legal checks.",
+    access: "Browse notes"
+  },
+  {
+    title: "Human Rights and Public Interest Law Reader",
+    area: "Human Rights Law",
+    type: "Reader",
+    author: "Public-interest contributors",
+    summary: "Rights enforcement, constitutional remedies, public-interest litigation and client screening resources.",
+    access: "Open reader"
+  }
+];
+
 const areaFilter = document.querySelector("[data-area-filter]");
 const locationFilter = document.querySelector("[data-location-filter]");
 const budgetFilter = document.querySelector("[data-budget-filter]");
 const queryFilter = document.querySelector("[data-query-filter]");
+const libraryAreaFilter = document.querySelector("[data-library-area]");
+const libraryQueryFilter = document.querySelector("[data-library-query]");
+const libraryResults = document.querySelector("[data-library-results]");
+const libraryCount = document.querySelector("[data-library-count]");
 const lawyerGrid = document.querySelector("[data-lawyer-grid]");
 const jobGrid = document.querySelector("[data-job-grid]");
 const articleGrid = document.querySelector("[data-article-grid]");
@@ -488,6 +575,43 @@ nigeriaLocations.forEach((location) => {
   option.textContent = location;
   locationFilter.append(option);
 });
+
+Array.from(new Set(libraryResources.map((resource) => resource.area))).sort().forEach((area) => {
+  const option = document.createElement("option");
+  option.value = area;
+  option.textContent = area;
+  libraryAreaFilter?.append(option);
+});
+
+function renderLibraryResources() {
+  if (!libraryResults) return;
+  const area = libraryAreaFilter?.value || "";
+  const query = (libraryQueryFilter?.value || "").trim().toLowerCase();
+  const filtered = libraryResources.filter((resource) => {
+    const matchesArea = !area || resource.area === area;
+    const haystack = `${resource.title} ${resource.area} ${resource.type} ${resource.author} ${resource.summary}`.toLowerCase();
+    return matchesArea && (!query || haystack.includes(query));
+  });
+
+  if (libraryCount) {
+    libraryCount.textContent = `Showing ${filtered.length} ${filtered.length === 1 ? "library resource" : "library resources"}`;
+  }
+
+  libraryResults.innerHTML = filtered.map((resource) => `
+    <article class="library-result-card">
+      <div>
+        <span class="status">${resource.type}</span>
+        <h3>${resource.title}</h3>
+        <p>${resource.summary}</p>
+      </div>
+      <div class="library-meta">
+        <span>${resource.area}</span>
+        <span>${resource.author}</span>
+      </div>
+      <button type="button" data-open-modal="assistant">${resource.access}</button>
+    </article>
+  `).join("");
+}
 
 function lawyerCard(lawyer) {
   const premium = isPremiumLawyer(lawyer);
@@ -1809,6 +1933,16 @@ document.addEventListener("input", (event) => {
     activeBriefMatch = null;
     renderLawyers();
   }
+
+  if (event.target.matches("[data-library-query], [data-library-area]")) {
+    renderLibraryResources();
+  }
+});
+
+document.addEventListener("change", (event) => {
+  if (event.target.matches("[data-library-area]")) {
+    renderLibraryResources();
+  }
 });
 
 tabButtons.forEach((button) => {
@@ -1977,6 +2111,7 @@ document.addEventListener("submit", async (event) => {
 
 renderLawyers();
 renderJobs();
+renderLibraryResources();
 loadPublicData();
 renderArticles();
 renderGuestArticles();

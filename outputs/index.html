@@ -28,11 +28,11 @@
       <nav class="main-nav" aria-label="Main navigation">
         <a href="#lawyers">Find lawyers</a>
         <a href="#ai-assistant">AI Assistant</a>
+        <a href="#library">Library</a>
         <details class="nav-group">
           <summary class="nav-parent">Forum</summary>
           <div class="submenu" aria-label="Forum submenu">
             <a href="#forum">Forum home</a>
-            <a href="#library">Library</a>
             <a href="#articles">Articles</a>
             <a href="#guest-blog">Guest blog</a>
             <a href="#mentorship">Mentorship</a>
@@ -143,14 +143,30 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">Legal library</p>
-            <h2>A searchable resource shelf for lawyers, clients and researchers.</h2>
+            <h2>Search online law books, guides and research materials.</h2>
             <p>
-              The Library gives LearnedCircle a stronger knowledge layer: articles, legal news, practice notes,
-              forms, checklists, senior commentary and future law reports in one organised place.
+              The Library gives LearnedCircle a stronger knowledge layer where users can find books, practice guides,
+              case notes, forms, checklists, senior commentary and future law reports by area of law.
             </p>
           </div>
           <button class="secondary-action" type="button" data-open-modal="article">Contribute material</button>
         </div>
+        <form class="library-search" data-library-search>
+          <label>
+            Search books and materials
+            <input type="search" placeholder="Search by title, author, keyword or law area" data-library-query />
+          </label>
+          <label>
+            Aspect of law
+            <select data-library-area>
+              <option value="">All law areas</option>
+            </select>
+          </label>
+        </form>
+        <div class="library-result-head">
+          <p data-library-count>Showing library resources</p>
+        </div>
+        <div class="library-results" data-library-results></div>
         <div class="library-grid">
           <article class="library-card">
             <span class="status">Articles</span>
