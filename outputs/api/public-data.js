@@ -51,6 +51,28 @@ module.exports = async function handler(request, response) {
     return;
   }
 
+  let advertPlacements = [];
+  const placementResponse = await supabasePublicFetch(
+    `/rest/v1/advert_placements?select=id,status,placement,label,headline,body,cta_label,cta_url,organization,starts_at,ends_at,created_at&status=eq.published&or=(starts_at.is.null,starts_at.lte.${encodeURIComponent(new Date().toISOString())})&or=(ends_at.is.null,ends_at.gte.${encodeURIComponent(new Date().toISOString())})&order=created_at.desc&limit=20`,
+    true
+  );
+  const placementRows = await placementResponse.json();
+
+  if (placementResponse.ok) {
+    advertPlacements = placementRows;
+  }
+
+  let libraryResources = [];
+  const libraryResponse = await supabasePublicFetch(
+    "/rest/v1/library_resources?select=id,group_key,title,area,resource_type,source,summary,action_label,resource_url,file_url,file_name,file_type,created_at&status=eq.published&order=created_at.desc&limit=100",
+    true
+  );
+  const libraryRows = await libraryResponse.json();
+
+  if (libraryResponse.ok) {
+    libraryResources = libraryRows;
+  }
+
   let guestResponse = await supabasePublicFetch(
     "/rest/v1/guest_articles?select=id,title,contributor_name,contributor_title,contributor_image_url,approved_byline,summary,body,created_at&status=eq.approved&order=created_at.desc&limit=12",
     true
@@ -207,5 +229,18 @@ module.exports = async function handler(request, response) {
     .filter((topic) => topic.forumId && topic.title);
 
   response.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
-  response.status(200).json({ ok: true, jobs, articles, adverts, guestArticles: normalizedGuestArticles, approvedLawyers, onlineLawyers, debateOpinions, forumReplies, forumTopics });
+  response.status(200).json({
+    ok: true,
+    jobs,
+    articles,
+    adverts,
+    advertPlacements,
+    libraryResources,
+    guestArticles: normalizedGuestArticles,
+    approvedLawyers,
+    onlineLawyers,
+    debateOpinions,
+    forumReplies,
+    forumTopics
+  });
 };

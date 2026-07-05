@@ -12,10 +12,17 @@ const adminFilterButtons = document.querySelectorAll("[data-admin-filter]");
 const guestPublishForm = document.querySelector("[data-guest-publish-form]");
 const guestPublishStatus = document.querySelector("[data-guest-publish-status]");
 const paymentReviewList = document.querySelector("[data-payment-review-list]");
+const adminAdvertForm = document.querySelector("[data-admin-advert-form]");
+const adminAdvertStatus = document.querySelector("[data-admin-advert-status]");
+const adminLibraryForm = document.querySelector("[data-admin-library-form]");
+const adminLibraryStatus = document.querySelector("[data-admin-library-status]");
+const adminPublishingList = document.querySelector("[data-admin-publishing-list]");
 
 let adminCode = sessionStorage.getItem("learnedcircle_admin_code") || "";
 let allDraftRows = [];
 let allPaymentRows = [];
+let allAdvertPlacements = [];
+let allLibraryResources = [];
 let activeFilter = "all";
 
 const reviewerNoteTemplates = {
@@ -67,6 +74,51 @@ async function callRpc(functionName, body) {
   }
 
   return data;
+}
+
+async function callPublishing(body) {
+  const response = await fetch("/api/admin-publishing", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  const text = await response.text();
+  const data = text ? JSON.parse(text) : null;
+
+  if (!response.ok) {
+    throw new Error(data?.message || "The publishing request could not be completed.");
+  }
+
+  return data;
+}
+
+function dateTimeToIso(value) {
+  return value ? new Date(value).toISOString() : "";
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve(null);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || "");
+      resolve({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        contentBase64: result.includes(",") ? result.split(",").pop() : result
+      });
+    };
+    reader.onerror = () => reject(new Error("Could not read the selected file."));
+    reader.readAsDataURL(file);
+  });
 }
 
 function renderPayload(payload = {}) {
@@ -208,6 +260,38 @@ function renderPaymentReview(rows = []) {
   }).join("");
 }
 
+function renderPublishingRecords() {
+  if (!adminPublishingList) return;
+
+  const adverts = allAdvertPlacements.slice(0, 6);
+  const resources = allLibraryResources.slice(0, 6);
+
+  adminPublishingList.innerHTML = `
+    <div class="publishing-list-grid">
+      <section>
+        <h4>Recent advert placements</h4>
+        ${adverts.length ? adverts.map((advert) => `
+          <article class="publishing-row">
+            <span class="status">${escapeHtml(advert.status || "draft")}</span>
+            <strong>${escapeHtml(advert.headline || "Untitled advert")}</strong>
+            <p>${escapeHtml(advert.placement || "placement")} | ${escapeHtml(advert.organization || "No organization")}</p>
+          </article>
+        `).join("") : "<p>No advert placements have been saved yet.</p>"}
+      </section>
+      <section>
+        <h4>Recent Library resources</h4>
+        ${resources.length ? resources.map((resource) => `
+          <article class="publishing-row">
+            <span class="status">${escapeHtml(resource.status || "draft")}</span>
+            <strong>${escapeHtml(resource.title || "Untitled material")}</strong>
+            <p>${escapeHtml(resource.group_key || "library")} | ${escapeHtml(resource.area || "All law areas")}</p>
+          </article>
+        `).join("") : "<p>No Library resources have been saved yet.</p>"}
+      </section>
+    </div>
+  `;
+}
+
 function filteredRows() {
   if (activeFilter === "all") return allDraftRows;
   return allDraftRows.filter((row) => row.item_type === activeFilter);
@@ -256,14 +340,18 @@ function renderDrafts(rows = filteredRows()) {
 async function loadQueue() {
   adminCount.textContent = "Loading drafts...";
   adminList.innerHTML = "";
-  const [result, paymentResult] = await Promise.all([
+  const [result, paymentResult, publishingResult] = await Promise.all([
     callRpc("admin_moderation_list", { action: "list", adminCode }),
-    callRpc("admin_payment_list", { action: "payment-list", adminCode }).catch((error) => ({ ok: false, rows: [], message: error.message }))
+    callRpc("admin_payment_list", { action: "payment-list", adminCode }).catch((error) => ({ ok: false, rows: [], message: error.message })),
+    callPublishing({ action: "list", adminCode }).catch((error) => ({ ok: false, advertPlacements: [], libraryResources: [], message: error.message }))
   ]);
   allDraftRows = result.rows || [];
   allPaymentRows = paymentResult.rows || [];
+  allAdvertPlacements = publishingResult.advertPlacements || [];
+  allLibraryResources = publishingResult.libraryResources || [];
   renderDrafts();
   renderPaymentReview(allPaymentRows);
+  renderPublishingRecords();
 }
 
 async function unlock(code) {
@@ -356,6 +444,72 @@ guestPublishForm?.addEventListener("submit", async (event) => {
     await loadQueue();
   } catch (error) {
     guestPublishStatus.textContent = error.message;
+  }
+});
+
+adminAdvertForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const formData = new FormData(adminAdvertForm);
+  adminAdvertStatus.hidden = false;
+  adminAdvertStatus.textContent = "Saving advert placement...";
+
+  try {
+    const result = await callPublishing({
+      action: "create-advert",
+      adminCode,
+      advert: {
+        status: formData.get("status"),
+        placement: formData.get("placement"),
+        label: formData.get("label"),
+        organization: formData.get("organization"),
+        headline: formData.get("headline"),
+        body: formData.get("body"),
+        ctaLabel: formData.get("ctaLabel"),
+        ctaUrl: formData.get("ctaUrl"),
+        startsAt: dateTimeToIso(formData.get("startsAt")),
+        endsAt: dateTimeToIso(formData.get("endsAt")),
+        adminNote: formData.get("adminNote")
+      }
+    });
+    adminAdvertStatus.textContent = result.message || "Advert placement saved.";
+    adminAdvertForm.reset();
+    await loadQueue();
+  } catch (error) {
+    adminAdvertStatus.textContent = error.message;
+  }
+});
+
+adminLibraryForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const formData = new FormData(adminLibraryForm);
+  const file = formData.get("file");
+  adminLibraryStatus.hidden = false;
+  adminLibraryStatus.textContent = "Saving Library material...";
+
+  try {
+    const filePayload = file && file.size ? await fileToBase64(file) : null;
+    const result = await callPublishing({
+      action: "create-library-resource",
+      adminCode,
+      resource: {
+        status: formData.get("status"),
+        groupKey: formData.get("groupKey"),
+        title: formData.get("title"),
+        area: formData.get("area"),
+        resourceType: formData.get("resourceType"),
+        source: formData.get("source"),
+        actionLabel: formData.get("actionLabel"),
+        resourceUrl: formData.get("resourceUrl"),
+        summary: formData.get("summary"),
+        adminNote: formData.get("adminNote")
+      },
+      file: filePayload
+    });
+    adminLibraryStatus.textContent = result.message || "Library material saved.";
+    adminLibraryForm.reset();
+    await loadQueue();
+  } catch (error) {
+    adminLibraryStatus.textContent = error.message;
   }
 });
 

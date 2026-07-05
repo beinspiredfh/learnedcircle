@@ -125,6 +125,137 @@
             <span>Contributor materials: approve, reject or request edits</span>
           </div>
         </article>
+        <article class="admin-card admin-publish-panel" id="admin-publishing-workspace">
+          <div>
+            <p class="eyebrow">Admin publishing backend</p>
+            <h3>Publish approved adverts and Library resources.</h3>
+            <p>
+              Use these controls to add rotating advert banners, legal update notices, Library books, journals, external
+              links and uploaded research materials. Only records marked published appear on the public website.
+            </p>
+          </div>
+          <div class="publisher-grid">
+            <form class="account-form compact" data-admin-advert-form>
+              <h4>Advert placement</h4>
+              <label>
+                Status
+                <select name="status">
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                  <option value="paused">Paused</option>
+                </select>
+              </label>
+              <label>
+                Placement
+                <select name="placement">
+                  <option value="rotating_banner">Rotating advert banner</option>
+                  <option value="legal_updates">Legal updates ticker</option>
+                  <option value="advert_section">Advert section</option>
+                  <option value="library_sponsored">Library sponsored placement</option>
+                </select>
+              </label>
+              <label>
+                Label
+                <input name="label" type="text" placeholder="Sponsored placement" />
+              </label>
+              <label>
+                Organization
+                <input name="organization" type="text" placeholder="Advertiser or sponsor name" />
+              </label>
+              <label class="full-span">
+                Headline
+                <input name="headline" type="text" placeholder="Advert headline" required />
+              </label>
+              <label class="full-span">
+                Short message
+                <textarea name="body" placeholder="Short advert message"></textarea>
+              </label>
+              <label>
+                Button label
+                <input name="ctaLabel" type="text" placeholder="Book advert" />
+              </label>
+              <label>
+                Button link
+                <input name="ctaUrl" type="text" placeholder="#advertise or https://..." />
+              </label>
+              <label>
+                Start date
+                <input name="startsAt" type="datetime-local" />
+              </label>
+              <label>
+                End date
+                <input name="endsAt" type="datetime-local" />
+              </label>
+              <label class="full-span">
+                Admin note
+                <textarea name="adminNote" placeholder="Internal note on pricing, review or approval"></textarea>
+              </label>
+              <button class="primary-action full-span" type="submit">Save advert placement</button>
+              <p class="form-status full-span" data-admin-advert-status hidden></p>
+            </form>
+            <form class="account-form compact" data-admin-library-form>
+              <h4>Library material</h4>
+              <label>
+                Status
+                <select name="status">
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                  <option value="paused">Paused</option>
+                </select>
+              </label>
+              <label>
+                Category
+                <select name="groupKey">
+                  <option value="books">Online books and guides</option>
+                  <option value="articles">Articles and practice notes</option>
+                  <option value="journals">Journals and law reports</option>
+                  <option value="external">External online library</option>
+                </select>
+              </label>
+              <label class="full-span">
+                Title
+                <input name="title" type="text" placeholder="Material title" required />
+              </label>
+              <label>
+                Aspect of law
+                <input name="area" type="text" placeholder="Corporate Law, Tax Law, Litigation" />
+              </label>
+              <label>
+                Resource type
+                <input name="resourceType" type="text" placeholder="Online book, PDF, journal, external library" />
+              </label>
+              <label>
+                Source or contributor
+                <input name="source" type="text" placeholder="Contributor, publisher or library name" />
+              </label>
+              <label>
+                Action label
+                <input name="actionLabel" type="text" placeholder="Open material" />
+              </label>
+              <label class="full-span">
+                Link
+                <input name="resourceUrl" type="text" placeholder="https://... or internal page link" />
+              </label>
+              <label class="full-span">
+                Upload document
+                <input name="file" type="file" accept=".pdf,.doc,.docx,.txt,.rtf,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+              </label>
+              <label class="full-span">
+                Summary
+                <textarea name="summary" placeholder="Short professional description of the material"></textarea>
+              </label>
+              <label class="full-span">
+                Admin note
+                <textarea name="adminNote" placeholder="Internal note on review, rights or contributor approval"></textarea>
+              </label>
+              <button class="primary-action full-span" type="submit">Save Library material</button>
+              <p class="form-status full-span" data-admin-library-status hidden></p>
+            </form>
+          </div>
+          <div class="publishing-records" data-admin-publishing-list>
+            <p>Login to load publishing records.</p>
+          </div>
+        </article>
         <article class="admin-card admin-publish-panel" id="payment-review-controls">
           <div>
             <p class="eyebrow">Payment review controls</p>

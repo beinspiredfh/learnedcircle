@@ -1,4 +1,4 @@
-const libraryItems = [
+let libraryItems = [
   {
     title: "How to prepare a clean first brief before speaking with a lawyer",
     area: "Client Guide",
@@ -131,12 +131,33 @@ const containers = {
   external: document.querySelector("[data-library-external]")
 };
 
-Array.from(new Set(libraryItems.map((item) => item.area))).sort().forEach((area) => {
-  const option = document.createElement("option");
-  option.value = area;
-  option.textContent = area;
-  areaSelect.append(option);
-});
+function populateAreas() {
+  if (!areaSelect) return;
+  const selected = areaSelect.value;
+  areaSelect.innerHTML = '<option value="">All law areas</option>';
+  Array.from(new Set(libraryItems.map((item) => item.area).filter(Boolean))).sort().forEach((area) => {
+    const option = document.createElement("option");
+    option.value = area;
+    option.textContent = area;
+    areaSelect.append(option);
+  });
+  areaSelect.value = Array.from(areaSelect.options).some((option) => option.value === selected) ? selected : "";
+}
+
+populateAreas();
+
+function normalizePublicLibraryResource(resource) {
+  return {
+    title: resource.title || "Library material",
+    area: resource.area || "General legal research",
+    type: resource.resource_type || (resource.group_key === "external" ? "External library" : "Library material"),
+    group: resource.group_key || "books",
+    source: resource.source || "LearnedCircle Library",
+    summary: resource.summary || "Admin-approved LearnedCircle Library resource.",
+    action: resource.action_label || (resource.file_url ? "Open document" : "Open material"),
+    url: resource.file_url || resource.resource_url || "#"
+  };
+}
 
 function itemMatches(item, query, area) {
   const haystack = `${item.title} ${item.area} ${item.type} ${item.source} ${item.summary}`.toLowerCase();
@@ -185,3 +206,26 @@ document.addEventListener("change", (event) => {
 });
 
 renderLibrary();
+
+async function loadLiveLibraryResources() {
+  try {
+    const response = await fetch("/api/public-data");
+    const result = await response.json();
+    if (!result.ok || !Array.isArray(result.libraryResources)) return;
+
+    const existingKeys = new Set(libraryItems.map((item) => `${item.title}|${item.url}`.toLowerCase()));
+    result.libraryResources.map(normalizePublicLibraryResource).forEach((item) => {
+      const key = `${item.title}|${item.url}`.toLowerCase();
+      if (!existingKeys.has(key)) {
+        libraryItems.unshift(item);
+        existingKeys.add(key);
+      }
+    });
+    populateAreas();
+    renderLibrary();
+  } catch (error) {
+    // Keep the static Library usable while backend publishing is being connected.
+  }
+}
+
+loadLiveLibraryResources();

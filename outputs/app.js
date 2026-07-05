@@ -354,6 +354,7 @@ let approvedJobs = [];
 let approvedArticles = [];
 let approvedGuestArticles = [];
 let approvedAdverts = [];
+let approvedAdvertPlacements = [];
 let approvedLawyers = [];
 let onlineLawyers = [];
 let debateOpinions = [];
@@ -453,7 +454,7 @@ const seniorMentors = [
   }
 ];
 
-const libraryResources = [
+let libraryResources = [
   {
     title: "Corporate Law Starter Library",
     area: "Corporate Law",
@@ -550,6 +551,8 @@ const articleGrid = document.querySelector("[data-article-grid]");
 const guestGrid = document.querySelector("[data-guest-grid]");
 const mentorRoster = document.querySelector("[data-mentor-roster]");
 const advertGrid = document.querySelector("[data-advert-grid]");
+const rotatingAdTrack = document.querySelector(".rotating-ad-track");
+const tickerWindow = document.querySelector(".ticker-window");
 const resultCount = document.querySelector("[data-result-count]");
 const tabButtons = document.querySelectorAll("[data-tab]");
 const modal = document.querySelector("[data-modal]");
@@ -576,12 +579,34 @@ nigeriaLocations.forEach((location) => {
   locationFilter.append(option);
 });
 
-Array.from(new Set(libraryResources.map((resource) => resource.area))).sort().forEach((area) => {
-  const option = document.createElement("option");
-  option.value = area;
-  option.textContent = area;
-  libraryAreaFilter?.append(option);
-});
+function populateLibraryAreas() {
+  if (!libraryAreaFilter) return;
+  const selected = libraryAreaFilter.value;
+  libraryAreaFilter.innerHTML = '<option value="">All law areas</option>';
+  Array.from(new Set(libraryResources.map((resource) => resource.area).filter(Boolean))).sort().forEach((area) => {
+    const option = document.createElement("option");
+    option.value = area;
+    option.textContent = area;
+    libraryAreaFilter.append(option);
+  });
+  libraryAreaFilter.value = Array.from(libraryAreaFilter.options).some((option) => option.value === selected) ? selected : "";
+}
+
+populateLibraryAreas();
+
+function normalizePublicLibraryResource(resource) {
+  const url = resource.file_url || resource.resource_url || "library.html";
+  const type = resource.resource_type || (resource.group_key === "external" ? "External library" : "Library material");
+  return {
+    title: resource.title || "Library material",
+    area: resource.area || "General legal research",
+    type,
+    author: resource.source || "LearnedCircle Library",
+    summary: resource.summary || "Admin-approved LearnedCircle Library resource.",
+    access: resource.action_label || (resource.file_url ? "Open document" : "Open material"),
+    url
+  };
+}
 
 function renderLibraryResources() {
   if (!libraryResults) return;
@@ -608,7 +633,7 @@ function renderLibraryResources() {
         <span>${resource.area}</span>
         <span>${resource.author}</span>
       </div>
-      <button type="button" data-open-modal="assistant">${resource.access}</button>
+      ${resource.url ? `<a href="${escapeAttribute(resource.url)}" ${String(resource.url).startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : ""}>${resource.access}</a>` : `<button type="button" data-open-modal="assistant">${resource.access}</button>`}
     </article>
   `).join("");
 }
@@ -1067,6 +1092,24 @@ async function loadPublicData() {
       approvedAdverts = result.adverts;
       renderAdverts();
     }
+    if (result.ok && Array.isArray(result.advertPlacements)) {
+      approvedAdvertPlacements = result.advertPlacements;
+      renderRotatingAdverts();
+      renderLegalUpdatesTicker();
+    }
+    if (result.ok && Array.isArray(result.libraryResources)) {
+      const liveResources = result.libraryResources.map(normalizePublicLibraryResource);
+      const existingKeys = new Set(libraryResources.map((resource) => `${resource.title}|${resource.url || ""}`.toLowerCase()));
+      liveResources.forEach((resource) => {
+        const key = `${resource.title}|${resource.url || ""}`.toLowerCase();
+        if (!existingKeys.has(key)) {
+          libraryResources.unshift(resource);
+          existingKeys.add(key);
+        }
+      });
+      populateLibraryAreas();
+      renderLibraryResources();
+    }
     if (result.ok && Array.isArray(result.guestArticles)) {
       approvedGuestArticles = result.guestArticles;
       renderGuestArticles();
@@ -1098,12 +1141,52 @@ async function loadPublicData() {
     approvedArticles = [];
     approvedGuestArticles = [];
     approvedAdverts = [];
+    approvedAdvertPlacements = [];
     approvedLawyers = [];
     onlineLawyers = [];
     debateOpinions = [];
     forumReplies = [];
     forumTopics = [];
   }
+}
+
+function renderRotatingAdverts() {
+  if (!rotatingAdTrack) return;
+  const rotating = approvedAdvertPlacements
+    .filter((advert) => advert.placement === "rotating_banner")
+    .slice(0, 3);
+
+  if (!rotating.length) return;
+
+  rotatingAdTrack.innerHTML = rotating.map((advert) => {
+    const href = advert.cta_url || "#advertise";
+    const isModalButton = href === "#advertise";
+    const cta = advert.cta_label || "Learn more";
+    return `
+      <article>
+        <span>${escapeAttribute(advert.label || advert.organization || "Sponsored placement")}</span>
+        <strong>${escapeAttribute(advert.headline || "Approved LearnedCircle placement")}</strong>
+        ${advert.body ? `<small>${escapeAttribute(advert.body)}</small>` : ""}
+        ${isModalButton
+          ? `<button type="button" data-open-modal="advertise">${escapeAttribute(cta)}</button>`
+          : `<a href="${escapeAttribute(href)}" ${href.startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : ""}>${escapeAttribute(cta)}</a>`}
+      </article>
+    `;
+  }).join("");
+}
+
+function renderLegalUpdatesTicker() {
+  if (!tickerWindow) return;
+  const updates = approvedAdvertPlacements
+    .filter((advert) => advert.placement === "legal_updates")
+    .slice(0, 4);
+
+  if (!updates.length) return;
+
+  tickerWindow.innerHTML = updates.map((update) => {
+    const href = update.cta_url || "#legal-news";
+    return `<a href="${escapeAttribute(href)}" ${href.startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : ""}>${escapeAttribute(update.headline || update.body || "Legal update")}</a>`;
+  }).join("");
 }
 
 function renderArticles() {
