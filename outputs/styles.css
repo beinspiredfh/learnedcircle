@@ -1561,9 +1561,9 @@ textarea {
   right: 18px;
   z-index: 850;
   display: grid;
-  gap: 8px;
-  width: min(180px, 14vw);
-  padding: 14px;
+  gap: 12px;
+  width: min(240px, 18vw);
+  padding: 18px;
   border: 1px solid rgba(180, 138, 69, 0.35);
   border-radius: var(--radius);
   background: rgba(251, 250, 246, 0.94);
@@ -1580,6 +1580,7 @@ textarea {
 
 .sticky-ad-rail strong {
   font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.15rem;
   line-height: 1.08;
 }
 
@@ -1597,6 +1598,84 @@ textarea {
   color: var(--white);
   cursor: pointer;
   font-weight: 900;
+}
+
+.rotating-ad-strip {
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(90deg, var(--paper), var(--paper-soft));
+  padding: 14px clamp(18px, 4vw, 54px);
+}
+
+.rotating-ad-track {
+  display: grid;
+  min-height: 78px;
+}
+
+.rotating-ad-track article {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  animation: rotate-ad 15s infinite;
+}
+
+.rotating-ad-track article:nth-child(2) {
+  animation-delay: 5s;
+}
+
+.rotating-ad-track article:nth-child(3) {
+  animation-delay: 10s;
+}
+
+.rotating-ad-track span {
+  color: var(--brass-dark);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.rotating-ad-track strong {
+  flex: 1;
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  line-height: 1.1;
+}
+
+.rotating-ad-track a,
+.rotating-ad-track button {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 14px;
+  background: var(--ink);
+  color: var(--white);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+@keyframes rotate-ad {
+  0%,
+  29% {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  33%,
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+  }
 }
 
 .library-section {
@@ -2872,6 +2951,11 @@ li + li {
 
   .library-hero {
     grid-template-columns: 1fr;
+  }
+
+  .rotating-ad-track article {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .sticky-ad-rail {
