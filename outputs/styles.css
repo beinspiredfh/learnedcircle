@@ -1497,12 +1497,19 @@ textarea {
   color: var(--paper-soft);
 }
 
-.news-ticker strong {
+.ticker-label {
   flex: 0 0 auto;
   color: var(--brass);
   font-size: 0.72rem;
+  font-weight: 900;
   letter-spacing: 0.12em;
+  text-decoration: none;
   text-transform: uppercase;
+}
+
+.ticker-label:hover,
+.ticker-label:focus-visible {
+  color: var(--white);
 }
 
 .ticker-window {
@@ -1515,7 +1522,20 @@ textarea {
   animation: ticker-slide 28s linear infinite;
 }
 
-.ticker-window span::before {
+.ticker-window a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ticker-window a:hover,
+.ticker-window a:focus-visible {
+  color: var(--white);
+  text-decoration: underline;
+  text-decoration-color: var(--brass);
+  text-underline-offset: 4px;
+}
+
+.ticker-window a::before {
   content: "";
   display: inline-block;
   width: 7px;
