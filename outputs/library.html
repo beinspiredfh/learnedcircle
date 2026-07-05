@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LearnedCircle Library | Online legal books, guides and research</title>
+    <meta
+      name="description"
+      content="Search LearnedCircle Library for legal articles, online books, law reports, journals and trusted legal research libraries by aspect of law."
+    />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html#top" aria-label="LearnedCircle home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <circle cx="24" cy="24" r="21" />
+            <text x="24" y="29" text-anchor="middle">LC</text>
+          </svg>
+        </span>
+        <span>
+          <strong>LearnedCircle</strong>
+          <small>learnedcircle.com</small>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html#lawyers">Find lawyers</a>
+        <a href="index.html#ai-assistant">AI Assistant</a>
+        <a href="library.html" aria-current="page">Library</a>
+        <details class="nav-group">
+          <summary class="nav-parent">Forum</summary>
+          <div class="submenu" aria-label="Forum submenu">
+            <a href="index.html#forum">Forum home</a>
+            <a href="index.html#articles">Articles</a>
+            <a href="index.html#guest-blog">Guest blog</a>
+            <a href="index.html#mentorship">Mentorship</a>
+            <a href="index.html#debate">Debate</a>
+            <a href="index.html#legal-news">Legal news</a>
+          </div>
+        </details>
+        <a href="index.html#classifieds">Jobs</a>
+        <details class="nav-group">
+          <summary class="nav-parent">Account</summary>
+          <div class="submenu" aria-label="Account submenu">
+            <a href="account.html?mode=login">Login</a>
+            <a href="account.html?mode=signup">Signup</a>
+          </div>
+        </details>
+        <a class="nav-action nav-action-strong" href="index.html#advertise">Advertise</a>
+      </nav>
+    </header>
+
+    <main class="library-page" id="top">
+      <section class="library-hero">
+        <div>
+          <p class="eyebrow">LearnedCircle Library</p>
+          <h1>Search legal materials by area of law.</h1>
+          <p>
+            Find related articles, online books, guides, law reports, journal placeholders and trusted external legal
+            libraries from one clean research page.
+          </p>
+        </div>
+        <div class="library-submit-card">
+          <span class="status">Contribution desk</span>
+          <h2>Contribute materials</h2>
+          <p>Verified lawyers, senior contributors and editors can submit articles, case notes, forms and research guides.</p>
+          <div class="card-actions">
+            <a class="primary-action" href="index.html#articles">Submit article</a>
+            <a class="secondary-action" href="account.html?mode=login">Use account</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="library-panel" aria-labelledby="library-search-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Search materials</p>
+            <h2 id="library-search-title">Books, articles, journals and linked online libraries.</h2>
+          </div>
+        </div>
+        <form class="library-search library-search-page" data-library-page-search>
+          <label>
+            Search materials
+            <input type="search" placeholder="Search by title, author, keyword or law area" data-library-page-query />
+          </label>
+          <label>
+            Aspect of law
+            <select data-library-page-area>
+              <option value="">All law areas</option>
+            </select>
+          </label>
+        </form>
+        <p class="library-count" data-library-page-count>Showing library materials</p>
+      </section>
+
+      <section class="library-category" aria-labelledby="related-articles-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Articles</p>
+            <h2 id="related-articles-title">Articles related to your search.</h2>
+          </div>
+        </div>
+        <div class="library-results" data-library-articles></div>
+      </section>
+
+      <section class="library-category" aria-labelledby="online-books-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Online books</p>
+            <h2 id="online-books-title">Online books, guides and practical research materials.</h2>
+          </div>
+        </div>
+        <div class="library-results" data-library-books></div>
+      </section>
+
+      <section class="library-category" aria-labelledby="journals-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Journals and law reports</p>
+            <h2 id="journals-title">Journals, LCLR and law-report resources to be expanded.</h2>
+          </div>
+        </div>
+        <div class="library-results" data-library-journals></div>
+      </section>
+
+      <section class="library-category" aria-labelledby="linked-libraries-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Linked online libraries</p>
+            <h2 id="linked-libraries-title">Suggested external legal libraries to connect later.</h2>
+            <p>
+              These can help users research cases, legislation and commentary while LearnedCircle builds its own
+              proprietary library and LearnedCircle Law Report.
+            </p>
+          </div>
+        </div>
+        <div class="library-results" data-library-external></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>LearnedCircle</strong>
+        <p>Legal help, lawyer networking, professional visibility and opportunity exchange.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html#lawyers">Find a lawyer</a>
+        <a href="index.html#forum">Forum</a>
+        <a href="library.html">Library</a>
+        <a href="index.html#articles">Articles</a>
+        <a href="index.html#guest-blog">Guest blog</a>
+        <a href="index.html#legal-news">Legal news</a>
+        <a href="legal.html#terms">Terms</a>
+        <a href="legal.html#privacy">Privacy</a>
+        <a href="legal.html#disclaimer">Disclaimer</a>
+      </div>
+      <div class="footer-credit" aria-label="Ownership credit">
+        <span>Powered by Advocati LP</span>
+      </div>
+    </footer>
+
+    <script src="library.js"></script>
+  </body>
+</html>

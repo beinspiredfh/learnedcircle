@@ -1703,6 +1703,92 @@ textarea {
   font-weight: 900;
 }
 
+.library-result-card a {
+  align-self: end;
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 9px 12px;
+  background: var(--ink);
+  color: var(--white);
+  cursor: pointer;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.library-page {
+  background: var(--paper-soft);
+}
+
+.library-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.55fr);
+  gap: 24px;
+  align-items: stretch;
+  padding: 54px clamp(18px, 4vw, 54px);
+  border-bottom: 1px solid var(--line);
+}
+
+.library-hero h1 {
+  max-width: 920px;
+  margin: 0;
+  font-size: clamp(2.4rem, 6vw, 5.3rem);
+  line-height: 0.95;
+}
+
+.library-hero p {
+  max-width: 860px;
+  color: var(--muted);
+}
+
+.library-submit-card,
+.library-panel,
+.library-category {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: 0 14px 32px rgba(19, 38, 32, 0.05);
+}
+
+.library-submit-card {
+  display: grid;
+  gap: 14px;
+  align-content: center;
+  padding: 24px;
+}
+
+.library-submit-card h2 {
+  margin: 0;
+}
+
+.library-submit-card p {
+  margin: 0;
+}
+
+.library-panel,
+.library-category {
+  margin: 24px clamp(18px, 4vw, 54px);
+  padding: 32px;
+}
+
+.library-search-page {
+  margin-bottom: 14px;
+}
+
+.library-count {
+  margin: 0;
+  color: var(--muted);
+}
+
+.library-empty {
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  padding: 22px;
+  background: var(--paper-soft);
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .library-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -2784,6 +2870,10 @@ li + li {
     grid-template-columns: 1fr;
   }
 
+  .library-hero {
+    grid-template-columns: 1fr;
+  }
+
   .sticky-ad-rail {
     display: none;
   }
@@ -2864,6 +2954,7 @@ li + li {
   .admin-summary,
   .dashboard-summary,
   .standard-grid,
+  .library-hero,
   .payment-status-grid,
   .settlement-flow,
   .payment-guide-grid,
