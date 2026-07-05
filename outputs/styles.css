@@ -2975,9 +2975,11 @@ li + li {
     width: 100%;
     align-items: center;
     justify-content: flex-start;
-    gap: 8px;
+    flex-wrap: nowrap;
+    gap: 6px;
     overflow-x: auto;
-    padding-bottom: 2px;
+    border-top: 1px solid var(--line);
+    padding: 10px 0 2px;
     scrollbar-width: thin;
   }
 
@@ -2986,9 +2988,16 @@ li + li {
   .main-nav .nav-parent {
     flex: 0 0 auto;
     border: 1px solid var(--line);
-    padding: 8px 10px;
+    min-height: 40px;
+    border-radius: 999px;
+    padding: 8px 12px;
     background: var(--white);
     text-align: center;
+  }
+
+  .main-nav .nav-action-strong {
+    background: var(--ink);
+    color: var(--white);
   }
 
   .nav-group {
@@ -3079,11 +3088,28 @@ li + li {
 
 @media (max-width: 560px) {
   .site-header {
-    padding-inline: 14px;
+    padding: 14px;
+  }
+
+  .brand strong {
+    font-size: clamp(1.7rem, 9vw, 2.3rem);
   }
 
   .brand small {
     display: none;
+  }
+
+  .brand-mark {
+    width: 54px;
+    height: 54px;
+  }
+
+  .main-nav a,
+  .main-nav .nav-action,
+  .main-nav .nav-parent {
+    min-height: 36px;
+    padding: 7px 10px;
+    font-size: 0.74rem;
   }
 
   .workspace,
