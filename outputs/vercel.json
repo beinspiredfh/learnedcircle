@@ -1,6 +1,12 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/api/admin-publishing",
+      "destination": "/api/admin-moderation"
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
