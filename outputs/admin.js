@@ -77,7 +77,7 @@ async function callRpc(functionName, body) {
 }
 
 async function callPublishing(body) {
-  const response = await fetch("/api/admin-publishing", {
+  const response = await fetch("/api/admin-moderation", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -343,7 +343,7 @@ async function loadQueue() {
   const [result, paymentResult, publishingResult] = await Promise.all([
     callRpc("admin_moderation_list", { action: "list", adminCode }),
     callRpc("admin_payment_list", { action: "payment-list", adminCode }).catch((error) => ({ ok: false, rows: [], message: error.message })),
-    callPublishing({ action: "list", adminCode }).catch((error) => ({ ok: false, advertPlacements: [], libraryResources: [], message: error.message }))
+    callPublishing({ action: "publishing-list", adminCode }).catch((error) => ({ ok: false, advertPlacements: [], libraryResources: [], message: error.message }))
   ]);
   allDraftRows = result.rows || [];
   allPaymentRows = paymentResult.rows || [];

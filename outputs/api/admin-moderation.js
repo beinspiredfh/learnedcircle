@@ -1,5 +1,7 @@
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://tnxdulqdfanzlawuonmf.supabase.co";
 const ADMIN_ACCESS_CODE = process.env.ADMIN_ACCESS_CODE;
+const adminPublishingHandler = require("../admin-publishing-api.js");
+const ADMIN_PUBLISHING_ACTIONS = new Set(["publishing-list", "create-advert", "create-library-resource"]);
 
 function getSupabaseKey() {
   return process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
@@ -341,6 +343,17 @@ module.exports = async function handler(request, response) {
 
   if (!ADMIN_ACCESS_CODE || body.adminCode !== ADMIN_ACCESS_CODE) {
     response.status(401).json({ ok: false, message: "Invalid admin access code." });
+    return;
+  }
+
+  if (ADMIN_PUBLISHING_ACTIONS.has(body.action)) {
+    await adminPublishingHandler({
+      method: "POST",
+      body: {
+        ...body,
+        action: body.action === "publishing-list" ? "list" : body.action
+      }
+    }, response);
     return;
   }
 
