@@ -53,13 +53,18 @@ module.exports = async function handler(request, response) {
 
   let advertPlacements = [];
   const placementResponse = await supabasePublicFetch(
-    `/rest/v1/advert_placements?select=id,status,placement,label,headline,body,cta_label,cta_url,organization,starts_at,ends_at,created_at&status=eq.published&or=(starts_at.is.null,starts_at.lte.${encodeURIComponent(new Date().toISOString())})&or=(ends_at.is.null,ends_at.gte.${encodeURIComponent(new Date().toISOString())})&order=created_at.desc&limit=20`,
+    "/rest/v1/advert_placements?select=id,status,placement,label,headline,body,cta_label,cta_url,organization,starts_at,ends_at,created_at&status=eq.published&order=created_at.desc&limit=20",
     true
   );
   const placementRows = await placementResponse.json();
 
   if (placementResponse.ok) {
-    advertPlacements = placementRows;
+    const now = Date.now();
+    advertPlacements = placementRows.filter((placement) => {
+      const startsAt = placement.starts_at ? Date.parse(placement.starts_at) : null;
+      const endsAt = placement.ends_at ? Date.parse(placement.ends_at) : null;
+      return (!startsAt || startsAt <= now) && (!endsAt || endsAt >= now);
+    });
   }
 
   let libraryResources = [];

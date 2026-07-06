@@ -1,3 +1,5 @@
+const { Buffer } = require("node:buffer");
+
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://tnxdulqdfanzlawuonmf.supabase.co";
 const ADMIN_ACCESS_CODE = process.env.ADMIN_ACCESS_CODE;
 
