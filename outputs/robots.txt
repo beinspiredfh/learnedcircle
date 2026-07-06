@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /operations
+Disallow: /paystack-setup
+
+Sitemap: https://learnedcircle.com/sitemap.xml

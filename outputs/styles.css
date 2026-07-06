@@ -1523,7 +1523,8 @@ textarea {
   position: sticky;
   top: 77px;
   z-index: 900;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(120px, max-content) minmax(0, 1fr);
   align-items: center;
   gap: 14px;
   min-height: 42px;
@@ -1536,6 +1537,13 @@ textarea {
 
 .ticker-label {
   flex: 0 0 auto;
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding-right: 14px;
+  background: var(--ink);
   color: var(--brass);
   font-size: 0.72rem;
   font-weight: 900;
@@ -1553,6 +1561,7 @@ textarea {
   display: flex;
   gap: 36px;
   min-width: 0;
+  overflow: hidden;
   color: rgba(255, 255, 255, 0.84);
   font-size: 0.86rem;
   white-space: nowrap;
@@ -3136,14 +3145,20 @@ li + li {
 
   .news-ticker {
     top: 122px;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 4px;
-    padding-block: 8px;
+    grid-template-columns: minmax(96px, max-content) minmax(0, 1fr);
+    gap: 10px;
+    min-height: 40px;
+    padding-block: 7px;
+  }
+
+  .ticker-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    padding-right: 10px;
   }
 
   .ticker-window {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
   }
 
   .finder {
