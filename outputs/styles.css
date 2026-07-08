@@ -1,15 +1,15 @@
 :root {
-  --ink: #132620;
-  --ink-2: #20352f;
-  --brass: #b48a45;
-  --brass-dark: #8a6833;
-  --paper: #f5f1e8;
-  --paper-soft: #fbfaf6;
-  --slate: #34515f;
-  --line: #d8d0c0;
-  --muted: #68736e;
+  --ink: #071827;
+  --ink-2: #102a3f;
+  --brass: #c6a15b;
+  --brass-dark: #8f6b2f;
+  --paper: #f2efe8;
+  --paper-soft: #fbfaf7;
+  --slate: #25475d;
+  --line: #d7ccba;
+  --muted: #657174;
   --white: #ffffff;
-  --shadow: 0 18px 45px rgba(19, 38, 32, 0.12);
+  --shadow: 0 18px 45px rgba(7, 24, 39, 0.12);
   --radius: 8px;
 }
 
@@ -58,7 +58,7 @@ a {
   justify-content: space-between;
   gap: 24px;
   padding: 14px clamp(18px, 4vw, 54px);
-  border-bottom: 1px solid rgba(216, 208, 192, 0.8);
+  border-bottom: 1px solid rgba(215, 204, 186, 0.8);
   background: rgba(251, 250, 246, 0.92);
   backdrop-filter: blur(16px);
   overflow: visible;
@@ -94,7 +94,7 @@ a {
   height: 42px;
   place-items: center;
   flex: 0 0 auto;
-  border: 1px solid rgba(180, 138, 69, 0.55);
+  border: 1px solid rgba(198, 161, 91, 0.55);
   border-radius: 50%;
   background: var(--ink);
   color: var(--brass);
@@ -171,9 +171,9 @@ a {
 }
 
 .nav-action-strong {
-  border: 1px solid rgba(180, 138, 69, 0.45);
+  border: 1px solid rgba(198, 161, 91, 0.45);
   padding-inline: 10px;
-  background: rgba(180, 138, 69, 0.11);
+  background: rgba(198, 161, 91, 0.11);
 }
 
 .nav-group {
@@ -207,10 +207,10 @@ a {
   display: none;
   min-width: 190px;
   overflow: hidden;
-  border: 1px solid rgba(180, 138, 69, 0.45);
+  border: 1px solid rgba(198, 161, 91, 0.45);
   border-radius: var(--radius);
   background: var(--white);
-  box-shadow: 0 18px 40px rgba(19, 38, 32, 0.22);
+  box-shadow: 0 18px 40px rgba(7, 24, 39, 0.22);
 }
 
 .nav-group[open] .submenu {
@@ -395,7 +395,7 @@ a {
   align-items: flex-start;
   gap: 12px;
   padding: 14px;
-  border: 1px solid rgba(216, 208, 192, 0.9);
+  border: 1px solid rgba(215, 204, 186, 0.9);
   border-radius: var(--radius);
   background: var(--paper-soft);
   font-size: 0.95rem;
@@ -602,10 +602,10 @@ a {
 }
 
 .payment-review-meta span {
-  border: 1px solid rgba(52, 81, 95, 0.2);
+  border: 1px solid rgba(37, 71, 93, 0.2);
   border-radius: 999px;
   padding: 6px 10px;
-  background: rgba(52, 81, 95, 0.08);
+  background: rgba(37, 71, 93, 0.08);
   color: var(--ink);
   font-size: 0.82rem;
   font-weight: 800;
@@ -659,10 +659,10 @@ a {
   display: inline-flex;
   max-width: 820px;
   margin: 8px 0 0;
-  border: 1px solid rgba(52, 81, 95, 0.24);
+  border: 1px solid rgba(37, 71, 93, 0.24);
   border-radius: 999px;
   padding: 8px 12px;
-  background: rgba(52, 81, 95, 0.08);
+  background: rgba(37, 71, 93, 0.08);
   color: var(--ink-2);
   font-weight: 800;
 }
@@ -670,26 +670,26 @@ a {
 .membership-banner.premium,
 .membership-pill.premium,
 .status.premium {
-  border-color: rgba(180, 138, 69, 0.48);
-  background: rgba(180, 138, 69, 0.16);
+  border-color: rgba(198, 161, 91, 0.48);
+  background: rgba(198, 161, 91, 0.16);
   color: var(--brass-dark);
 }
 
 .membership-banner.pending,
 .membership-pill.pending,
 .status.pending {
-  border-color: rgba(52, 81, 95, 0.28);
-  background: rgba(52, 81, 95, 0.12);
+  border-color: rgba(37, 71, 93, 0.28);
+  background: rgba(37, 71, 93, 0.12);
   color: var(--slate);
 }
 
 .membership-pill {
   display: inline-flex;
   align-items: center;
-  border: 1px solid rgba(52, 81, 95, 0.24);
+  border: 1px solid rgba(37, 71, 93, 0.24);
   border-radius: 999px;
   padding: 5px 10px;
-  background: rgba(52, 81, 95, 0.08);
+  background: rgba(37, 71, 93, 0.08);
   color: var(--ink-2);
   font-weight: 900;
 }
@@ -712,7 +712,7 @@ button:disabled {
 }
 
 .standard-grid span {
-  border: 1px solid rgba(180, 138, 69, 0.28);
+  border: 1px solid rgba(198, 161, 91, 0.28);
   border-radius: var(--radius);
   padding: 12px;
   background: var(--white);
@@ -793,7 +793,7 @@ button:disabled {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
   padding: 14px;
-  border: 1px solid rgba(216, 208, 192, 0.7);
+  border: 1px solid rgba(215, 204, 186, 0.7);
   border-radius: var(--radius);
   background: var(--paper-soft);
 }
@@ -814,10 +814,10 @@ button:disabled {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  border: 1px solid rgba(180, 138, 69, 0.35);
+  border: 1px solid rgba(198, 161, 91, 0.35);
   border-radius: var(--radius);
   padding: 12px;
-  background: rgba(180, 138, 69, 0.08);
+  background: rgba(198, 161, 91, 0.08);
 }
 
 .verification-checklist strong,
@@ -1094,7 +1094,7 @@ button:disabled {
 .peer-chip:hover,
 .peer-chip:focus-visible {
   border-color: var(--brass);
-  outline: 2px solid rgba(180, 138, 69, 0.24);
+  outline: 2px solid rgba(198, 161, 91, 0.24);
   outline-offset: 1px;
 }
 
@@ -1157,8 +1157,8 @@ button:disabled {
   min-height: 540px;
   padding: 34px;
   background:
-    linear-gradient(90deg, rgba(10, 24, 20, 0.97) 0%, rgba(13, 33, 28, 0.9) 38%, rgba(19, 38, 32, 0.52) 72%, rgba(19, 38, 32, 0.18) 100%),
-    linear-gradient(180deg, rgba(180, 138, 69, 0.18), rgba(19, 38, 32, 0.5)),
+    linear-gradient(90deg, rgba(7, 24, 39, 0.97) 0%, rgba(16, 42, 63, 0.9) 38%, rgba(7, 24, 39, 0.52) 72%, rgba(7, 24, 39, 0.18) 100%),
+    linear-gradient(180deg, rgba(198, 161, 91, 0.18), rgba(7, 24, 39, 0.5)),
     url("assets/legal-hero-courthouse.png");
   background-position: center, center, 62% center;
   background-size: cover;
@@ -1210,7 +1210,7 @@ button:disabled {
   background: var(--white);
   color: var(--brass-dark);
   transform: translateY(-1px);
-  outline: 2px solid rgba(180, 138, 69, 0.4);
+  outline: 2px solid rgba(198, 161, 91, 0.4);
   outline-offset: -2px;
 }
 
@@ -1345,7 +1345,7 @@ textarea {
 .segmented .active {
   background: var(--white);
   color: var(--ink);
-  box-shadow: 0 6px 14px rgba(19, 38, 32, 0.08);
+  box-shadow: 0 6px 14px rgba(7, 24, 39, 0.08);
 }
 
 .result-toolbar p {
@@ -1402,10 +1402,10 @@ textarea {
   display: inline-flex;
   align-items: center;
   min-height: 20px;
-  border: 1px solid rgba(180, 138, 69, 0.42);
+  border: 1px solid rgba(198, 161, 91, 0.42);
   border-radius: 999px;
   padding: 2px 7px;
-  background: rgba(180, 138, 69, 0.12);
+  background: rgba(198, 161, 91, 0.12);
   color: var(--brass-dark);
   font-size: 0.64rem;
   font-weight: 900;
@@ -1414,8 +1414,8 @@ textarea {
 }
 
 .verification-badge.pending {
-  border-color: rgba(52, 81, 95, 0.24);
-  background: rgba(52, 81, 95, 0.08);
+  border-color: rgba(37, 71, 93, 0.24);
+  background: rgba(37, 71, 93, 0.08);
   color: var(--muted);
 }
 
@@ -1423,7 +1423,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   min-height: 20px;
-  border: 1px solid rgba(180, 138, 69, 0.62);
+  border: 1px solid rgba(198, 161, 91, 0.62);
   border-radius: 999px;
   padding: 2px 8px;
   background: var(--brass);
@@ -1461,18 +1461,18 @@ textarea {
   display: inline-flex;
   align-items: center;
   min-height: 26px;
-  border: 1px solid rgba(180, 138, 69, 0.28);
+  border: 1px solid rgba(198, 161, 91, 0.28);
   border-radius: 999px;
   padding: 4px 9px;
-  background: rgba(180, 138, 69, 0.12);
+  background: rgba(198, 161, 91, 0.12);
   color: var(--ink-2);
   font-size: 0.78rem;
   font-weight: 800;
 }
 
 .status {
-  border-color: rgba(52, 81, 95, 0.24);
-  background: rgba(52, 81, 95, 0.1);
+  border-color: rgba(37, 71, 93, 0.24);
+  background: rgba(37, 71, 93, 0.1);
 }
 
 .lawyer-card p,
@@ -1529,7 +1529,7 @@ textarea {
   gap: 14px;
   min-height: 42px;
   overflow: hidden;
-  border-bottom: 1px solid rgba(216, 208, 192, 0.9);
+  border-bottom: 1px solid rgba(215, 204, 186, 0.9);
   padding: 8px clamp(18px, 4vw, 54px);
   background: var(--ink);
   color: var(--paper-soft);
@@ -1748,7 +1748,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--white);
-  box-shadow: 0 14px 30px rgba(19, 38, 32, 0.05);
+  box-shadow: 0 14px 30px rgba(7, 24, 39, 0.05);
 }
 
 .library-result-card h3 {
@@ -1834,7 +1834,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--white);
-  box-shadow: 0 14px 32px rgba(19, 38, 32, 0.05);
+  box-shadow: 0 14px 32px rgba(7, 24, 39, 0.05);
 }
 
 .library-submit-card {
@@ -1890,7 +1890,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--white);
-  box-shadow: 0 14px 32px rgba(19, 38, 32, 0.06);
+  box-shadow: 0 14px 32px rgba(7, 24, 39, 0.06);
 }
 
 .library-card h3 {
@@ -1926,7 +1926,7 @@ textarea {
   border-bottom: 1px solid var(--line);
   padding: clamp(28px, 6vw, 72px) clamp(18px, 4vw, 54px);
   background:
-    linear-gradient(135deg, rgba(19, 38, 32, 0.96), rgba(52, 81, 95, 0.9)),
+    linear-gradient(135deg, rgba(7, 24, 39, 0.96), rgba(37, 71, 93, 0.9)),
     var(--ink);
   color: var(--paper-soft);
 }
@@ -1956,10 +1956,10 @@ textarea {
 .ai-disclaimer {
   display: grid;
   gap: 6px;
-  border: 1px solid rgba(180, 138, 69, 0.46);
+  border: 1px solid rgba(198, 161, 91, 0.46);
   border-radius: var(--radius);
   padding: 14px;
-  background: rgba(180, 138, 69, 0.12);
+  background: rgba(198, 161, 91, 0.12);
   color: var(--paper-soft);
 }
 
@@ -1978,7 +1978,7 @@ textarea {
 
 .ai-disclaimer.compact {
   margin: 10px 0;
-  background: rgba(180, 138, 69, 0.08);
+  background: rgba(198, 161, 91, 0.08);
   color: var(--ink);
 }
 
@@ -2021,7 +2021,7 @@ textarea {
   height: 10px;
   border-radius: 50%;
   background: var(--brass);
-  box-shadow: 0 0 0 5px rgba(180, 138, 69, 0.16);
+  box-shadow: 0 0 0 5px rgba(198, 161, 91, 0.16);
 }
 
 .assistant-message {
@@ -2033,7 +2033,7 @@ textarea {
 
 .assistant-message-user {
   justify-self: end;
-  background: rgba(52, 81, 95, 0.12);
+  background: rgba(37, 71, 93, 0.12);
 }
 
 .assistant-message-bot {
@@ -2290,7 +2290,7 @@ textarea {
 
 .debate-drop,
 .forum-drop {
-  border: 1px solid rgba(216, 208, 192, 0.92);
+  border: 1px solid rgba(215, 204, 186, 0.92);
   border-radius: var(--radius);
   background: var(--paper-soft);
 }
@@ -2328,7 +2328,7 @@ textarea {
 .reply-list article {
   display: grid;
   gap: 4px;
-  border: 1px solid rgba(52, 81, 95, 0.18);
+  border: 1px solid rgba(37, 71, 93, 0.18);
   border-radius: var(--radius);
   padding: 10px 12px;
   background: var(--white);
@@ -2420,7 +2420,7 @@ textarea {
 .guest-avatar {
   width: 72px;
   height: 72px;
-  border: 2px solid rgba(180, 138, 69, 0.38);
+  border: 2px solid rgba(198, 161, 91, 0.38);
   border-radius: 50%;
   object-fit: cover;
   background: var(--paper);
@@ -2547,7 +2547,7 @@ textarea {
   background:
     linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)),
     linear-gradient(135deg, var(--brass), var(--slate));
-  border-color: rgba(180, 138, 69, 0.45);
+  border-color: rgba(198, 161, 91, 0.45);
 }
 
 .advert-card {
@@ -2560,7 +2560,7 @@ textarea {
 }
 
 .paid-advert {
-  border-color: rgba(180, 138, 69, 0.7);
+  border-color: rgba(198, 161, 91, 0.7);
   box-shadow: 0 18px 44px rgba(16, 45, 37, 0.1);
 }
 
@@ -2719,13 +2719,13 @@ li + li {
   align-items: center;
   margin: 28px clamp(16px, 4vw, 52px) 34px;
   padding: clamp(22px, 4vw, 38px);
-  border: 1px solid rgba(180, 138, 69, 0.42);
+  border: 1px solid rgba(198, 161, 91, 0.42);
   border-radius: 8px;
   background:
-    linear-gradient(135deg, rgba(19, 38, 32, 0.94), rgba(20, 65, 81, 0.88)),
+    linear-gradient(135deg, rgba(7, 24, 39, 0.94), rgba(37, 71, 93, 0.88)),
     var(--ink);
   color: var(--white);
-  box-shadow: 0 18px 44px rgba(19, 38, 32, 0.16);
+  box-shadow: 0 18px 44px rgba(7, 24, 39, 0.16);
 }
 
 .install-app-panel h2 {
@@ -2795,7 +2795,7 @@ li + li {
 }
 
 .action-modal::backdrop {
-  background: rgba(19, 38, 32, 0.55);
+  background: rgba(7, 24, 39, 0.55);
   backdrop-filter: blur(5px);
 }
 
@@ -2951,10 +2951,10 @@ li + li {
 
 .form-status {
   margin: 0;
-  border: 1px solid rgba(180, 138, 69, 0.35);
+  border: 1px solid rgba(198, 161, 91, 0.35);
   border-radius: var(--radius);
   padding: 10px 12px;
-  background: rgba(180, 138, 69, 0.1);
+  background: rgba(198, 161, 91, 0.1);
   color: var(--ink-2);
   font-size: 0.9rem;
   font-weight: 700;

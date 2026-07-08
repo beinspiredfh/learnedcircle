@@ -807,9 +807,9 @@ downloadInvoiceButton?.addEventListener("click", () => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>${escapeHtml(currentInvoice.invoiceNumber)} | ${escapeHtml(currentInvoice.firmName)}</title>
     <style>
-      body { font-family: Arial, sans-serif; margin: 32px; color: #132620; }
+      body { font-family: Arial, sans-serif; margin: 32px; color: #071827; }
       .invoice-document { max-width: 760px; margin: 0 auto; }
-      header { display: flex; justify-content: space-between; gap: 24px; border-bottom: 2px solid #b48a45; padding-bottom: 18px; }
+      header { display: flex; justify-content: space-between; gap: 24px; border-bottom: 2px solid #c6a15b; padding-bottom: 18px; }
       img { max-width: 84px; max-height: 84px; object-fit: contain; }
       h2, h3, p { margin: 0 0 8px; }
       section { margin: 24px 0; }
