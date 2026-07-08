@@ -1,4 +1,4 @@
-const CACHE_NAME = "learnedcircle-app-v1";
+const CACHE_NAME = "learnedcircle-app-v2";
 const OFFLINE_URL = "/offline.html";
 const APP_SHELL = [
   "/",
@@ -15,7 +15,12 @@ const APP_SHELL = [
   "/app.webmanifest",
   "/assets/favicon.svg",
   "/assets/app-icon.svg",
+  "/assets/app-icon-192.png",
+  "/assets/app-icon-512.png",
   "/assets/app-icon-maskable.svg",
+  "/assets/app-icon-maskable-192.png",
+  "/assets/app-icon-maskable-512.png",
+  "/assets/apple-touch-icon.png",
   "/assets/legal-hero-courthouse.png",
   OFFLINE_URL
 ];

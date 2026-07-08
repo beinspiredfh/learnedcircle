@@ -15,6 +15,30 @@
   "dir": "ltr",
   "icons": [
     {
+      "src": "/assets/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/app-icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/app-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
       "src": "/assets/app-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
@@ -33,28 +57,28 @@
       "short_name": "Lawyers",
       "description": "Search verified lawyers by matter, location and availability.",
       "url": "/#lawyers",
-      "icons": [{ "src": "/assets/app-icon.svg", "sizes": "any" }]
+      "icons": [{ "src": "/assets/app-icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "AI assistant",
       "short_name": "AI",
       "description": "Ask general legal information questions.",
       "url": "/#ai-assistant",
-      "icons": [{ "src": "/assets/app-icon.svg", "sizes": "any" }]
+      "icons": [{ "src": "/assets/app-icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Library",
       "short_name": "Library",
       "description": "Search legal books, guides, journals and research links.",
       "url": "/library",
-      "icons": [{ "src": "/assets/app-icon.svg", "sizes": "any" }]
+      "icons": [{ "src": "/assets/app-icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Account",
       "short_name": "Account",
       "description": "Login or create a LearnedCircle account.",
       "url": "/account",
-      "icons": [{ "src": "/assets/app-icon.svg", "sizes": "any" }]
+      "icons": [{ "src": "/assets/app-icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
