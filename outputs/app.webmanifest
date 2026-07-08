@@ -1,0 +1,60 @@
+{
+  "name": "LearnedCircle",
+  "short_name": "LearnedCircle",
+  "description": "Find verified lawyers, legal jobs, Library materials, AI legal information and professional legal opportunities.",
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "browser"],
+  "orientation": "portrait-primary",
+  "background_color": "#fbfaf6",
+  "theme_color": "#132620",
+  "categories": ["business", "productivity", "education"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/app-icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Find lawyers",
+      "short_name": "Lawyers",
+      "description": "Search verified lawyers by matter, location and availability.",
+      "url": "/#lawyers",
+      "icons": [{ "src": "/assets/app-icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "AI assistant",
+      "short_name": "AI",
+      "description": "Ask general legal information questions.",
+      "url": "/#ai-assistant",
+      "icons": [{ "src": "/assets/app-icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Library",
+      "short_name": "Library",
+      "description": "Search legal books, guides, journals and research links.",
+      "url": "/library",
+      "icons": [{ "src": "/assets/app-icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Account",
+      "short_name": "Account",
+      "description": "Login or create a LearnedCircle account.",
+      "url": "/account",
+      "icons": [{ "src": "/assets/app-icon.svg", "sizes": "any" }]
+    }
+  ]
+}
