@@ -34,8 +34,7 @@ async function supabaseFetch(path, options = {}) {
 }
 
 function assertAdmin(adminCode) {
-  const expectedCode = ADMIN_ACCESS_CODE || "LC-FF6C-47C7";
-  if (!adminCode || adminCode !== expectedCode) {
+  if (!ADMIN_ACCESS_CODE || !adminCode || adminCode !== ADMIN_ACCESS_CODE) {
     const error = new Error("Unauthorized admin publishing access.");
     error.status = 401;
     throw error;

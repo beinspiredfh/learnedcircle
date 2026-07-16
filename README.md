@@ -29,3 +29,8 @@ Required environment variables include:
 
 Do not commit local `.env` files, API tokens, service-role keys or payment provider secrets.
 
+## Admin Access Rotation
+
+- Set the current private admin key in Vercel as `ADMIN_ACCESS_CODE`.
+- Run `scripts/supabase-admin-key-rotation-template.sql` in Supabase after replacing `__ADMIN_ACCESS_CODE__` with the same private key.
+- Keep filled-in SQL files and admin keys outside git history.
